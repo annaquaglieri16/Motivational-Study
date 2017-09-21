@@ -3,10 +3,15 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document: default
-  pdf_document: default
+  github_document:
+    toc: yes
+    toc_depth: 3
+  html_document:
+    toc: yes
+    toc_depth: 3
+linkcolor: magenta
+urlcolor: magenta
 ---
-
 
 ```{r,message=FALSE}
 library(readr)
