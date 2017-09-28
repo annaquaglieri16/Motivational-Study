@@ -1276,7 +1276,7 @@ german_in_australia <- read_csv("~/Desktop/Richi_analysis/german_in_australia_cl
 ```{r}
 english_in_germany_cleaned_csv <- read_excel("~/Desktop/Richi_analysis/columns_recoded_demographics/english_in_germany_cleaned.csv.xlsx")
 colnames(english_in_germany_cleaned_csv)[!(colnames(english_in_germany_cleaned_csv) %in% colnames(english_in_germany))]
-english_in_germany_cleaned_red <- subset(english_in_germany_cleaned_csv,select=c("Resp.ID","other.attrib.richi","other.external.richi","other.sector.richi","other.year.studyL2.richi","other.other.ways.richi","other.degree.richi"))
+english_in_germany_cleaned_red <- subset(english_in_germany_cleaned_csv,select=c("Resp.ID","other.attrib.richi","other.external.richi","other.sector.richi","other.year.studyL2.reduced","other.year.studyL2.richi","other.other.ways.richi","other.degree.richi"))
 english_in_germany <- merge(english_in_germany,english_in_germany_cleaned_red,all = TRUE)
 
 # other.attrib.richi
