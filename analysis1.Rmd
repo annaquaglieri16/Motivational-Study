@@ -23,7 +23,7 @@ library(pheatmap)
 library(RColorBrewer)
 library(cowplot)
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,dev="png")
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE)
 
 ```
 
