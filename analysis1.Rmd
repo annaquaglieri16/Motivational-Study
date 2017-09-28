@@ -3,10 +3,10 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
+  github_document:
     toc: yes
     toc_depth: 3
-  github_document:
+  html_document:
     toc: yes
     toc_depth: 3
 linkcolor: magenta
@@ -23,7 +23,7 @@ library(pheatmap)
 library(RColorBrewer)
 library(cowplot)
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,dev="pdf")
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,dev="png")
 
 ```
 
