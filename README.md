@@ -21,7 +21,7 @@ library(pheatmap)
 library(RColorBrewer)
 library(cowplot)
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 12,fig.height = 12,dev="pdf")
 ```
 
 Read in data
@@ -74,7 +74,7 @@ Variables that are interesting but are different between contexts
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="")
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.pdf)
 
 ``` r
 > #table(all$speak.other.L2,all$Context)
@@ -210,7 +210,7 @@ Demographics
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="") + theme_bw()
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-12-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-12-1.pdf)
 
 ``` r
 > table(all$L1,all$Context)
@@ -323,7 +323,7 @@ Demographics
 > barplot(missing_bySample)
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.pdf)
 
 ``` r
 > d <- data.frame(miss=missing_byVar)
@@ -331,7 +331,7 @@ Demographics
 > ggplot(data=d,aes(x=varID,y=miss)) + geom_bar(stat="identity") + theme_bw() +theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-2.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-2.pdf)
 
 ``` r
 > demo_missing <- demo %>% group_by(Context) %>% summarise(roleL2.degree_na = sum(is.na(roleL2.degree)),
@@ -392,7 +392,7 @@ Demographics
 > ggplot(all,aes(x=Age,fill=Context)) + geom_bar(position="dodge",colour="white")   + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2.5, y=40, width=0.3, height=0.4) + ggtitle("Participants by age")
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/age_by_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/age_by_context-1.pdf)
 
 ``` r
 > tabAge
@@ -407,11 +407,30 @@ Demographics
 
 ``` r
 > # add numbers on the bar
+> tabAge <- t(table(all$Gender,all$Context))
+> ggplot(all,aes(x=Gender,fill=Context)) + geom_bar(position="dodge",colour="white")   + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2.5, y=40, width=0.3, height=0.4) + ggtitle("Participants by gender")
+```
+
+![](analysis1_files/figure-markdown_github-ascii_identifiers/gender_by_context-1.pdf)
+
+``` r
+> tabAge
+```
+
+    ##                       
+    ##                        Female Male Other
+    ##   English in Germany       49   14     1
+    ##   English in Italy         73   13     1
+    ##   German in Australia      53   23     1
+    ##   Italian in Australia     56   15     1
+
+``` r
+> # add numbers on the bar
 > tabAge <- t(table(all$origins,all$Context))
 > ggplot(all,aes(x=origins,fill=Context)) + geom_bar(position="dodge",colour="white") + ggtitle("Origins by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=60, width=0.3, height=0.4) + ggtitle("Participants by origins")
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/origns_by_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/origns_by_context-1.pdf)
 
 ``` r
 > tabAge
@@ -431,7 +450,7 @@ Demographics
 > ggplot(all,aes(x=Context,fill=prof)) + geom_bar(position="dodge",colour="white") + ggtitle("Proficiency by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/proficiency_by_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/proficiency_by_context-1.pdf)
 
 ``` r
 > tabAge
@@ -453,7 +472,7 @@ Demographics
 > ggplot(all[all$Context != "English in Germany" & all$Context != "English in Italy",],aes(x=Context,fill=L2.VCE)) + geom_bar(position="dodge",colour="white") + ggtitle("L2.VCE by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/L2VCE_by_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/L2VCE_by_context-1.pdf)
 
 -   da mettere a posto
 
@@ -514,7 +533,7 @@ Demographics
 > ggplot(all[all$Context == "English in Germany" | all$Context == "English in Italy",],aes(x=degree,fill=year.studyL2)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree by study year L2, by Context") +  facet_grid(~Context,scales="free") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(y = "N participants", x = "degree")
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/year.studyL2_European_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/year.studyL2_European_context-1.pdf)
 
 -   Degree of enrolment
 
@@ -524,7 +543,7 @@ Demographics
 > ggplot(all[all$Context == "Italian in Australia" | all$Context == "German in Australia",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in Australian Contexts") + draw_grob(tableGrob(tabAge), x=1., y=40, width=0.3, height=0.4)
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/degree_by_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/degree_by_context-1.pdf)
 
 ``` r
 > tabAge
@@ -542,7 +561,7 @@ Demographics
 > ggplot(all[all$Context == "English in Italy" | all$Context == "English in Germany",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in European Contexts")
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/year.studyL2_Australian_context-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/year.studyL2_Australian_context-1.pdf)
 
 ``` r
 > tabAge
@@ -581,14 +600,14 @@ Demographics
 +   facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.pdf)
 
 ``` r
 > filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
 > ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-2.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-2.pdf)
 
 Convert Likert scales to numbers
 ================================
@@ -658,7 +677,7 @@ Correlation
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.pdf)
 
 -   German in Australia
 
@@ -679,7 +698,7 @@ Correlation
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.pdf)
 
 -   English in Germany
 
@@ -700,7 +719,7 @@ Correlation
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.pdf)
 
 -   English in Italy
 
@@ -721,7 +740,7 @@ Correlation
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-20-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-20-1.pdf)
 
 ``` r
 > cov <- cor(filtered_conv[,likert_variables1],method = "pearson",use="pairwise.complete.obs")
@@ -740,7 +759,7 @@ Correlation
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-21-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-21-1.pdf)
 
 Evaluate internal constiency of known constructs
 ------------------------------------------------
@@ -860,7 +879,7 @@ Evaluate internal constiency of known constructs
 +   ggplot(.,aes(x=var,y=st.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme_bw()
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.pdf)
 
 ``` r
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
@@ -887,4 +906,4 @@ Evaluate internal constiency of known constructs
 > plot_grid(p2,p3,nrow=2)
 ```
 
-![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-1.png)
+![](analysis1_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-24-1.pdf)
