@@ -1,0 +1,79 @@
+---
+title: "FA with merged filtered"
+author: "Anna Quaglieri, Riccardo Amorati, Roberto Bonelli"
+date: "03/09/2017"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '4'
+  github_document:
+    toc: yes
+    toc_depth: 4
+  html_notebook:
+    code_folding: hide
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+
+```{r,message=FALSE}
+library(readr)
+library(tidyverse)
+library(reshape2)
+library(corrplot)
+library(psych)
+library(pheatmap)
+library(RColorBrewer)
+library(cowplot)
+library(gridExtra)
+library(cowplot)
+library(pheatmap)
+# Chunk options
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 12,fig.height = 12)
+
+```
+
+# Read in Robby's function for FA
+
+```{r eval=FALSE}
+source("FA_analysis.R")
+```
+
+
+# Read in data
+
+```{r}
+all <- read.csv(file.path("02-descriptive_data/merged_filtered_likertNumber.csv"))
+```
+
+
+# Likert variables
+
+```{r include=FALSE,message=FALSE}
+likert_grep <- "\\.id$|\\.ought$|\\.intr$|\\.instru$|\\.integr$|\\.prof$|\\.post$|\\.comm$|^necessity$|^educated$"
+
+# all
+likert_variables_all <- colnames(all)[grep(likert_grep,colnames(all))]
+likert_variables_all
+likert_variables_all <- likert_variables_all[!(likert_variables_all %in% "other.prof")]
+
+# likert variables converted to numbers
+likert_variables1 <- paste0(likert_variables_all,"1")
+
+```
+
+# Alpha and FA with the combined dataset
+
+```{r}
+
+dat <- all[,likert_variables1[!(likert_variables1 %in% c("necessity1","educated1"))]]
+alpha(dat,use="pairwise.complete.obs")
+
+
+fa.parallel(dat)
+
+fa_prova <- fa(dat,rotate = "oblimin",nfactors = 7)
+#fa_prova <- as.data.frame(fa_prova$loadings)
+```
+
