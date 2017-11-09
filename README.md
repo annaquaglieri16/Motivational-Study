@@ -29,6 +29,11 @@ Plan that I wrote with Richi's comments
 
 Link at <https://docs.google.com/document/d/1bdNeOMAYY90k8FAbPRWGBgS1YBEdP09kP0vcW0tNgPc/edit?usp=sharing>
 
+    ## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
+    ## TMB was built with Matrix version 1.2.10
+    ## Current Matrix version is 1.2.11
+    ## Please re-install 'TMB' from source or restore original 'Matrix' package
+
 Read in data
 ============
 
@@ -1027,7 +1032,7 @@ Evaluate internal consistency of known constructs with alpha
 +   ggplot(.,aes(x=var,y=st.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + theme_bw()
 > 
 > 
-> plot_grid(p2,p3,nrow=2)
+> cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
@@ -1536,9 +1541,9 @@ Alpha and FA with the combined dataset
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             5.46           0.61                6.22           1.54
-    ## 2             2.26           0.49                3.08           1.47
-    ## 3             0.99           0.41                1.78           1.39
+    ## 1             5.46           0.63                6.22           1.53
+    ## 2             2.26           0.48                3.08           1.47
+    ## 3             0.99           0.42                1.78           1.40
     ## 4             0.54           0.36                1.36           1.34
     ## 5             0.48           0.31                1.27           1.28
     ## 6             0.28           0.26                1.02           1.24
@@ -1716,7 +1721,7 @@ Alpha and FA with the combined dataset
 > a1$value[abs(a1$value)<0.2] <- 0
 > a1 <- a1[a1$value!=0,]
 > 
-> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 4,scales = "free_y")+coord_flip()
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 ```
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-6.png)
@@ -1866,20 +1871,18 @@ Alpha and FA with the combined dataset
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-8.png)
 
-    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1
+    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1
 
 ``` r
 > fap
 ```
 
     ## Call: fa.parallel(x = dat_disc)
-    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1 
+    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1 
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             1.72           0.64                2.21           1.12
-    ## 2             0.04           0.04                0.75           1.03
-    ## 3             0.01           0.00                0.67           0.97
+    ## 1             1.72           0.79                2.21           1.12
 
 ``` r
 > library(ggplot2)
@@ -2100,7 +2103,8 @@ Alpha and FA with the combined dataset
     ## F-statistic:  18.6 on 3 and 308 DF,  p-value: 4.09e-11
 
 ``` r
-> summary(lm(Factor2~Context,data=all_complete))
+> mod <- lm(Factor2~Context,data=all_complete)
+> summary(mod)
 ```
 
     ## 
