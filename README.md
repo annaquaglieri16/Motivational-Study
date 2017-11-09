@@ -1536,12 +1536,12 @@ Alpha and FA with the combined dataset
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             5.46           0.62                6.22           1.54
-    ## 2             2.26           0.48                3.08           1.46
+    ## 1             5.46           0.61                6.22           1.54
+    ## 2             2.26           0.49                3.08           1.47
     ## 3             0.99           0.41                1.78           1.39
     ## 4             0.54           0.36                1.36           1.34
-    ## 5             0.48           0.30                1.27           1.28
-    ## 6             0.28           0.27                1.02           1.25
+    ## 5             0.48           0.31                1.27           1.28
+    ## 6             0.28           0.26                1.02           1.24
 
 ``` r
 > data_macu <- data1
@@ -1866,18 +1866,20 @@ Alpha and FA with the combined dataset
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-8.png)
 
-    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1
+    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1
 
 ``` r
 > fap
 ```
 
     ## Call: fa.parallel(x = dat_disc)
-    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1 
+    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1 
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             1.72           0.76                2.21           1.12
+    ## 1             1.72           0.64                2.21           1.12
+    ## 2             0.04           0.04                0.75           1.03
+    ## 3             0.01           0.00                0.67           0.97
 
 ``` r
 > library(ggplot2)
@@ -1908,7 +1910,7 @@ Alpha and FA with the combined dataset
 > 
 > 
 > library(ggplot2)
-> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 4,scales = "free_y")+coord_flip()
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 ```
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-9.png)

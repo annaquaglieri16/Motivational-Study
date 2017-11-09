@@ -3,12 +3,12 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
-    toc: yes
-    toc_depth: '4'
   github_document:
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -1078,7 +1078,7 @@ a1 <- a1[a1$value!=0,]
 
 
 library(ggplot2)
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 4,scales = "free_y")+coord_flip()
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 #detach("package:ggplot2", unload=TRUE)
 
 
