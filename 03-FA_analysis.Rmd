@@ -26,51 +26,11 @@ library(cowplot)
 library(gridExtra)
 library(cowplot)
 library(pheatmap)
+library(reshape2)
+
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 12,fig.height = 12)
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 18,fig.height = 12)
 
 ```
 
-# Read in Robby's function for FA
-
-```{r eval=FALSE}
-source("FA_analysis.R")
-```
-
-
-# Read in data
-
-```{r}
-all <- read.csv(file.path("02-descriptive_data/merged_filtered_likertNumber.csv"))
-```
-
-
-# Likert variables
-
-```{r include=FALSE,message=FALSE}
-likert_grep <- "\\.id$|\\.ought$|\\.intr$|\\.instru$|\\.integr$|\\.prof$|\\.post$|\\.comm$|^necessity$|^educated$"
-
-# all
-likert_variables_all <- colnames(all)[grep(likert_grep,colnames(all))]
-likert_variables_all
-likert_variables_all <- likert_variables_all[!(likert_variables_all %in% "other.prof")]
-
-# likert variables converted to numbers
-likert_variables1 <- paste0(likert_variables_all,"1")
-
-```
-
-# Alpha and FA with the combined dataset
-
-```{r}
-
-dat <- all[,likert_variables1[!(likert_variables1 %in% c("necessity1","educated1"))]]
-alpha(dat,use="pairwise.complete.obs")
-
-
-fa.parallel(dat)
-
-fa_prova <- fa(dat,rotate = "oblimin",nfactors = 7)
-#fa_prova <- as.data.frame(fa_prova$loadings)
-```
 
