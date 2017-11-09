@@ -34,6 +34,13 @@ library(cowplot)
 library(gridExtra)
 library(cowplot)
 library(pheatmap)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+
+data(efc)
+theme_set(theme_sjplot())
+
 # Chunk options
 knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 12,fig.height = 12)
 
@@ -1122,7 +1129,8 @@ ggplot(dat_plot)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~
 mod <- lm(Factor1~Context,data=all_complete)
 summary(mod)
 
-summary(lm(Factor2~Context,data=all_complete))
+mod <- lm(Factor2~Context,data=all_complete)
+summary(mod)
 
 summary(lm(Factor4~Context,data=all_complete))
 
@@ -1131,3 +1139,13 @@ summary(lm(Factor6~Context,data=all_complete))
 summary(lm(Factor7~Context,data=all_complete))
 
 ```
+
+
+
+```{r}
+fake_data <- data.frame(a = rnorm(100), b=rexp(100), c = rbinom(100,100,0.6))
+mod1 <- lm(a ~ b + c, data=fake_data)
+plot_model(mod1)
+```
+
+
