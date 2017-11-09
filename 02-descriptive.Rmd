@@ -3,12 +3,12 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  github_document:
-    toc: yes
-    toc_depth: 4
   html_document:
     toc: yes
     toc_depth: '4'
+  github_document:
+    toc: yes
+    toc_depth: 4
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -567,7 +567,7 @@ p3=full_alpha %>% group_by(Context,var) %>%
   ggplot(.,aes(x=var,y=st.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + theme_bw()
 
 
-plot_grid(p2,p3,nrow=2)
+cowplot::plot_grid(p2,p3,nrow=2)
 
 ```
 
@@ -999,7 +999,7 @@ a1$inv <- ifelse(a1$value<0,"neg","pos")
 a1$value[abs(a1$value)<0.2] <- 0
 a1 <- a1[a1$value!=0,]
 
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 4,scales = "free_y")+coord_flip()
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 #detach("package:ggplot2", unload=TRUE)
 
 
@@ -1115,14 +1115,10 @@ corrplot(cor(dat_complete[,likert_variables2],dat_complete[,factors],use = "pair
 
 all_complete <-  cbind(all,pred,pred_disc)
 
-all_complete$Context
-
 dat_plot <- melt(all_complete,id.vars = "Context",measure.vars = factors)
 
 library(ggplot2)
 ggplot(dat_plot)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-
 
 
 
@@ -1141,11 +1137,5 @@ summary(lm(Factor7~Context,data=all_complete))
 ```
 
 
-
-```{r}
-fake_data <- data.frame(a = rnorm(100), b=rexp(100), c = rbinom(100,100,0.6))
-mod1 <- lm(a ~ b + c, data=fake_data)
-plot_model(mod1)
-```
 
 
