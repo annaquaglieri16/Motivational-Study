@@ -1089,10 +1089,6 @@ ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wra
 #detach("package:ggplot2", unload=TRUE)
 
 
-
-
-
-
 # Predict the factors
 
 pred <- as.data.frame(predict(fa_macu,dat[,names(data_macu_facleaned)]))
@@ -1136,6 +1132,49 @@ summary(lm(Factor7~Context,data=all_complete))
 
 ```
 
+## Basic factor analysis
 
+```{r}
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+data1 <- dat[,usable_items]
+
+fact <- 7
+fa_basic <- fa(data1,7)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:7,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D<-rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$x <- runif(nrow(a1))
+a1$inv <- ifelse(a1$value<0,"neg","pos")
+a1$value[abs(a1$value)<0.2] <- 0
+a1 <- a1[a1$value!=0,]
+ 
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,data1))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+dat_complete_basic <- cbind(dat,scale(pred_basic))
+corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+
+all_complete_basic <-  cbind(all,pred_basic)
+dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+
+
+```
 
 
