@@ -23,6 +23,7 @@ Anna Quaglieri & Riccardo Amorati
     -   [Read in data](#read-in-data-1)
     -   [Likert variables](#likert-variables)
     -   [Alpha and FA with the combined dataset](#alpha-and-fa-with-the-combined-dataset)
+    -   [Basic factor analysis](#basic-factor-analysis)
 
 Plan that I wrote with Richi's comments
 =======================================
@@ -1541,12 +1542,12 @@ Alpha and FA with the combined dataset
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             5.46           0.63                6.22           1.53
-    ## 2             2.26           0.48                3.08           1.47
-    ## 3             0.99           0.42                1.78           1.40
-    ## 4             0.54           0.36                1.36           1.34
-    ## 5             0.48           0.31                1.27           1.28
-    ## 6             0.28           0.26                1.02           1.24
+    ## 1             5.46           0.60                6.22           1.54
+    ## 2             2.26           0.46                3.08           1.44
+    ## 3             0.99           0.40                1.78           1.38
+    ## 4             0.54           0.35                1.36           1.32
+    ## 5             0.48           0.31                1.27           1.29
+    ## 6             0.28           0.25                1.02           1.23
 
 ``` r
 > data_macu <- data1
@@ -1871,18 +1872,20 @@ Alpha and FA with the combined dataset
 
 ![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-8.png)
 
-    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1
+    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1
 
 ``` r
 > fap
 ```
 
     ## Call: fa.parallel(x = dat_disc)
-    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1 
+    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1 
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             1.72           0.79                2.21           1.12
+    ## 1             1.72           0.63                2.21           1.13
+    ## 2             0.04           0.04                0.75           1.02
+    ## 3             0.01           0.00                0.67           0.97
 
 ``` r
 > library(ggplot2)
@@ -1922,10 +1925,6 @@ Alpha and FA with the combined dataset
 > #detach("package:ggplot2", unload=TRUE)
 > 
 > 
-> 
-> 
-> 
-> 
 > # Predict the factors
 > 
 > pred <- as.data.frame(predict(fa_macu,dat[,names(data_macu_facleaned)]))
@@ -1951,120 +1950,6 @@ Alpha and FA with the combined dataset
 ``` r
 > all_complete <-  cbind(all,pred,pred_disc)
 > 
-> all_complete$Context
-```
-
-    ##   [1] English in Italy     English in Italy     English in Italy    
-    ##   [4] English in Italy     English in Italy     English in Italy    
-    ##   [7] English in Italy     English in Italy     English in Italy    
-    ##  [10] English in Italy     English in Italy     English in Italy    
-    ##  [13] English in Italy     English in Italy     English in Italy    
-    ##  [16] English in Italy     English in Italy     English in Italy    
-    ##  [19] English in Italy     English in Italy     English in Italy    
-    ##  [22] English in Italy     English in Italy     English in Italy    
-    ##  [25] English in Italy     English in Italy     English in Italy    
-    ##  [28] English in Italy     English in Italy     English in Italy    
-    ##  [31] English in Italy     English in Italy     English in Italy    
-    ##  [34] English in Italy     English in Italy     English in Italy    
-    ##  [37] English in Italy     English in Italy     English in Italy    
-    ##  [40] English in Italy     English in Italy     English in Italy    
-    ##  [43] English in Italy     English in Italy     English in Germany  
-    ##  [46] English in Italy     English in Italy     English in Italy    
-    ##  [49] English in Italy     English in Italy     English in Germany  
-    ##  [52] English in Italy     English in Italy     English in Italy    
-    ##  [55] English in Italy     English in Italy     English in Italy    
-    ##  [58] English in Italy     English in Germany   English in Italy    
-    ##  [61] English in Italy     English in Italy     English in Italy    
-    ##  [64] English in Italy     English in Italy     English in Italy    
-    ##  [67] English in Italy     English in Italy     English in Italy    
-    ##  [70] English in Italy     English in Italy     English in Italy    
-    ##  [73] English in Italy     English in Italy     English in Italy    
-    ##  [76] English in Italy     English in Italy     English in Italy    
-    ##  [79] English in Italy     English in Italy     English in Italy    
-    ##  [82] English in Italy     English in Italy     English in Italy    
-    ##  [85] English in Italy     English in Italy     English in Italy    
-    ##  [88] English in Germany   English in Italy     English in Italy    
-    ##  [91] English in Italy     English in Italy     English in Italy    
-    ##  [94] English in Germany   English in Germany   English in Germany  
-    ##  [97] English in Italy     English in Germany   English in Italy    
-    ## [100] English in Germany   English in Germany   English in Germany  
-    ## [103] English in Germany   English in Germany   English in Germany  
-    ## [106] English in Germany   English in Germany   English in Germany  
-    ## [109] English in Germany   English in Germany   English in Germany  
-    ## [112] English in Germany   English in Germany   English in Germany  
-    ## [115] English in Germany   English in Germany   English in Germany  
-    ## [118] English in Germany   English in Germany   English in Germany  
-    ## [121] English in Germany   English in Germany   English in Germany  
-    ## [124] English in Germany   English in Germany   English in Germany  
-    ## [127] English in Germany   English in Germany   English in Germany  
-    ## [130] English in Germany   English in Germany   English in Germany  
-    ## [133] English in Germany   English in Germany   English in Germany  
-    ## [136] English in Germany   English in Germany   English in Germany  
-    ## [139] English in Germany   English in Germany   English in Germany  
-    ## [142] English in Germany   English in Germany   English in Germany  
-    ## [145] English in Germany   English in Germany   English in Germany  
-    ## [148] English in Germany   English in Germany   English in Germany  
-    ## [151] English in Germany   English in Germany   English in Germany  
-    ## [154] English in Germany   English in Germany   English in Germany  
-    ## [157] English in Germany   English in Germany   English in Germany  
-    ## [160] English in Germany   English in Germany   Italian in Australia
-    ## [163] Italian in Australia Italian in Australia Italian in Australia
-    ## [166] Italian in Australia Italian in Australia Italian in Australia
-    ## [169] Italian in Australia Italian in Australia Italian in Australia
-    ## [172] Italian in Australia German in Australia  German in Australia 
-    ## [175] German in Australia  German in Australia  German in Australia 
-    ## [178] German in Australia  Italian in Australia German in Australia 
-    ## [181] German in Australia  Italian in Australia German in Australia 
-    ## [184] German in Australia  German in Australia  German in Australia 
-    ## [187] German in Australia  German in Australia  German in Australia 
-    ## [190] German in Australia  German in Australia  German in Australia 
-    ## [193] German in Australia  German in Australia  German in Australia 
-    ## [196] German in Australia  German in Australia  German in Australia 
-    ## [199] Italian in Australia Italian in Australia Italian in Australia
-    ## [202] Italian in Australia Italian in Australia Italian in Australia
-    ## [205] Italian in Australia Italian in Australia Italian in Australia
-    ## [208] Italian in Australia Italian in Australia Italian in Australia
-    ## [211] Italian in Australia Italian in Australia Italian in Australia
-    ## [214] Italian in Australia Italian in Australia Italian in Australia
-    ## [217] Italian in Australia Italian in Australia Italian in Australia
-    ## [220] Italian in Australia Italian in Australia Italian in Australia
-    ## [223] Italian in Australia Italian in Australia Italian in Australia
-    ## [226] Italian in Australia Italian in Australia Italian in Australia
-    ## [229] Italian in Australia Italian in Australia Italian in Australia
-    ## [232] Italian in Australia Italian in Australia Italian in Australia
-    ## [235] Italian in Australia Italian in Australia Italian in Australia
-    ## [238] Italian in Australia Italian in Australia Italian in Australia
-    ## [241] Italian in Australia Italian in Australia Italian in Australia
-    ## [244] Italian in Australia Italian in Australia Italian in Australia
-    ## [247] Italian in Australia Italian in Australia Italian in Australia
-    ## [250] Italian in Australia Italian in Australia Italian in Australia
-    ## [253] Italian in Australia German in Australia  German in Australia 
-    ## [256] German in Australia  German in Australia  German in Australia 
-    ## [259] Italian in Australia German in Australia  Italian in Australia
-    ## [262] German in Australia  German in Australia  German in Australia 
-    ## [265] German in Australia  German in Australia  German in Australia 
-    ## [268] German in Australia  German in Australia  German in Australia 
-    ## [271] German in Australia  German in Australia  German in Australia 
-    ## [274] German in Australia  German in Australia  German in Australia 
-    ## [277] German in Australia  German in Australia  German in Australia 
-    ## [280] German in Australia  German in Australia  German in Australia 
-    ## [283] German in Australia  German in Australia  German in Australia 
-    ## [286] German in Australia  German in Australia  German in Australia 
-    ## [289] German in Australia  German in Australia  German in Australia 
-    ## [292] German in Australia  German in Australia  German in Australia 
-    ## [295] German in Australia  German in Australia  Italian in Australia
-    ## [298] Italian in Australia German in Australia  German in Australia 
-    ## [301] German in Australia  German in Australia  German in Australia 
-    ## [304] German in Australia  German in Australia  German in Australia 
-    ## [307] German in Australia  German in Australia  German in Australia 
-    ## [310] German in Australia  German in Australia  German in Australia 
-    ## [313] German in Australia  German in Australia  German in Australia 
-    ## [316] Italian in Australia German in Australia  German in Australia 
-    ## [319] Italian in Australia German in Australia  German in Australia 
-    ## [322] German in Australia  German in Australia 
-    ## 4 Levels: English in Germany English in Italy ... Italian in Australia
-
-``` r
 > dat_plot <- melt(all_complete,id.vars = "Context",measure.vars = factors)
 > 
 > library(ggplot2)
@@ -2206,3 +2091,138 @@ Alpha and FA with the combined dataset
     ##   (1 observation deleted due to missingness)
     ## Multiple R-squared:  0.05799,    Adjusted R-squared:  0.0491 
     ## F-statistic: 6.525 on 3 and 318 DF,  p-value: 0.0002699
+
+Basic factor analysis
+---------------------
+
+``` r
+> usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+> data1 <- dat[,usable_items]
+> 
+> fact <- 7
+> fa_basic <- fa(data1,7)
+> 
+> fa_basic
+```
+
+    ## Factor Analysis using method =  minres
+    ## Call: fa(r = data1, nfactors = 7)
+    ## Standardized loadings (pattern matrix) based upon correlation matrix
+    ##                      MR2   MR3   MR4   MR7   MR5   MR6   MR1   h2   u2 com
+    ## converse.id1        0.09  0.10  0.03  0.34  0.13  0.26  0.09 0.40 0.60 2.8
+    ## dream.id1           0.18  0.07  0.15  0.18  0.16 -0.04  0.39 0.39 0.61 2.7
+    ## usewell.id1        -0.02  0.03  0.17  0.13  0.17  0.06  0.30 0.28 0.72 2.8
+    ## whenever.id1       -0.03  0.12  0.17  0.11  0.27  0.22  0.27 0.44 0.56 4.4
+    ## consider.ought1     0.10  0.51  0.06  0.15 -0.09 -0.12 -0.17 0.38 0.62 1.7
+    ## people.ought1      -0.04  0.48  0.23  0.09  0.00 -0.14  0.08 0.31 0.69 1.8
+    ## expect.ought1       0.03  0.80  0.01  0.04 -0.03 -0.09 -0.06 0.68 0.32 1.0
+    ## fail.ought1        -0.02  0.72 -0.10 -0.13 -0.01  0.16  0.13 0.52 0.48 1.3
+    ## enjoy.intr1         0.02 -0.11  0.01  0.01  0.81 -0.06  0.01 0.66 0.34 1.1
+    ## life.intr1         -0.11  0.21  0.08  0.14  0.54  0.19  0.02 0.55 0.45 1.9
+    ## exciting.intr1      0.25  0.02 -0.02  0.16  0.33  0.07  0.13 0.35 0.65 2.9
+    ## challenge.intr1     0.21  0.01 -0.05 -0.03  0.45  0.07 -0.14 0.29 0.71 1.7
+    ## job.instru1         0.00  0.01  0.83  0.00 -0.03  0.01 -0.02 0.69 0.31 1.0
+    ## knowledge.instru1   0.12  0.14 -0.02 -0.02  0.15  0.33 -0.22 0.24 0.76 3.0
+    ## career.instru1      0.00 -0.06  0.65 -0.02  0.02  0.13  0.15 0.57 0.43 1.2
+    ## money.instru1       0.02  0.03  0.59 -0.08  0.09  0.02 -0.14 0.37 0.63 1.2
+    ## time.integr1        0.06 -0.06 -0.07  0.57  0.05  0.12  0.17 0.46 0.54 1.4
+    ## becomelike.integr1  0.01  0.05  0.03  0.49  0.12  0.05 -0.29 0.36 0.64 1.8
+    ## meeting.integr1     0.05 -0.12 -0.01  0.51  0.11  0.03  0.17 0.40 0.60 1.5
+    ## affinity.integr1   -0.09  0.04  0.00  0.73 -0.03 -0.03 -0.05 0.52 0.48 1.1
+    ## improve.prof1       0.70 -0.03 -0.07  0.08 -0.04  0.07 -0.06 0.51 0.49 1.1
+    ## speaking.prof1      0.80 -0.06  0.08  0.09 -0.10  0.00  0.01 0.65 0.35 1.1
+    ## reading.prof1       0.69  0.01 -0.03 -0.13  0.10 -0.03  0.02 0.51 0.49 1.1
+    ## written.prof1       0.76  0.05  0.08 -0.03  0.04 -0.06  0.09 0.61 0.39 1.1
+    ## listening.prof1     0.85  0.05 -0.06 -0.05  0.04  0.05 -0.05 0.76 0.24 1.0
+    ## citizen.post1       0.03  0.12  0.15  0.03  0.03  0.50 -0.26 0.42 0.58 1.9
+    ## interact.post1     -0.01 -0.12  0.16  0.05  0.10  0.39  0.15 0.36 0.64 2.1
+    ## overseas.post1      0.26 -0.02  0.10  0.12 -0.11  0.46  0.06 0.41 0.59 2.0
+    ## globalaccess.post1  0.00 -0.11  0.15  0.05  0.05  0.62  0.06 0.57 0.43 1.2
+    ## 
+    ##                        MR2  MR3  MR4  MR7  MR5  MR6  MR1
+    ## SS loadings           3.30 1.87 1.99 1.95 1.87 1.79 0.88
+    ## Proportion Var        0.11 0.06 0.07 0.07 0.06 0.06 0.03
+    ## Cumulative Var        0.11 0.18 0.25 0.31 0.38 0.44 0.47
+    ## Proportion Explained  0.24 0.14 0.15 0.14 0.14 0.13 0.06
+    ## Cumulative Proportion 0.24 0.38 0.52 0.67 0.80 0.94 1.00
+    ## 
+    ##  With factor correlations of 
+    ##      MR2   MR3  MR4  MR7   MR5  MR6   MR1
+    ## MR2 1.00  0.08 0.10 0.08  0.20 0.24  0.04
+    ## MR3 0.08  1.00 0.07 0.08 -0.03 0.02 -0.14
+    ## MR4 0.10  0.07 1.00 0.26  0.27 0.42  0.17
+    ## MR7 0.08  0.08 0.26 1.00  0.33 0.28  0.13
+    ## MR5 0.20 -0.03 0.27 0.33  1.00 0.35  0.21
+    ## MR6 0.24  0.02 0.42 0.28  0.35 1.00  0.15
+    ## MR1 0.04 -0.14 0.17 0.13  0.21 0.15  1.00
+    ## 
+    ## Mean item complexity =  1.8
+    ## Test of the hypothesis that 7 factors are sufficient.
+    ## 
+    ## The degrees of freedom for the null model are  406  and the objective function was  10.53 with Chi Square of  3281.34
+    ## The degrees of freedom for the model are 224  and the objective function was  1.23 
+    ## 
+    ## The root mean square of the residuals (RMSR) is  0.03 
+    ## The df corrected root mean square of the residuals is  0.04 
+    ## 
+    ## The harmonic number of observations is  322 with the empirical chi square  224.24  with prob <  0.48 
+    ## The total number of observations was  323  with Likelihood Chi Square =  377.46  with prob <  6.1e-10 
+    ## 
+    ## Tucker Lewis Index of factoring reliability =  0.902
+    ## RMSEA index =  0.049  and the 90 % confidence intervals are  0.038 0.054
+    ## BIC =  -916.74
+    ## Fit based upon off diagonal values = 0.98
+    ## Measures of factor score adequacy             
+    ##                                                    MR2  MR3  MR4  MR7  MR5
+    ## Correlation of (regression) scores with factors   0.95 0.90 0.90 0.87 0.89
+    ## Multiple R square of scores with factors          0.90 0.81 0.82 0.76 0.79
+    ## Minimum correlation of possible factor scores     0.80 0.62 0.64 0.53 0.59
+    ##                                                    MR6  MR1
+    ## Correlation of (regression) scores with factors   0.86 0.76
+    ## Multiple R square of scores with factors          0.74 0.57
+    ## Minimum correlation of possible factor scores     0.49 0.15
+
+``` r
+> # plot loadings
+> loadings_basic <- fa_basic$loadings
+> class(loadings_basic)<-"matrix"
+> colnames(loadings_basic)<-paste("F",1:7,sep="")
+> loadings_basic<-as.data.frame(loadings_basic)
+> loadings_basic<-round(loadings_basic,2)
+> loadings_basic$D<-rownames(loadings_basic)
+> a1 <- loadings_basic
+> 
+> a1 <- melt(a1,id.vars=c("D"))
+> a1$x <- runif(nrow(a1))
+> a1$inv <- ifelse(a1$value<0,"neg","pos")
+> a1$value[abs(a1$value)<0.2] <- 0
+> a1 <- a1[a1$value!=0,]
+>  
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
+```
+
+![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.png)
+
+``` r
+> # predict values per samples
+> pred_basic <- as.data.frame(predict(fa_basic,data1))
+> names(pred_basic) <- paste("Factor",1:fact,sep = "")
+> 
+> factors <- names(pred_basic)
+> dat_complete_basic <- cbind(dat,scale(pred_basic))
+> corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+```
+
+![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png)
+
+``` r
+> all_complete_basic <-  cbind(all,pred_basic)
+> dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+> 
+> library(ggplot2)
+> ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+```
+
+    ## Warning: Removed 84 rows containing non-finite values (stat_boxplot).
+
+![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-3.png)
