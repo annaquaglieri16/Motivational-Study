@@ -23,17 +23,13 @@ Anna Quaglieri & Riccardo Amorati
     -   [Read in data](#read-in-data-1)
     -   [Likert variables](#likert-variables)
     -   [Alpha and FA with the combined dataset](#alpha-and-fa-with-the-combined-dataset)
-    -   [Basic factor analysis](#basic-factor-analysis)
+    -   [Basic factor analysis: 7 factors](#basic-factor-analysis-7-factors)
+    -   [Basic factor analysis: 6 factors](#basic-factor-analysis-6-factors)
 
 Plan that I wrote with Richi's comments
 =======================================
 
 Link at <https://docs.google.com/document/d/1bdNeOMAYY90k8FAbPRWGBgS1YBEdP09kP0vcW0tNgPc/edit?usp=sharing>
-
-    ## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
-    ## TMB was built with Matrix version 1.2.10
-    ## Current Matrix version is 1.2.11
-    ## Please re-install 'TMB' from source or restore original 'Matrix' package
 
 Read in data
 ============
@@ -107,7 +103,7 @@ Variables to describe dataset (can be different between contexts)
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="")+theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
 > #table(all$speak.other.L2,all$Context)
@@ -244,7 +240,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="") + theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 ``` r
 > table(all$L1,all$Context)
@@ -431,7 +427,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > barplot(missing_bySample)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-13-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
 ``` r
 > d <- data.frame(miss=missing_byVar)
@@ -439,7 +435,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(data=d,aes(x=varID,y=miss)) + geom_bar(stat="identity") + theme_bw() +theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-13-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-13-2.png)
 
 ``` r
 > demo_missing <- demo %>% group_by(Context) %>% summarise(roleL2.degree_na = sum(is.na(roleL2.degree)),
@@ -515,7 +511,7 @@ Descriptive plots and tables
 +   geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/age_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/age_by_context-1.png)
 
 ``` r
 > # add numbers on the bar
@@ -529,7 +525,7 @@ Descriptive plots and tables
 > ggplot(ggdf,aes(x=Gender,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + ggtitle("Participants by gender")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/gender_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/gender_by_context-1.png)
 
 ``` r
 > # add numbers on the bar
@@ -537,7 +533,7 @@ Descriptive plots and tables
 > ggplot(all,aes(x=origins,fill=Context)) + geom_bar(position="dodge",colour="white") + ggtitle("Origins by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=60, width=0.3, height=0.4) + ggtitle("Participants by origins")
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/origns_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/origns_by_context-1.png)
 
 ``` r
 > tabAge
@@ -557,7 +553,7 @@ Descriptive plots and tables
 > ggplot(all,aes(x=Context,fill=prof)) + geom_bar(position="dodge",colour="white") + ggtitle("Proficiency by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/proficiency_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/proficiency_by_context-1.png)
 
 ``` r
 > tabAge
@@ -579,7 +575,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context != "English in Germany" & all$Context != "English in Italy",],aes(x=Context,fill=L2.VCE)) + geom_bar(position="dodge",colour="white") + ggtitle("L2.VCE by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/L2VCE_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/L2VCE_by_context-1.png)
 
 -   da mettere a posto con Richi
 
@@ -640,7 +636,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "English in Germany" | all$Context == "English in Italy",],aes(x=degree,fill=year.studyL2)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree by study year L2, by Context") +  facet_grid(~Context,scales="free") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(y = "N participants", x = "degree")
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/year.studyL2_European_context-1.png)
+![](02-descriptive_files/figure-markdown_github/year.studyL2_European_context-1.png)
 
 -   Degree of enrolment
 
@@ -650,7 +646,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "Italian in Australia" | all$Context == "German in Australia",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in Australian Contexts") + draw_grob(tableGrob(tabAge), x=1., y=40, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/degree_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/degree_by_context-1.png)
 
 ``` r
 > tabAge
@@ -668,7 +664,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "English in Italy" | all$Context == "English in Germany",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in European Contexts")
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/year.studyL2_Australian_context-1.png)
+![](02-descriptive_files/figure-markdown_github/year.studyL2_Australian_context-1.png)
 
 ``` r
 > tabAge
@@ -710,14 +706,14 @@ Likert scales
 +   facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-16-1.png)
 
 ``` r
 > filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
 > ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-16-2.png)
 
 -   **Convert Likert scales to numbers**
 
@@ -789,7 +785,7 @@ Italian in Australia
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/cor_italian_in_australia-1.png)
+![](02-descriptive_files/figure-markdown_github/cor_italian_in_australia-1.png)
 
 German in Australia
 -------------------
@@ -811,7 +807,7 @@ German in Australia
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/cor_german_in_australia-1.png)
+![](02-descriptive_files/figure-markdown_github/cor_german_in_australia-1.png)
 
 English in Germany
 ------------------
@@ -833,7 +829,7 @@ English in Germany
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/cor_english_in_germany-1.png)
+![](02-descriptive_files/figure-markdown_github/cor_english_in_germany-1.png)
 
 English in Italy
 ----------------
@@ -855,7 +851,7 @@ English in Italy
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/cor_english_in_italy-1.png)
+![](02-descriptive_files/figure-markdown_github/cor_english_in_italy-1.png)
 
 All context together
 --------------------
@@ -877,7 +873,7 @@ All context together
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/cor_all_contexts-1.png)
+![](02-descriptive_files/figure-markdown_github/cor_all_contexts-1.png)
 
 Evaluate internal consistency of known constructs with alpha
 ============================================================
@@ -1009,7 +1005,7 @@ Evaluate internal consistency of known constructs with alpha
 +   ggplot(.,aes(x=var,y=st.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/alpha_chronbach_by_context-1.png)
+![](02-descriptive_files/figure-markdown_github/alpha_chronbach_by_context-1.png)
 
 ``` r
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
@@ -1036,7 +1032,7 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 Factor Analysis with Robby's function
 =====================================
@@ -1462,7 +1458,7 @@ Alpha and FA with the combined dataset
 > corrplot(cor(data1,use = "pair"))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 ``` r
 > # check which variable does not correlated with any other vaiable
@@ -1529,7 +1525,7 @@ Alpha and FA with the combined dataset
 > fap <- fa.parallel(data1)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-2.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -1542,12 +1538,12 @@ Alpha and FA with the combined dataset
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             5.46           0.60                6.22           1.54
-    ## 2             2.26           0.46                3.08           1.44
+    ## 1             5.46           0.63                6.22           1.54
+    ## 2             2.26           0.47                3.08           1.46
     ## 3             0.99           0.40                1.78           1.38
-    ## 4             0.54           0.35                1.36           1.32
-    ## 5             0.48           0.31                1.27           1.29
-    ## 6             0.28           0.25                1.02           1.23
+    ## 4             0.54           0.36                1.36           1.34
+    ## 5             0.48           0.32                1.27           1.29
+    ## 6             0.28           0.27                1.02           1.25
 
 ``` r
 > data_macu <- data1
@@ -1561,7 +1557,7 @@ Alpha and FA with the combined dataset
 > out_macu <- outlier(data_macu)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-3.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-3.png)
 
 ``` r
 > #abline(h=800)
@@ -1594,12 +1590,12 @@ Alpha and FA with the combined dataset
 
     ## Loading required namespace: GPArotation
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-4.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-4.png)
 
     ## - Calculating the loadings thresholds for rotation promax 
     ## Producing the threshold plot
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-5.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-5.png)
 
     ## Choosing the best rotation and threshold 
     ## Displaying the factors 
@@ -1725,7 +1721,7 @@ Alpha and FA with the combined dataset
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-6.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-6.png)
 
 ``` r
 > #detach("package:ggplot2", unload=TRUE)
@@ -1805,7 +1801,7 @@ Alpha and FA with the combined dataset
 > hist(discr$punteggio)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-7.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-7.png)
 
 ``` r
 > quantile(discr$punteggio,na.rm = T)
@@ -1870,22 +1866,20 @@ Alpha and FA with the combined dataset
 > fap <- fa.parallel(dat_disc)
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-8.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-8.png)
 
-    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1
+    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1
 
 ``` r
 > fap
 ```
 
     ## Call: fa.parallel(x = dat_disc)
-    ## Parallel analysis suggests that the number of factors =  3  and the number of components =  1 
+    ## Parallel analysis suggests that the number of factors =  1  and the number of components =  1 
     ## 
     ##  Eigen Values of 
     ##   Original factors Simulated data Original components simulated data
-    ## 1             1.72           0.63                2.21           1.13
-    ## 2             0.04           0.04                0.75           1.02
-    ## 3             0.01           0.00                0.67           0.97
+    ## 1             1.72           0.67                2.21           1.13
 
 ``` r
 > library(ggplot2)
@@ -1919,7 +1913,7 @@ Alpha and FA with the combined dataset
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-9.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-9.png)
 
 ``` r
 > #detach("package:ggplot2", unload=TRUE)
@@ -1945,7 +1939,7 @@ Alpha and FA with the combined dataset
 > corrplot(cor(dat_complete[,likert_variables2],dat_complete[,factors],use = "pair"))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-10.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-10.png)
 
 ``` r
 > all_complete <-  cbind(all,pred,pred_disc)
@@ -1958,7 +1952,7 @@ Alpha and FA with the combined dataset
 
     ## Warning: Removed 67 rows containing non-finite values (stat_boxplot).
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-22-11.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-11.png)
 
 ``` r
 > mod <- lm(Factor1~Context,data=all_complete)
@@ -2092,21 +2086,27 @@ Alpha and FA with the combined dataset
     ## Multiple R-squared:  0.05799,    Adjusted R-squared:  0.0491 
     ## F-statistic: 6.525 on 3 and 318 DF,  p-value: 0.0002699
 
-Basic factor analysis
----------------------
+Basic factor analysis: 7 factors
+--------------------------------
+
+Seven, is the number of factors that would be present according to the study design. Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
 
 ``` r
 > usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
 > data1 <- dat[,usable_items]
 > 
 > fact <- 7
-> fa_basic <- fa(data1,7)
-> 
+> fa_basic <- fa(data1,fact)
+```
+
+    ## Loading required namespace: GPArotation
+
+``` r
 > fa_basic
 ```
 
     ## Factor Analysis using method =  minres
-    ## Call: fa(r = data1, nfactors = 7)
+    ## Call: fa(r = data1, nfactors = fact)
     ## Standardized loadings (pattern matrix) based upon correlation matrix
     ##                      MR2   MR3   MR4   MR7   MR5   MR6   MR1   h2   u2 com
     ## converse.id1        0.09  0.10  0.03  0.34  0.13  0.26  0.09 0.40 0.60 2.8
@@ -2197,11 +2197,54 @@ Basic factor analysis
 > a1$inv <- ifelse(a1$value<0,"neg","pos")
 > a1$value[abs(a1$value)<0.2] <- 0
 > a1 <- a1[a1$value!=0,]
->  
-> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
+> a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+> 
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-23-1.png)
+
+``` r
+> # Table of the factors
+> loadings_basic$D <- NULL
+> loadings_basic[abs(loadings_basic)<0.2] <- 0
+> for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+> 
+> loadings_basic[loadings_basic=="0"] <- ""
+> loading_fact_reduced <- loadings_basic
+> loading_fact_reduced
+```
+
+    ##                      F1   F2   F3   F4   F5   F6    F7
+    ## converse.id1                      0.34      0.26      
+    ## dream.id1                                         0.39
+    ## usewell.id1                                        0.3
+    ## whenever.id1                           0.27 0.22  0.27
+    ## consider.ought1         0.51                          
+    ## people.ought1           0.48 0.23                     
+    ## expect.ought1            0.8                          
+    ## fail.ought1             0.72                          
+    ## enjoy.intr1                            0.81           
+    ## life.intr1              0.21           0.54           
+    ## exciting.intr1     0.25                0.33           
+    ## challenge.intr1    0.21                0.45           
+    ## job.instru1                  0.83                     
+    ## knowledge.instru1                           0.33 -0.22
+    ## career.instru1               0.65                     
+    ## money.instru1                0.59                     
+    ## time.integr1                      0.57                
+    ## becomelike.integr1                0.49           -0.29
+    ## meeting.integr1                   0.51                
+    ## affinity.integr1                  0.73                
+    ## improve.prof1       0.7                               
+    ## speaking.prof1      0.8                               
+    ## reading.prof1      0.69                               
+    ## written.prof1      0.76                               
+    ## listening.prof1    0.85                               
+    ## citizen.post1                                0.5 -0.26
+    ## interact.post1                              0.39      
+    ## overseas.post1     0.26                     0.46      
+    ## globalaccess.post1                          0.62
 
 ``` r
 > # predict values per samples
@@ -2213,7 +2256,7 @@ Basic factor analysis
 > corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
 ```
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-23-2.png)
 
 ``` r
 > all_complete_basic <-  cbind(all,pred_basic)
@@ -2225,4 +2268,192 @@ Basic factor analysis
 
     ## Warning: Removed 84 rows containing non-finite values (stat_boxplot).
 
-![](02-descriptive_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-3.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-23-3.png)
+
+Basic factor analysis: 6 factors
+--------------------------------
+
+Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
+
+``` r
+> usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+> data1 <- dat[,usable_items]
+> 
+> # From a statisticak point of view 
+> fap <- fa.parallel(data1)
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-24-1.png)
+
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
+
+``` r
+> fact <- 6
+> fa_basic <- fa(data1,fact)
+> 
+> fa_basic
+```
+
+    ## Factor Analysis using method =  minres
+    ## Call: fa(r = data1, nfactors = fact)
+    ## Standardized loadings (pattern matrix) based upon correlation matrix
+    ##                      MR2   MR4   MR3   MR5   MR1   MR6   h2   u2 com
+    ## converse.id1        0.10  0.12  0.06  0.38  0.20  0.13 0.39 0.61 2.3
+    ## dream.id1           0.19  0.27  0.03  0.22  0.25 -0.27 0.37 0.63 4.7
+    ## usewell.id1        -0.01  0.29 -0.01  0.16  0.25 -0.15 0.27 0.73 3.2
+    ## whenever.id1       -0.01  0.31  0.06  0.14  0.39 -0.02 0.43 0.57 2.3
+    ## consider.ought1     0.08 -0.04  0.57  0.10 -0.13  0.05 0.37 0.63 1.3
+    ## people.ought1      -0.05  0.22  0.51  0.07  0.01 -0.13 0.31 0.69 1.6
+    ## expect.ought1       0.03 -0.03  0.83  0.00 -0.01  0.01 0.70 0.30 1.0
+    ## fail.ought1         0.01  0.01  0.62 -0.09  0.10  0.05 0.39 0.61 1.1
+    ## enjoy.intr1         0.02 -0.05 -0.12  0.01  0.74 -0.02 0.55 0.45 1.1
+    ## life.intr1         -0.11  0.10  0.18  0.13  0.61  0.14 0.57 0.43 1.5
+    ## exciting.intr1      0.25  0.02 -0.01  0.18  0.38 -0.03 0.35 0.65 2.3
+    ## challenge.intr1     0.21 -0.10  0.00 -0.05  0.43  0.14 0.26 0.74 1.9
+    ## job.instru1        -0.01  0.78  0.06 -0.01 -0.08  0.05 0.58 0.42 1.0
+    ## knowledge.instru1   0.13 -0.01  0.11 -0.02  0.17  0.38 0.24 0.76 1.9
+    ## career.instru1      0.00  0.76 -0.06 -0.01  0.04 -0.02 0.59 0.41 1.0
+    ## money.instru1       0.00  0.52  0.08 -0.11  0.02  0.11 0.30 0.70 1.2
+    ## time.integr1        0.07  0.00 -0.08  0.62  0.10 -0.02 0.46 0.54 1.1
+    ## becomelike.integr1 -0.01 -0.08  0.11  0.43  0.04  0.21 0.27 0.73 1.7
+    ## meeting.integr1     0.06  0.03 -0.12  0.55  0.13 -0.09 0.41 0.59 1.3
+    ## affinity.integr1   -0.11 -0.05  0.09  0.72 -0.07  0.02 0.48 0.52 1.1
+    ## improve.prof1       0.70 -0.08 -0.03  0.09 -0.06  0.09 0.51 0.49 1.1
+    ## speaking.prof1      0.80  0.08 -0.04  0.10 -0.12 -0.01 0.65 0.35 1.1
+    ## reading.prof1       0.70 -0.04  0.01 -0.14  0.11 -0.04 0.51 0.49 1.1
+    ## written.prof1       0.76  0.09  0.05 -0.03  0.05 -0.10 0.61 0.39 1.1
+    ## listening.prof1     0.86 -0.07  0.05 -0.05  0.03  0.07 0.76 0.24 1.0
+    ## citizen.post1       0.05  0.21  0.09  0.03  0.05  0.52 0.43 0.57 1.4
+    ## interact.post1      0.02  0.33 -0.19  0.10  0.19  0.16 0.34 0.66 3.1
+    ## overseas.post1      0.29  0.27 -0.08  0.17 -0.02  0.25 0.36 0.64 3.8
+    ## globalaccess.post1  0.05  0.36 -0.20  0.12  0.16  0.34 0.50 0.50 3.3
+    ## 
+    ##                        MR2  MR4  MR3  MR5  MR1  MR6
+    ## SS loadings           3.35 2.48 1.89 2.11 2.15 1.02
+    ## Proportion Var        0.12 0.09 0.07 0.07 0.07 0.04
+    ## Cumulative Var        0.12 0.20 0.27 0.34 0.41 0.45
+    ## Proportion Explained  0.26 0.19 0.15 0.16 0.17 0.08
+    ## Cumulative Proportion 0.26 0.45 0.59 0.76 0.92 1.00
+    ## 
+    ##  With factor correlations of 
+    ##      MR2  MR4   MR3  MR5   MR1  MR6
+    ## MR2 1.00 0.13  0.05 0.11  0.22 0.16
+    ## MR4 0.13 1.00  0.00 0.33  0.37 0.23
+    ## MR3 0.05 0.00  1.00 0.03 -0.05 0.11
+    ## MR5 0.11 0.33  0.03 1.00  0.39 0.16
+    ## MR1 0.22 0.37 -0.05 0.39  1.00 0.16
+    ## MR6 0.16 0.23  0.11 0.16  0.16 1.00
+    ## 
+    ## Mean item complexity =  1.8
+    ## Test of the hypothesis that 6 factors are sufficient.
+    ## 
+    ## The degrees of freedom for the null model are  406  and the objective function was  10.53 with Chi Square of  3281.34
+    ## The degrees of freedom for the model are 247  and the objective function was  1.46 
+    ## 
+    ## The root mean square of the residuals (RMSR) is  0.03 
+    ## The df corrected root mean square of the residuals is  0.04 
+    ## 
+    ## The harmonic number of observations is  322 with the empirical chi square  293.2  with prob <  0.023 
+    ## The total number of observations was  323  with Likelihood Chi Square =  449.72  with prob <  5.6e-14 
+    ## 
+    ## Tucker Lewis Index of factoring reliability =  0.882
+    ## RMSEA index =  0.053  and the 90 % confidence intervals are  0.043 0.058
+    ## BIC =  -977.36
+    ## Fit based upon off diagonal values = 0.98
+    ## Measures of factor score adequacy             
+    ##                                                    MR2  MR4  MR3  MR5  MR1
+    ## Correlation of (regression) scores with factors   0.95 0.91 0.90 0.88 0.89
+    ## Multiple R square of scores with factors          0.90 0.82 0.81 0.78 0.79
+    ## Minimum correlation of possible factor scores     0.80 0.65 0.63 0.55 0.57
+    ##                                                    MR6
+    ## Correlation of (regression) scores with factors   0.78
+    ## Multiple R square of scores with factors          0.61
+    ## Minimum correlation of possible factor scores     0.22
+
+``` r
+> # plot loadings
+> loadings_basic <- fa_basic$loadings
+> class(loadings_basic)<-"matrix"
+> colnames(loadings_basic)<-paste("F",1:6,sep="")
+> loadings_basic<-as.data.frame(loadings_basic)
+> loadings_basic<-round(loadings_basic,2)
+> loadings_basic$D<-rownames(loadings_basic)
+> a1 <- loadings_basic
+> 
+> a1 <- melt(a1,id.vars=c("D"))
+> a1$x <- runif(nrow(a1))
+> a1$inv <- ifelse(a1$value<0,"neg","pos")
+> a1$value[abs(a1$value)<0.2] <- 0
+> a1 <- a1[a1$value!=0,]
+> a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+> 
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-24-2.png)
+
+``` r
+> # Table of the factors
+> loadings_basic$D <- NULL
+> loadings_basic[abs(loadings_basic)<0.2] <- 0
+> for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+> 
+> loadings_basic[loadings_basic=="0"] <- ""
+> loading_fact_reduced <- loadings_basic
+> loading_fact_reduced
+```
+
+    ##                      F1   F2   F3   F4   F5    F6
+    ## converse.id1                      0.38  0.2      
+    ## dream.id1               0.27      0.22 0.25 -0.27
+    ## usewell.id1             0.29           0.25      
+    ## whenever.id1            0.31           0.39      
+    ## consider.ought1              0.57                
+    ## people.ought1           0.22 0.51                
+    ## expect.ought1                0.83                
+    ## fail.ought1                  0.62                
+    ## enjoy.intr1                            0.74      
+    ## life.intr1                             0.61      
+    ## exciting.intr1     0.25                0.38      
+    ## challenge.intr1    0.21                0.43      
+    ## job.instru1             0.78                     
+    ## knowledge.instru1                            0.38
+    ## career.instru1          0.76                     
+    ## money.instru1           0.52                     
+    ## time.integr1                      0.62           
+    ## becomelike.integr1                0.43       0.21
+    ## meeting.integr1                   0.55           
+    ## affinity.integr1                  0.72           
+    ## improve.prof1       0.7                          
+    ## speaking.prof1      0.8                          
+    ## reading.prof1       0.7                          
+    ## written.prof1      0.76                          
+    ## listening.prof1    0.86                          
+    ## citizen.post1           0.21                 0.52
+    ## interact.post1          0.33                     
+    ## overseas.post1     0.29 0.27                 0.25
+    ## globalaccess.post1      0.36 -0.2            0.34
+
+``` r
+> # predict values per samples
+> pred_basic <- as.data.frame(predict(fa_basic,data1))
+> names(pred_basic) <- paste("Factor",1:fact,sep = "")
+> 
+> factors <- names(pred_basic)
+> dat_complete_basic <- cbind(dat,scale(pred_basic))
+> corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-24-3.png)
+
+``` r
+> all_complete_basic <-  cbind(all,pred_basic)
+> dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+> 
+> library(ggplot2)
+> ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+```
+
+    ## Warning: Removed 72 rows containing non-finite values (stat_boxplot).
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-24-4.png)
