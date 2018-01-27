@@ -25,6 +25,8 @@ Anna Quaglieri & Riccardo Amorati
     -   [Alpha and FA with the combined dataset](#alpha-and-fa-with-the-combined-dataset)
     -   [Basic factor analysis: 7 factors](#basic-factor-analysis-7-factors)
     -   [Basic factor analysis: 6 factors](#basic-factor-analysis-6-factors)
+-   [Factor analysis on each context separately](#factor-analysis-on-each-context-separately)
+    -   [Only English in Germany](#only-english-in-germany)
 
 Plan that I wrote with Richi's comments
 =======================================
@@ -2457,3 +2459,209 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
     ## Warning: Removed 72 rows containing non-finite values (stat_boxplot).
 
 ![](02-descriptive_files/figure-markdown_github/unnamed-chunk-24-4.png)
+
+Factor analysis on each context separately
+==========================================
+
+``` r
+> usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+> 
+> dat <- all[,c(usable_items,"Context")]
+> dat_noNA <- dat[rowSums(is.na(dat)) == 0 ,]
+> 
+> # na to remove
+> table(rowSums(is.na(dat)),dat$Context)
+```
+
+    ##    
+    ##     English in Germany English in Italy German in Australia
+    ##   0                 70               85                  87
+    ##   1                  0                6                   1
+    ##    
+    ##     Italian in Australia
+    ##   0                   69
+    ##   1                    5
+
+``` r
+> get_residuals <- function(item,pred = dat$Context){
++   mod <- lm(item ~ pred)
++   return(mod$residuals)
++ }
+> 
+> dat_onlyItems <- dat_noNA[,usable_items]
+> 
+> applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,pred=dat_noNA$Context)
+> 
+> # Factanal 
+> # From a statisticak point of view 
+> fap <- fa.parallel(applygetRes)
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-1.png)
+
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
+
+``` r
+> fact <- 6
+> fa_basic <- fa(applygetRes,fact)
+```
+
+    ## Loading required namespace: GPArotation
+
+``` r
+> fa_basic
+```
+
+    ## Factor Analysis using method =  minres
+    ## Call: fa(r = applygetRes, nfactors = fact)
+    ## Standardized loadings (pattern matrix) based upon correlation matrix
+    ##                      MR2   MR1   MR3   MR4   MR5   MR6   h2   u2 com
+    ## converse.id1        0.06  0.45  0.04  0.11  0.13  0.13 0.41 0.59 1.5
+    ## dream.id1           0.16  0.26  0.01  0.23  0.24 -0.26 0.35 0.65 4.7
+    ## usewell.id1         0.08  0.11  0.03  0.21  0.27 -0.07 0.22 0.78 2.6
+    ## whenever.id1        0.02  0.23  0.06  0.20  0.36 -0.02 0.37 0.63 2.4
+    ## consider.ought1     0.08  0.03  0.57  0.03 -0.09  0.08 0.36 0.64 1.2
+    ## people.ought1       0.01  0.03  0.52  0.18  0.02 -0.11 0.31 0.69 1.3
+    ## expect.ought1       0.01  0.02  0.82 -0.01 -0.01 -0.01 0.66 0.34 1.0
+    ## fail.ought1         0.00 -0.03  0.60 -0.04  0.05  0.03 0.36 0.64 1.0
+    ## enjoy.intr1         0.02  0.00 -0.12 -0.01  0.73  0.00 0.57 0.43 1.1
+    ## life.intr1         -0.08  0.19  0.19  0.07  0.55  0.12 0.52 0.48 1.7
+    ## exciting.intr1      0.17  0.24 -0.02  0.07  0.39 -0.06 0.38 0.62 2.2
+    ## challenge.intr1     0.17 -0.09  0.01 -0.06  0.45  0.17 0.29 0.71 1.7
+    ## job.instru1        -0.01 -0.03  0.06  0.78 -0.05  0.04 0.60 0.40 1.0
+    ## knowledge.instru1   0.02 -0.04  0.06  0.04  0.20  0.42 0.26 0.74 1.5
+    ## career.instru1      0.00  0.03 -0.07  0.71  0.04 -0.03 0.52 0.48 1.0
+    ## money.instru1       0.00 -0.15  0.07  0.57  0.06  0.11 0.36 0.64 1.3
+    ## time.integr1        0.05  0.61 -0.07  0.00  0.11  0.00 0.46 0.54 1.1
+    ## becomelike.integr1 -0.01  0.39  0.13 -0.06  0.05  0.20 0.25 0.75 1.8
+    ## meeting.integr1     0.09  0.54 -0.09 -0.01  0.12 -0.04 0.38 0.62 1.2
+    ## affinity.integr1   -0.09  0.67  0.13 -0.04 -0.06  0.06 0.43 0.57 1.1
+    ## improve.prof1       0.64  0.14 -0.07 -0.04 -0.08  0.08 0.45 0.55 1.2
+    ## speaking.prof1      0.73  0.14 -0.07  0.12 -0.12 -0.04 0.60 0.40 1.2
+    ## reading.prof1       0.69 -0.15  0.02 -0.08  0.12 -0.02 0.48 0.52 1.2
+    ## written.prof1       0.79 -0.04  0.07  0.03  0.06 -0.05 0.64 0.36 1.0
+    ## listening.prof1     0.83 -0.04  0.04 -0.05  0.03  0.07 0.70 0.30 1.0
+    ## citizen.post1       0.04  0.08  0.09  0.12 -0.01  0.51 0.37 0.63 1.2
+    ## interact.post1      0.08  0.20 -0.15  0.12  0.12  0.23 0.25 0.75 4.2
+    ## overseas.post1      0.30  0.16 -0.06  0.17 -0.04  0.31 0.36 0.64 3.2
+    ## globalaccess.post1  0.04  0.14 -0.17  0.26  0.14  0.41 0.47 0.53 2.7
+    ## 
+    ##                        MR2  MR1  MR3  MR4  MR5  MR6
+    ## SS loadings           3.11 2.23 1.83 2.04 2.01 1.17
+    ## Proportion Var        0.11 0.08 0.06 0.07 0.07 0.04
+    ## Cumulative Var        0.11 0.18 0.25 0.32 0.39 0.43
+    ## Proportion Explained  0.25 0.18 0.15 0.16 0.16 0.09
+    ## Cumulative Proportion 0.25 0.43 0.58 0.74 0.91 1.00
+    ## 
+    ##  With factor correlations of 
+    ##       MR2  MR1   MR3  MR4   MR5  MR6
+    ## MR2  1.00 0.21 -0.03 0.23  0.27 0.15
+    ## MR1  0.21 1.00  0.04 0.35  0.39 0.24
+    ## MR3 -0.03 0.04  1.00 0.09 -0.05 0.10
+    ## MR4  0.23 0.35  0.09 1.00  0.30 0.30
+    ## MR5  0.27 0.39 -0.05 0.30  1.00 0.21
+    ## MR6  0.15 0.24  0.10 0.30  0.21 1.00
+    ## 
+    ## Mean item complexity =  1.7
+    ## Test of the hypothesis that 6 factors are sufficient.
+    ## 
+    ## The degrees of freedom for the null model are  406  and the objective function was  9.76 with Chi Square of  2923.46
+    ## The degrees of freedom for the model are 247  and the objective function was  1.45 
+    ## 
+    ## The root mean square of the residuals (RMSR) is  0.03 
+    ## The df corrected root mean square of the residuals is  0.04 
+    ## 
+    ## The harmonic number of observations is  311 with the empirical chi square  295.82  with prob <  0.018 
+    ## The total number of observations was  311  with Likelihood Chi Square =  428.17  with prob <  7e-12 
+    ## 
+    ## Tucker Lewis Index of factoring reliability =  0.88
+    ## RMSEA index =  0.051  and the 90 % confidence intervals are  0.041 0.056
+    ## BIC =  -989.55
+    ## Fit based upon off diagonal values = 0.98
+    ## Measures of factor score adequacy             
+    ##                                                    MR2  MR1  MR3  MR4  MR5
+    ## Correlation of (regression) scores with factors   0.94 0.88 0.89 0.89 0.88
+    ## Multiple R square of scores with factors          0.88 0.77 0.80 0.80 0.77
+    ## Minimum correlation of possible factor scores     0.77 0.55 0.59 0.59 0.54
+    ##                                                    MR6
+    ## Correlation of (regression) scores with factors   0.79
+    ## Multiple R square of scores with factors          0.63
+    ## Minimum correlation of possible factor scores     0.25
+
+``` r
+> # plot loadings
+> loadings_basic <- fa_basic$loadings
+> class(loadings_basic)<-"matrix"
+> colnames(loadings_basic)<-paste("F",1:6,sep="")
+> loadings_basic<-as.data.frame(loadings_basic)
+> loadings_basic<-round(loadings_basic,2)
+> loadings_basic$D<-rownames(loadings_basic)
+> a1 <- loadings_basic
+> 
+> a1 <- melt(a1,id.vars=c("D"))
+> a1$x <- runif(nrow(a1))
+> a1$inv <- ifelse(a1$value<0,"neg","pos")
+> a1$value[abs(a1$value)<0.2] <- 0
+> a1 <- a1[a1$value!=0,]
+> a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+> 
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-2.png)
+
+Only English in Germany
+-----------------------
+
+``` r
+> usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+> data1 <- all[all$Context %in% "English in Germany",usable_items]
+> 
+> # From a statisticak point of view 
+> fap <- fa.parallel(data1)
+> fact <- 6
+> fa_basic <- fa(data1,fact)
+> 
+> fa_basic
+> 
+> # plot loadings
+> loadings_basic <- fa_basic$loadings
+> class(loadings_basic)<-"matrix"
+> colnames(loadings_basic)<-paste("F",1:6,sep="")
+> loadings_basic<-as.data.frame(loadings_basic)
+> loadings_basic<-round(loadings_basic,2)
+> loadings_basic$D<-rownames(loadings_basic)
+> a1 <- loadings_basic
+> 
+> a1 <- melt(a1,id.vars=c("D"))
+> a1$x <- runif(nrow(a1))
+> a1$inv <- ifelse(a1$value<0,"neg","pos")
+> a1$value[abs(a1$value)<0.2] <- 0
+> a1 <- a1[a1$value!=0,]
+> a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+> 
+> ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+> 
+> # Table of the factors
+> loadings_basic$D <- NULL
+> loadings_basic[abs(loadings_basic)<0.2] <- 0
+> for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+> 
+> loadings_basic[loadings_basic=="0"] <- ""
+> loading_fact_reduced <- loadings_basic
+> loading_fact_reduced
+> 
+> # predict values per samples
+> pred_basic <- as.data.frame(predict(fa_basic,data1))
+> names(pred_basic) <- paste("Factor",1:fact,sep = "")
+> 
+> factors <- names(pred_basic)
+> dat_complete_basic <- cbind(dat,scale(pred_basic))
+> corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+> 
+> all_complete_basic <-  cbind(all,pred_basic)
+> dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+> 
+> library(ggplot2)
+> ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+```

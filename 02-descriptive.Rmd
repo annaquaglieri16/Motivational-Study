@@ -1250,4 +1250,108 @@ ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_
 
 ```
 
+# Factor analysis on each context separately
 
+```{r}
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+dat <- all[,c(usable_items,"Context")]
+dat_noNA <- dat[rowSums(is.na(dat)) == 0 ,]
+
+# na to remove
+table(rowSums(is.na(dat)),dat$Context)
+
+get_residuals <- function(item,pred = dat$Context){
+  mod <- lm(item ~ pred)
+  return(mod$residuals)
+}
+
+dat_onlyItems <- dat_noNA[,usable_items]
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,pred=dat_noNA$Context)
+
+# Factanal 
+# From a statisticak point of view 
+fap <- fa.parallel(applygetRes)
+fact <- 6
+fa_basic <- fa(applygetRes,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:6,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D<-rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$x <- runif(nrow(a1))
+a1$inv <- ifelse(a1$value<0,"neg","pos")
+a1$value[abs(a1$value)<0.2] <- 0
+a1 <- a1[a1$value!=0,]
+a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+```
+
+
+## Only English in Germany
+
+```{r eval=FALSE}
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+data1 <- all[all$Context %in% "English in Germany",usable_items]
+
+# From a statisticak point of view 
+fap <- fa.parallel(data1)
+fact <- 6
+fa_basic <- fa(data1,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:6,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D<-rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$x <- runif(nrow(a1))
+a1$inv <- ifelse(a1$value<0,"neg","pos")
+a1$value[abs(a1$value)<0.2] <- 0
+a1 <- a1[a1$value!=0,]
+a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic)<0.2] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic=="0"] <- ""
+loading_fact_reduced <- loadings_basic
+loading_fact_reduced
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,data1))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+dat_complete_basic <- cbind(dat,scale(pred_basic))
+corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+
+all_complete_basic <-  cbind(all,pred_basic)
+dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+
+
+```
