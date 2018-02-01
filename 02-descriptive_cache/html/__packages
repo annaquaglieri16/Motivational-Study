@@ -17,3 +17,6 @@ sjPlot
 sjlabelled
 sjmisc
 bindrcpp
+stringr
+forcats
+knitr

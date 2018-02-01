@@ -3,12 +3,12 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  github_document:
-    toc: yes
-    toc_depth: 4
   html_document:
     toc: yes
     toc_depth: '4'
+  github_document:
+    toc: yes
+    toc_depth: 4
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -37,6 +37,7 @@ library(pheatmap)
 library(sjPlot)
 library(sjlabelled)
 library(sjmisc)
+library(knitr)
 
 data(efc)
 theme_set(theme_sjplot())
@@ -1229,7 +1230,7 @@ loadings_basic$D <- NULL
 loadings_basic[abs(loadings_basic)<0.2] <- 0
 for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
 
-loadings_basic[loadings_basic=="0"] <- ""
+loadings_basic[loadings_basic == "0"] <- ""
 loading_fact_reduced <- loadings_basic
 loading_fact_reduced
 
@@ -1245,18 +1246,32 @@ all_complete_basic <-  cbind(all,pred_basic)
 dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
 
 library(ggplot2)
-ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+ggplot(dat_plot_basic) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 
+# error bar 
+sum_stat <- dat_plot_basic %>% group_by(Context,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Context[!is.na(value)])) %>%
+  mutate(stdMean = stdFac/sqrt(nObs))
 
+ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
+geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
+geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~Context,scales="free_y") + geom_point()
+
+kable(sum_stat)
 ```
 
 # Factor analysis on each context separately
 
 ```{r}
 usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-
+# 
 dat <- all[,c(usable_items,"Context")]
-dat_noNA <- dat[rowSums(is.na(dat)) == 0 ,]
+dat_noNA <- dat[rowSums(is.na(dat)) == 0,]
+all_noNA <- all[rowSums(is.na(dat)) == 0,]
 
 # na to remove
 table(rowSums(is.na(dat)),dat$Context)
@@ -1267,6 +1282,8 @@ get_residuals <- function(item,pred = dat$Context){
 }
 
 dat_onlyItems <- dat_noNA[,usable_items]
+#data1 <- dat[,usable_items]
+# dat_onlyItems <- data1
 
 applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,pred=dat_noNA$Context)
 
@@ -1296,7 +1313,57 @@ a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
 
 ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic)<0.2] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic == "0"] <- ""
+loading_fact_reduced <- loadings_basic
+loading_fact_reduced
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+dat_complete_basic <- cbind(dat_onlyItems,scale(pred_basic))
+corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
+
+all_complete_basic <-  cbind(all_noNA,pred_basic)
+dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(dat_plot_basic) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+
+# error bar 
+sum_stat <- dat_plot_basic %>% group_by(Context,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Context[!is.na(value)])) %>%
+  mutate(stdMean = stdFac/sqrt(nObs))
+
+ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
+geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
+geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~Context,scales="free_y") + geom_point()
+
+kable(sum_stat)
+
+## linear model
+
 ```
+
+## Demographics
+
+```{r}
+demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
+
+
+
+```
+
 
 
 ## Only English in Germany
