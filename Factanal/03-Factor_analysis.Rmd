@@ -3,12 +3,12 @@ title: "Factor analysis"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
-    toc: yes
-    toc_depth: '4'
   github_document:
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -318,8 +318,160 @@ table(dat_fac_demo$L2.VCE)
 table(dat_fac_demo$uni1.year) # not usable
 ```
 
+```{r}
+demo_melt <- melt(all_complete_basic,id.vars = c("Age","Gender","origins","study.year","prof","L2.VCE","Context"),measure.vars = factors)
 
-## To do 
+# age
+ageStat <- demo_melt %>% group_by(Context,Age,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Age[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
 
-- Test factors against demographic variables
-- plot CI and 
+ageStat$Demo <- "Age"
+colnames(ageStat)[2] <- "levels"
+ageStat <- data.frame(ageStat)
+
+# Gender
+GenderStat <- demo_melt %>% group_by(Context,Gender,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Gender[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+GenderStat$Demo <- "Gender"
+colnames(GenderStat)[2] <- "levels"
+GenderStat <- data.frame(GenderStat)
+
+# origins
+originsStat <- demo_melt %>% group_by(Context,origins,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(origins[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+originsStat$Demo <- "origins"
+colnames(originsStat)[2] <- "levels"
+originsStat <- data.frame(originsStat)
+
+# study.year
+study.yearStat <- demo_melt %>% group_by(Context,study.year,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(study.year[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+study.yearStat$Demo <- "Study Year"
+colnames(study.yearStat)[2] <- "levels"
+study.yearStat <- data.frame(study.yearStat)
+
+# prof
+profStat <- demo_melt %>% group_by(Context,prof,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(prof[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+profStat$Demo <- "Proficiency"
+colnames(profStat)[2] <- "levels"
+profStat$levels <- as.character(profStat$levels)
+profStat <- data.frame(profStat)
+
+# L2.VCE
+L2.VCEStat <- demo_melt %>% group_by(Context,L2.VCE,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(L2.VCE[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+L2.VCEStat$Demo <- "L2.VCE"
+colnames(L2.VCEStat)[2] <- "levels"
+L2.VCEStat$levels <- as.character(L2.VCEStat$levels)
+L2.VCEStat <- data.frame(L2.VCEStat)
+
+##################
+# Combine stats
+##################
+
+combine_stat <- rbind(data.frame(L2.VCEStat),data.frame(profStat),study.yearStat,originsStat,ageStat,GenderStat)
+```
+
+### Tables
+
+- **Age**
+
+```{r}
+kable(ageStat)
+```
+
+- **Gender**
+
+```{r}
+kable(GenderStat)
+```
+
+- **origins**
+
+```{r}
+kable(originsStat)
+```
+
+- **study.year**
+
+```{r}
+kable(study.yearStat)
+```
+
+- **prof**
+
+```{r}
+kable(profStat)
+```
+
+- **L2.VCE**
+
+```{r}
+kable(L2.VCEStat)
+```
+
+### Factor means with Confidence Intervals
+
+```{r}
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor1")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor1: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor2")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor2: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor3")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor3: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor4")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor4: Mean +- 95% CI") + theme_bw()
+
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor5")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor5: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor6")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor6: Mean +- 95% CI") + theme_bw()
+```
+
