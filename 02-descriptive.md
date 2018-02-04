@@ -1170,7 +1170,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 +   Context = rep(rownames(tabEdu),times=5))
 > 
 > 
-> ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
+> ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
 ![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-1.png)
