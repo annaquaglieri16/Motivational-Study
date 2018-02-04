@@ -3,12 +3,12 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
-    toc: yes
-    toc_depth: '4'
   github_document:
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -323,29 +323,10 @@ likert_grep <- "\\.id$|\\.ought$|\\.intr$|\\.instru$|\\.integr$|\\.prof$|\\.post
 likert_variables_all <- colnames(all)[grep(likert_grep,colnames(all))]
 likert_variables_all
 likert_variables_all <- likert_variables_all[!(likert_variables_all %in% "other.prof")]
-```
-
-
-- scala di blues e strongly disagree in un colore completamente diverso
-
-```{r fig.width=20,fig.height=20}
-all_melt <- melt(all,id.vars = c("Resp.ID","Gender","Age","prof","Context","study.year"),
-                        measure.vars = likert_variables_all)
-
-all_melt$value <- factor(all_melt$value,levels=c("Strongly disagree","Disagree","Not sure","Agree","Strongly agree"))
-
-all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
-ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack",colour="black") + 
-  facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
-
-filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
-ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-
 
 - **Convert Likert scales to numbers**
-
 
 ```{r fig.width=15,fig.height=15}
 
@@ -368,6 +349,166 @@ filtered_conv <- cbind(all,convert_likert)
 table(filtered_conv[,likert_variables_all[4]],filtered_conv[,likert_variables1[4]],useNA = "always")
 
 write.csv(filtered_conv,"02-descriptive_data/merged_filtered_likertNumber.csv",row.names = FALSE)
+```
+
+## Impute missing values - Using median values
+
+The missing values appears to be at random and there are max two missing values in one variable (see plots below). In order not to loose 12 participants while doing the factor analysis across contexts it is preferable to impute the 12 missing values. 
+
+```{r}
+all <- filtered_conv
+
+# Items to use for factor analysis : items shared between contexts
+# items to be used for the FA
+
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+```
+
+
+```{r}
+rownames(all) <- all$Resp.ID
+usable_data_context <- all[,c(usable_items,"Context")]
+dat_noNA <- usable_data_context[rowSums(is.na(usable_data_context)) == 0,]
+all_noNA <- all[rowSums(is.na(usable_data_context)) == 0,]
+table(rowSums(is.na(usable_data_context)))
+# Participants with NA to remove
+table(rowSums(is.na(usable_data_context)),usable_data_context$Context)
+
+# check what to use to impute
+# have a look at the distribution of missing values
+library(mice)
+library(VIM)
+
+mice_plot <- aggr(usable_data_context[,usable_items], col=c('navyblue','yellow'),
+                    numbers=TRUE, sortVars=TRUE,
+                    labels=names(usable_data_context[,usable_items]), cex.axis=.4,
+                    gap=1, ylab=c("Missing data","Pattern"),cex.numbers=0.5)
+
+# Imputing using median
+library(Hmisc)
+imputedMedian <- usable_data_context
+
+imputedMedian$globalaccess.post1 <- with(imputedMedian[,usable_items], impute(globalaccess.post1, median))
+imputedMedian$citizen.post1 <- with(imputedMedian[,usable_items], impute(citizen.post1, median))
+imputedMedian$money.instru1 <- with(imputedMedian[,usable_items], impute(money.instru1, median))
+imputedMedian$knowledge.instru1 <- with(imputedMedian[,usable_items], impute(knowledge.instru1, median))
+imputedMedian$life.intr1 <- with(imputedMedian[,usable_items], impute(life.intr1, median))
+imputedMedian$time.integr1 <- with(imputedMedian[,usable_items], impute(time.integr1, median))
+imputedMedian$expect.ought1 <- with(imputedMedian[,usable_items], impute(expect.ought1, median))
+imputedMedian$job.instru1 <- with(imputedMedian[,usable_items], impute(job.instru1, median))
+imputedMedian$career.instru1 <- with(imputedMedian[,usable_items], impute(career.instru1, median))
+imputedMedian$meeting.integr1 <- with(imputedMedian[,usable_items], impute(meeting.integr1, median))
+imputedMedian$interact.post1 <- with(imputedMedian[,usable_items], impute(interact.post1, median))
+
+
+# check before after
+table(imputedMedian$time.integr1)
+table(usable_data_context$time.integr1)
+
+table(imputedMedian$life.intr1)
+table(usable_data_context$life.intr1)
+
+table(imputedMedian$knowledge.instru1)
+table(usable_data_context$knowledge.instru1)
+
+table(imputedMedian$money.instru1)
+table(usable_data_context$money.instru1)
+
+table(imputedMedian$citizen.post1)
+table(usable_data_context$citizen.post1)
+
+table(imputedMedian$globalaccess.post1)
+table(usable_data_context$globalaccess.post1)
+
+
+table(imputedMedian$expect.ought1)
+table(usable_data_context$expect.ought1)
+
+table(imputedMedian$job.instru1)
+table(usable_data_context$job.instru1)
+
+table(imputedMedian$career.instru1)
+table(usable_data_context$career.instru1)
+
+table(imputedMedian$meeting.integr1)
+table(usable_data_context$meeting.integr1)
+
+table(imputedMedian$interact.post1)
+table(usable_data_context$interact.post1)
+
+
+```
+
+- Substitute imputed data for the common variables to be used in the Factor Analysis
+
+```{r}
+all <- all[,!(colnames(all) %in% usable_items)]
+imputedMedian$Context <- NULL
+sum(!(colnames(imputedMedian) %in% usable_items))
+all <- cbind(all,imputedMedian[match(rownames(imputedMedian),all$Resp.ID),])
+```
+
+## Save imputed data
+
+```{r}
+write.csv(all,"02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv",row.names = FALSE)
+```
+
+# Barplot of likert variables
+
+```{r fig.width=20,fig.height=20}
+all_melt <- melt(all,id.vars = c("Resp.ID","Gender","Age","prof","Context","study.year"),
+                        measure.vars = likert_variables1)
+
+all_melt$value <- factor(all_melt$value,levels=c(1,2,3,4,5),labels=c("Strongly disagree","Disagree","Not sure","Agree","Strongly agree"))
+# dim(all_melt)
+# 323*length(likert_variables1)
+
+all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
+ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack",colour="black") + 
+  facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
+
+filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
+ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+## Barplot of Educated and Necessity in the Australian and European Contexts
+
+- **Educated**
+
+```{r}
+# add numbers on the bar
+educated <- all[all$Context %in% c("German in Australia","Italian in Australia"),]
+table(educated$educated1,educated$Context,useNA="always")
+educated$educated1 <- factor(educated$educated1,levels = c(1,2,3,4,5),labels=c("Strongly disagree","Disagree","Not sure","Agree","Strongly agree")) 
+
+tabEdu <- t(table(educated$educated1,educated$Context))
+ggdf <- data.frame(Educated = rep(colnames(tabEdu),each=2),
+  N.Participants = as.numeric(tabEdu),
+  Context = rep(rownames(tabEdu),times=5))
+
+
+ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
+ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Educated)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
+```
+
+- **Necessity**
+
+```{r}
+# add numbers on the bar
+necessity <- all[all$Context %in% c("English in Germany","English in Italy"),]
+table(necessity$necessity1,necessity$Context,useNA="always")
+necessity$necessity1 <- factor(necessity$necessity1,levels = c(1,2,3,4,5),labels=c("Strongly disagree","Disagree","Not sure","Agree","Strongly agree")) 
+
+tabNec <- t(table(necessity$necessity1,necessity$Context,useNA = "always"))[-3,]
+ggdf <- data.frame(Necessity = rep(colnames(tabNec),each=2),
+  N.Participants = as.numeric(tabNec),
+  Context = rep(rownames(tabNec),times=6))
+
+
+ggplot(ggdf,aes(x=Necessity,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
+ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Necessity)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
 # Correlation plot of items by context
@@ -572,853 +713,3 @@ cowplot::plot_grid(p2,p3,nrow=2)
 
 ```
 
-\clearpage
-
-# Factor Analysis with Robby's function
-
-## Read in data
-
-```{r}
-all <- read.csv(file.path("02-descriptive_data/merged_filtered_likertNumber.csv"))
-```
-
-## Likert variables
-
-```{r include=FALSE,message=FALSE}
-likert_grep <- "\\.id$|\\.ought$|\\.intr$|\\.instru$|\\.integr$|\\.prof$|\\.post$|\\.comm$|^necessity$|^educated$"
-
-# all
-likert_variables_all <- colnames(all)[grep(likert_grep,colnames(all))]
-likert_variables_all
-likert_variables_all <- likert_variables_all[!(likert_variables_all %in% "other.prof")]
-
-# likert variables converted to numbers
-likert_variables1 <- paste0(likert_variables_all,"1")
-
-```
-
-## Alpha and FA with the combined dataset
-
-```{r}
-dat <- all[,likert_variables1[!(likert_variables1 %in% c("necessity1","educated1"))]]
-psych::alpha(dat,use="pairwise.complete.obs")
-
-#detach("package:ggplot2", unload=TRUE)
-
-
-fa_all <- function(data4,rot,minL,maxL,nfac=0,seed=5){
-  
-  set.seed(seed)
-  
-  # Save the orignal dataset
-  data_orig <- data4
-  
-  # Define the rotations
-  orth <- c("varimax", "quartimax", "bentlerT", "equamax", "varimin", "geominT" , "bifactor" )
-  obl <- c("Promax", "promax", "oblimin", "simplimax", "bentlerQ", "geominQ", "biquartimin" ,"cluster")
-  
-  
-  
-  alpha2 <- function(x){
-    
-    alpha.1 <- function(C, R) {
-      n <- dim(C)[2]
-      alpha.raw <- (1 - tr(C)/sum(C)) * (n/(n - 1))
-      sumR <- sum(R)
-      alpha.std <- (1 - n/sumR) * (n/(n - 1))
-      smc.R <- smc(R)
-      G6 <- (1 - (n - sum(smc.R))/sumR)
-      av.r <- (sumR - n)/(n * (n - 1))
-      mod1 <- matrix(av.r, n, n)
-      Res1 <- R - mod1
-      GF1 = 1 - sum(Res1^2)/sum(R^2)
-      Rd <- R - diag(R)
-      diag(Res1) <- 0
-      GF1.off <- 1 - sum(Res1^2)/sum(Rd^2)
-      sn <- n * av.r/(1 - av.r)
-      Q = (2 * n^2/((n - 1)^2 * (sum(C)^3))) * (sum(C) * (tr(C %*% 
-                                                               C) + (tr(C))^2) - 2 * (tr(C) * sum(C %*% C)))
-      result <- list(raw = alpha.raw, std = alpha.std, G6 = G6, 
-                     av.r = av.r, sn = sn, Q = Q, GF1, GF1.off)
-      return(result)
-    }
-    
-    
-    if (!isCorrelation(x)) {
-      item.var <- apply(x, 2, sd, na.rm = T)
-      bad <- which((item.var <= 0) | is.na(item.var))
-      if ((length(bad) > 0) && delete) {
-        for (baddy in 1:length(bad)) {
-          warning("Item = ", colnames(x)[bad][baddy], " had no variance and was deleted")
-        }
-        x <- x[, -bad]
-        nvar <- nvar - length(bad)
-      }
-      response.freq <- response.frequencies(x, max = 10)
-      C <- cov(x, use = "pairwise")
-    }
-    else {
-      C <- x
-    }
-    
-    
-    
-    R <- cov2cor(C)
-    
-    alpha.total <- alpha.1(C, R)
-    
-    return(alpha.total)
-  }
-  
-  
-  cicl<-0
-  par1<-1
-  par2<-1
-  par3<-1
-  while(par3>0){
-    
-    
-    # Selezione il numero di fattori consigliati
-    
-    cat("Calculating the number of factors needed \n")
-    
-    fact <- nfac
-    if(nfac==0){
-      fact<-fa.parallel(data4)$nfact
-    }
-    
-    if(fact==1){
-      stop("Only one factor remains. Check the data or reduce the threshold")
-    }
-    
-    #rot<-c("none", "varimax", "quartimax", "bentlerT", "geominT" , "bifactor", "promax", "oblimin", "simplimax", "bentlerQ", "geominQ" , "biquartimin" , "cluster" )
-    
-    # Matrice uota che conterra le miedie degli alpha
-    
-    range <- length(seq(minL,maxL,0.01))
-    
-    
-    mean.al<-matrix(0,range,length(rot))
-    
-    # Sottociclo per il calcolo delle medie degli alpha (sui fattori) al variare sia della soglia sia della della rotazione
-    
-    cat("Calculating the loadings thresholds \n")
-    
-    for(b in 1:length(rot)){
-      cat("- Calculating the loadings thresholds for rotation",rot[b],"\n")
-      fa1<-fa(data4,fact,rotate=rot[b])
-      
-      a<-fa1$loadings
-      class(a)<-"matrix"
-      colnames(a)<-paste("F",1:fact,sep="")
-      a<-as.data.frame(a)
-      a<-round(a,2)
-      a$D<-rownames(a)
-      
-      ls1<-minL
-      m<-rep(0,range)
-      i<-1
-      nv<-fact
-      
-      while(ls1<=maxL+0.01){
-        
-        var<-lapply(1:nv,function(f)unique(a$D[abs(a[,f])>ls1]))
-        names(var)<-paste(colnames(a[,1:nv]))
-        
-        
-        # Do this if there are factors with length less than 2
-        if(any(as.numeric(summary(var)[,1])<2)){
-          
-          # If a certain threshold and rotation gives only factors composed by 1 give it alpha=0
-          if(sum(as.numeric(summary(var)[,1])>1)==0){
-            m[i] <- 0
-          }else{
-            var1<-var[as.numeric(summary(var)[,1])>1]
-            al<-sapply(1:length(var1),function(v)alpha2(data4[,var1[[v]]])$std)
-            al<-data.frame(al)
-            #m[i]<-mean(t(al))
-            m[i]<-median(t(al))
-          }
-          
-        }
-        # Do this if ALL the factors have length greater than 1
-        else{
-          al<-sapply(1:nv,function(v)alpha2(data4[,var[[v]]])$std)
-          al<-data.frame(al)
-          #m[i]<-mean(t(al))
-          m[i]<-median(t(al))
-        }
-        
-        i<-i+1
-        ls1<-ls1+0.01
-        #cat(ls1)
-      }
-      mean.al[,b]<-m
-      #cat("\n")
-    }
-    
-    # Creazione e stampa degli andamenti delle medie degli alpha
-    cat("Producing the threshold plot \n")
-    
-    mean.al<-as.data.frame(mean.al)
-    colnames(mean.al)<-rot
-    mean.al$sl<-seq(minL,maxL,0.01)
-    mean.al1<-melt(mean.al,id.vars="sl")
-    zp<-ggplot(mean.al1,aes(x=sl,y=value,colour=variable))+geom_line()+labs(x="Soglia Loading",y="Alpha Medio",colour="Rotazione")
-    
-    
-    # Display the plot
-    print(zp)
-    
-    max(mean.al)
-    #print(mean.al)
-    
-    # Selezione della rotazione e della soglia che massimizzano le medie degli alpha
-    cat("Choosing the best rotation and threshold \n")
-    ind<-which(mean.al==max(mean.al),arr.ind=T)
-    if(class(ind)=="matrix"){
-      ind<-ind[1,]
-    }
-    
-    rota<-names(mean.al)[ind[2]]
-    sogl<-mean.al$sl[ind[1]]
-    
-    
-    # Keep the same rotation that was selected in the first run
-    rot <- rota
-    
-    
-    # Calcolo fattoriale
-    
-    fa1<-fa(data4,fact,rotate=rota)
-    a<-fa1$loadings
-    class(a)<-"matrix"
-    colnames(a)<-paste("F",1:fact,sep="")
-    a<-as.data.frame(a)
-    a<-round(a,2)
-    a$D<-rownames(a)
-    
-    # Creazione dei fattori
-    
-    var<-lapply(1:fact,function(f)unique(a$D[abs(a[,f])>sogl]))
-    names(var)<-paste(colnames(a[,1:fact]))
-    
-    # Display the factors
-    cat("Displaying the factors \n")
-    print(var)
-    
-    # togliamo le variabili che non entrano nei fattori al secondo ciclo
-    
-    nc<- ncol(data4)
-    par1_names <- names(data4)[!(names(data4) %in% unlist(var))]
-    data4<-data4[,names(data4) %in% unlist(var)]
-    
-    # Aggiorniamo il parametro di ciclo
-    
-    par1<-nc-ncol(data4) 
-    
-    # togliamo le variabili che entrano in un fattore da sole (solo se non entrano in un altro fattore)
-    par4 <- 0
-    par4_names <- character()
-    
-    len_fac <- cbind(1:fact,sapply(1:fact,function(v)length(var[[v]])))
-    
-    if(any(len_fac[,2]==1)){
-      par4_nam<- data.frame(variable=as.character(unlist(var[ c(len_fac[len_fac[,2]==1,1])  ])))
-      par4_nam$variable <- as.character(par4_nam$variable)
-      par4_nam$ntimes= sapply(1:nrow(par4_nam), function(v)sum(unlist(var)%in%par4_nam[v,"variable"] ) )
-      # Do this only if the single variable enetrs in a variable alone
-      
-      if(any(par4_nam$ntimes>1) & rot%in%obl ){
-        cat("- Will NOT remove variable(s)", par4_nam$variable[par4_nam$ntimes>1],"since they contribute to multiple factors","\n")
-      }
-      
-      par4_names <- par4_nam$variable[par4_nam$ntimes==1]
-      par4 <- length(par4_names)
-      data4<-data4[,!names(data4) %in% par4_names]
-    }
-    
-    
-    # Togliamo le variabili che compaiono in piu fattori (se la rotazione e obliqua non effetuiamo tale operazione)
-    
-    if(rota%in%obl){
-      par2<-0
-      s <- character()
-    }else{
-      s<-c(as.vector(unlist(var)))
-      s<-unique(s[duplicated(s)])
-      par2<-length(s)
-      data4<-data4[,!names(data4) %in% s]
-    }
-    
-    
-    
-    
-    cicl<-cicl+1
-    
-    # Aggiorniamo il parametro di ciclo
-    
-    par3<-par1+par2+par4
-    
-    # Stampa diagnosi ciclo
-    
-    cat(paste("Unused Variable:",par1),"\n")
-    cat("-",paste(par1_names),"\n")
-    cat(paste("Repeated variables:",par2),"\n")
-    cat("-",paste(s),"\n")
-    cat(paste("Single variables:",par4),"\n")
-    cat("-",paste(par4_names),"\n")
-    cat(paste("Rotation used:",rota),"\n")
-    cat(paste("Threshold chosen:",sogl),"\n")
-    cat(paste("End interation",cicl),"\n","\n")
-    
-  }
-  
-  cat(paste("Variables excluded in the process:"),names(data_orig)[!names(data_orig)%in%names(data4)],"\n")
-  return(data4)
-}
-
-
-
-#
-
-likert_variables2 <- names(dat)
-
-data1 <- dat[,likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]]
-
-# Plot the correlations
-corrplot(cor(data1,use = "pair"))
-
-
-# check which variable does not correlated with any other vaiable
-r1 <- cor(data1,use = "pair")
-diag(r1) <- 0
-r1 <- data.frame(r1)
-temp <- data.frame(name=names(r1),cor=sapply(1:ncol(r1),function(v)any(r1[,v]>=0.3))  )
-as.character(temp$name[temp$cor==F])
-
-
-
-
-# Keep just the itemes with a r.cor greater or equal to 0.3
-as <- psych::alpha(data1,check.keys=F)$item.stats
-as$n1<-1:nrow(as)
-summary(as$r.cor)
-no_corr_macu <- rownames(as[abs(as$r.cor)<0.3,])
-no_corr_macu
-data1<-data1[,!names(data1)%in%no_corr_macu]
-
-
-
-
-# check which items will decrease the alpha
-al<- psych::alpha(data1)
-drop<-al$alpha.drop
-tot<-as.numeric(al$total$std.alpha)
-drop <- drop[drop$std.alpha>tot,]
-drop
-
-
-# Check how much
-drop$std.alpha-tot
-# They don;t drop enough so leave it
-
-#drop_alpha_macu <- rownames(drop)
-#data1<-data1[,!names(data1)%in%drop_alpha_macu]
-
-
-
-
-# check how many factors should be used
-fap <- fa.parallel(data1)
-fap
-
-
-data_macu <- data1
-
-
-## Perform the anlaysis for macular thickness
-
-
-
-#Check again the out_maculiers
-out_macu <- outlier(data_macu)
-#abline(h=800)
-
-#dat_imp_pheno[out_macu>800,1:20]
-#out_maculiers_macu <- dat_imp_pheno$id1[out_macu>800]
-#data_macu <- data_macu[out_macu<800,]
-
-
-
-
-# Run the first set of analysisi and check what is cleaned out_macu!
-rot=c("oblimin","promax")
-
-
-# Take off the variables that give problem
-#problem_var_macu <- c( "v07_spectralis" ,"v01_cyrrus" )
-#data_macu <- data_macu[,!names(data_macu)%in%problem_var_macu]
-
-
-library(ggplot2)
-data_macu_facleaned <- fa_all(data_macu,rot,0.2,0.5)
-
-# 0 Variable do not enter the factors
-not_used_fact_macu <- names(data_macu)[!names(data_macu)%in%names(data_macu_facleaned)]
-not_used_fact_macu
-
-# Check again how many factors you need
-#fa.parallel(data_macu_facleaned)
-
-nfact_macu <- 6
-
-# Run the actual factorial analysis on the final dataset
-fa_macu<-fa(data_macu_facleaned,nfact_macu,rot="promax")
-
-# Check whther any variable do not enter in any factor
-lod <- fa_macu$loadings
-class(lod) <- "matrix"
-lod <- data.frame(lod)
-lod$any <- apply(lod,1,function(v)any(abs(v)>=0.2) )
-apply(lod[,1:nfact_macu],1,max )
-lod[lod$any==F,]
-# NONE, good!
-
-# Plot the results
-a<-fa_macu$loadings
-class(a)<-"matrix"
-colnames(a)<-paste("F",1:nfact_macu,sep="")
-a<-as.data.frame(a)
-a<-round(a,2)
-a$D<-rownames(a)
-a1 <- a
-a1$D
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
-#detach("package:ggplot2", unload=TRUE)
-
-
-var<-lapply(1:nfact_macu,function(f)unique(a$D[abs(a[,f])>0.2]))
-names(var)<-paste(colnames(a[,1:nfact_macu]))
-
-al <- sapply(1:length(var),function(v) psych::alpha(data_macu_facleaned[,var[[v]]])$total$std.alpha)
-al
-# Alpha total
-psych::alpha(data_macu_facleaned)$total$std.alpha
-# they are ok...
-psych::alpha(data_macu)$total$std.alpha
-
-
-# Table of the factors
-a$D <- NULL
-a[abs(a)<0.2] <- 0
-for(i in 1:ncol(a)){a[,i] <- as.character(a[,i])}
-
-a[a=="0"] <- ""
-loading_fact_macu <- a
-loading_fact_macu
-
-# Discriminant analysis: In this section i will test if the values of the variables kept in the dataframe by the factorial analysis are able to discriminate between subjects for which their total score lie in the 1st and 3rd quartile.
-discr<-unique(data_macu_facleaned)
-
-# Detrmine the total score
-
-discr$punteggio<-rowSums(discr)
-
-# Dividce the groups of people who lie in the 4rth and 1st quarile
-
-hist(discr$punteggio)
-quantile(discr$punteggio,na.rm = T)
-
-discr1<-unique(discr[discr[,ncol(discr)]<=quantile(discr[,ncol(discr)],na.rm = T)[2],])
-discr2<-unique(discr[discr[,ncol(discr)]>=quantile(discr[,ncol(discr)],na.rm = T)[4],])
-
-# Wilcox Test the values of each single variable comparing the group of pople lien in the 1st and 3rd quartile
-
-test<-data.frame(Item=colnames(discr[,1:(ncol(discr)-1)]),p.value=rep(0,(ncol(discr)-1)))
-
-for(i in 1:(ncol(discr)-1)){
-  test[i,2]<-wilcox.test(discr1[,i],discr2[,i],alternative="two.sided")$p.value
-}
-
-test <- test[order(test$p.value),]
-test
-# they all discriminate!
-
-
-# Calculate factors on the discarded variables
-
-dat_disc <- dat[,no_corr_macu]
-
-
-# check how many factors should be used
-fap <- fa.parallel(dat_disc)
-fap
-
-
-
-library(ggplot2)
-fa_disc <- fa(dat_disc,nfactors = 1,rotate = "oblimin")
-
-
-
-# Plot the results
-a<-fa_disc$loadings
-class(a)<-"matrix"
-colnames(a)<-paste("F",1,sep="")
-a<-as.data.frame(a)
-a<-round(a,2)
-a$D<-rownames(a)
-a1 <- a
-a1$D
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-
-
-
-library(ggplot2)
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()
-#detach("package:ggplot2", unload=TRUE)
-
-
-# Predict the factors
-
-pred <- as.data.frame(predict(fa_macu,dat[,names(data_macu_facleaned)]))
-names(pred) <- paste("Factor",1:nfact_macu,sep = "")
-
-# Predict the factor from the discarded variables
-pred_disc <- as.data.frame(predict(fa_disc,dat[,names(dat_disc)]))
-names(pred_disc) <- paste("Factor",7,sep = "")
-
-
-
-factors <- c(names(pred),names(pred_disc))
-
-
-dat_complete <- cbind(dat,scale(pred),scale(pred_disc))
-
-
-corrplot(cor(dat_complete[,likert_variables2],dat_complete[,factors],use = "pair"))
-
-
-all_complete <-  cbind(all,pred,pred_disc)
-
-dat_plot <- melt(all_complete,id.vars = "Context",measure.vars = factors)
-
-library(ggplot2)
-ggplot(dat_plot)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-
-
-mod <- lm(Factor1~Context,data=all_complete)
-summary(mod)
-
-mod <- lm(Factor2~Context,data=all_complete)
-summary(mod)
-
-summary(lm(Factor4~Context,data=all_complete))
-
-summary(lm(Factor6~Context,data=all_complete))
-
-summary(lm(Factor7~Context,data=all_complete))
-
-```
-
-## Basic factor analysis: 7 factors
-
-Seven, is the number of factors that would be present according to the study design.
-Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
-
-```{r}
-usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-data1 <- dat[,usable_items]
-
-fact <- 7
-fa_basic <- fa(data1,fact)
-
-fa_basic
-
-# plot loadings
-loadings_basic <- fa_basic$loadings
-class(loadings_basic)<-"matrix"
-colnames(loadings_basic)<-paste("F",1:7,sep="")
-loadings_basic<-as.data.frame(loadings_basic)
-loadings_basic<-round(loadings_basic,2)
-loadings_basic$D<-rownames(loadings_basic)
-a1 <- loadings_basic
-
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
-
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
-
-# Table of the factors
-loadings_basic$D <- NULL
-loadings_basic[abs(loadings_basic)<0.2] <- 0
-for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
-
-loadings_basic[loadings_basic=="0"] <- ""
-loading_fact_reduced <- loadings_basic
-loading_fact_reduced
-
-# predict values per samples
-pred_basic <- as.data.frame(predict(fa_basic,data1))
-names(pred_basic) <- paste("Factor",1:fact,sep = "")
-
-factors <- names(pred_basic)
-dat_complete_basic <- cbind(dat,scale(pred_basic))
-corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
-
-all_complete_basic <-  cbind(all,pred_basic)
-dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
-
-library(ggplot2)
-ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-
-```
-
-
-## Basic factor analysis: 6 factors
-
-Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
-
-```{r}
-usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-data1 <- dat[,usable_items]
-
-# From a statisticak point of view 
-fap <- fa.parallel(data1)
-fact <- 6
-fa_basic <- fa(data1,fact)
-
-fa_basic
-
-# plot loadings
-loadings_basic <- fa_basic$loadings
-class(loadings_basic)<-"matrix"
-colnames(loadings_basic)<-paste("F",1:6,sep="")
-loadings_basic<-as.data.frame(loadings_basic)
-loadings_basic<-round(loadings_basic,2)
-loadings_basic$D<-rownames(loadings_basic)
-a1 <- loadings_basic
-
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
-
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
-
-# Table of the factors
-loadings_basic$D <- NULL
-loadings_basic[abs(loadings_basic)<0.2] <- 0
-for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
-
-loadings_basic[loadings_basic == "0"] <- ""
-loading_fact_reduced <- loadings_basic
-loading_fact_reduced
-
-# predict values per samples
-pred_basic <- as.data.frame(predict(fa_basic,data1))
-names(pred_basic) <- paste("Factor",1:fact,sep = "")
-
-factors <- names(pred_basic)
-dat_complete_basic <- cbind(dat,scale(pred_basic))
-corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
-
-all_complete_basic <-  cbind(all,pred_basic)
-dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
-
-library(ggplot2)
-ggplot(dat_plot_basic) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-# error bar 
-sum_stat <- dat_plot_basic %>% group_by(Context,variable) %>%
-  summarise(meanFac = mean(value,na.rm=TRUE),
-            stdFac = sd(value,na.rm=TRUE),
-            nObs = length(Context[!is.na(value)])) %>%
-  mutate(stdMean = stdFac/sqrt(nObs))
-
-ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
-geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
-geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~Context,scales="free_y") + geom_point()
-
-kable(sum_stat)
-```
-
-# Factor analysis on each context separately
-
-```{r}
-usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-# 
-dat <- all[,c(usable_items,"Context")]
-dat_noNA <- dat[rowSums(is.na(dat)) == 0,]
-all_noNA <- all[rowSums(is.na(dat)) == 0,]
-
-# na to remove
-table(rowSums(is.na(dat)),dat$Context)
-
-get_residuals <- function(item,pred = dat$Context){
-  mod <- lm(item ~ pred)
-  return(mod$residuals)
-}
-
-dat_onlyItems <- dat_noNA[,usable_items]
-#data1 <- dat[,usable_items]
-# dat_onlyItems <- data1
-
-applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,pred=dat_noNA$Context)
-
-# Factanal 
-# From a statisticak point of view 
-fap <- fa.parallel(applygetRes)
-fact <- 6
-fa_basic <- fa(applygetRes,fact)
-
-fa_basic
-
-# plot loadings
-loadings_basic <- fa_basic$loadings
-class(loadings_basic)<-"matrix"
-colnames(loadings_basic)<-paste("F",1:6,sep="")
-loadings_basic<-as.data.frame(loadings_basic)
-loadings_basic<-round(loadings_basic,2)
-loadings_basic$D<-rownames(loadings_basic)
-a1 <- loadings_basic
-
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
-
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
-
-# Table of the factors
-loadings_basic$D <- NULL
-loadings_basic[abs(loadings_basic)<0.2] <- 0
-for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
-
-loadings_basic[loadings_basic == "0"] <- ""
-loading_fact_reduced <- loadings_basic
-loading_fact_reduced
-
-# predict values per samples
-pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems))
-names(pred_basic) <- paste("Factor",1:fact,sep = "")
-
-factors <- names(pred_basic)
-dat_complete_basic <- cbind(dat_onlyItems,scale(pred_basic))
-corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
-
-all_complete_basic <-  cbind(all_noNA,pred_basic)
-dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
-
-library(ggplot2)
-ggplot(dat_plot_basic) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-# error bar 
-sum_stat <- dat_plot_basic %>% group_by(Context,variable) %>%
-  summarise(meanFac = mean(value,na.rm=TRUE),
-            stdFac = sd(value,na.rm=TRUE),
-            nObs = length(Context[!is.na(value)])) %>%
-  mutate(stdMean = stdFac/sqrt(nObs))
-
-ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
-geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
-geom_errorbar(aes(ymin=meanFac-stdMean, ymax=meanFac+stdMean)) + facet_wrap(~Context,scales="free_y") + geom_point()
-
-kable(sum_stat)
-
-## linear model
-
-```
-
-## Demographics
-
-```{r}
-demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
-
-
-
-```
-
-
-
-## Only English in Germany
-
-```{r eval=FALSE}
-usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-data1 <- all[all$Context %in% "English in Germany",usable_items]
-
-# From a statisticak point of view 
-fap <- fa.parallel(data1)
-fact <- 6
-fa_basic <- fa(data1,fact)
-
-fa_basic
-
-# plot loadings
-loadings_basic <- fa_basic$loadings
-class(loadings_basic)<-"matrix"
-colnames(loadings_basic)<-paste("F",1:6,sep="")
-loadings_basic<-as.data.frame(loadings_basic)
-loadings_basic<-round(loadings_basic,2)
-loadings_basic$D<-rownames(loadings_basic)
-a1 <- loadings_basic
-
-a1 <- melt(a1,id.vars=c("D"))
-a1$x <- runif(nrow(a1))
-a1$inv <- ifelse(a1$value<0,"neg","pos")
-a1$value[abs(a1$value)<0.2] <- 0
-a1 <- a1[a1$value!=0,]
-a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
-
-ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip()+ geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
-
-# Table of the factors
-loadings_basic$D <- NULL
-loadings_basic[abs(loadings_basic)<0.2] <- 0
-for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
-
-loadings_basic[loadings_basic=="0"] <- ""
-loading_fact_reduced <- loadings_basic
-loading_fact_reduced
-
-# predict values per samples
-pred_basic <- as.data.frame(predict(fa_basic,data1))
-names(pred_basic) <- paste("Factor",1:fact,sep = "")
-
-factors <- names(pred_basic)
-dat_complete_basic <- cbind(dat,scale(pred_basic))
-corrplot(cor(dat_complete_basic[,usable_items],dat_complete_basic[,factors],use = "pair"))
-
-all_complete_basic <-  cbind(all,pred_basic)
-dat_plot_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
-
-library(ggplot2)
-ggplot(dat_plot_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
-
-
-```

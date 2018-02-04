@@ -18,5 +18,13 @@ gridExtra
 sjPlot
 sjlabelled
 sjmisc
-bindrcpp
 knitr
+bindrcpp
+lattice
+mice
+colorspace
+data.table
+VIM
+survival
+Formula
+Hmisc

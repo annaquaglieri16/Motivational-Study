@@ -6,6 +6,8 @@ tibble
 tidyr
 purrr
 dplyr
+stringr
+forcats
 reshape2
 corrplot
 psych
@@ -16,7 +18,13 @@ gridExtra
 sjPlot
 sjlabelled
 sjmisc
-bindrcpp
-stringr
-forcats
 knitr
+bindrcpp
+lattice
+mice
+colorspace
+data.table
+VIM
+survival
+Formula
+Hmisc
