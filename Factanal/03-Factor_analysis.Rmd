@@ -3,12 +3,12 @@ title: "Factor analysis"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  github_document:
-    toc: yes
-    toc_depth: 4
   html_document:
     toc: yes
     toc_depth: '4'
+  github_document:
+    toc: yes
+    toc_depth: 4
   html_notebook:
     code_folding: hide
     fig_caption: yes
@@ -38,7 +38,7 @@ data(efc)
 theme_set(theme_sjplot())
 
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 12,fig.height = 12)
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig.height = 8)
 
 ```
 
@@ -473,5 +473,37 @@ pos <- position_dodge(width=0.4)
 ggplot(subset(combine_stat,variable %in% c("Factor6")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
 geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
   geom_point(position=pos) + ggtitle("Factor6: Mean +- 95% CI") + theme_bw()
+```
+
+
+# Degree (HUM vs STEMM)
+
+We could probably reduce the number of classes.
+
+```{r}
+degree_melt <- melt(all_complete_basic,id.vars = c("degree","Context"),measure.vars = factors)
+
+# degree
+degreeStat <- degree_melt %>% group_by(Context,degree,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(degree[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+
+degreeStat <- data.frame(degreeStat)
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(degreeStat),aes(x=variable,y=meanFac,colour=degree,group=degree)) + 
+geom_errorbar(aes(ymin=meanFac-stdFac, ymax=meanFac+stdFac),width=0.2,position=pos) + facet_wrap(~Context ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor6: Mean +- stDev") + theme_bw()
+
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(degreeStat),aes(x=Context,y=meanFac,colour=degree,group=degree)) + 
+geom_errorbar(aes(ymin=meanFac-stdFac, ymax=meanFac+stdFac),width=0.2,position=pos) + facet_wrap(~variable ,scales="free") +
+  geom_point(position=pos) + ggtitle("Mean +- stDev") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
 
