@@ -3,9 +3,6 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  github_document:
-    toc: yes
-    toc_depth: 4
   html_document:
     toc: yes
     toc_depth: '4'
@@ -15,6 +12,9 @@ output:
     number_sections: yes
     toc: yes
     toc_float: yes
+  github_document:
+    toc: yes
+    toc_depth: 4
 ---
 
 # Plan that I wrote with Richi's comments
@@ -38,6 +38,7 @@ library(sjPlot)
 library(sjlabelled)
 library(sjmisc)
 library(knitr)
+library(readxl)
 
 data(efc)
 theme_set(theme_sjplot())
@@ -124,11 +125,31 @@ all$study.year[is.na(all$study.year)] <- all$uni1.year[is.na(all$study.year)]
 # Filter only subject that we want to include in the study
 # names(table(all$study.year))[1] = 1st semester"
 
-filtered <- subset(all, (study.year == "1st year") | (study.year == names(table(all$study.year))[1]) & year.studyL2 != "0 years")
+filtered <- subset(all, (study.year == "1st year") | (study.year == names(table(all$study.year))[1]))
+#& year.studyL2 != "0 years"
 
-table(filtered$Context)
-table(all$Context)
 ```
+
+
+## Imputing degree based on Quality Comments provided in the questions
+
+- **5313976716** : SCI (wish to study science in the future)
+- **5359866545** : HUM.SCI (based on degree.other7)
+- **5375370122** : SCI (she wants to do science)
+- **5375376761** : HUM (she wants to do translation/reserach/teaching)
+
+```{r}
+filtered$degree[filtered$Resp.ID %in% "5313976716"] <- "SCI"
+filtered$degree[filtered$Resp.ID %in% "5359866545"] <- "HUM.SCI"
+filtered$degree[filtered$Resp.ID %in% "5375370122"] <- "SCI"
+filtered$degree[filtered$Resp.ID %in% "5375376761"] <- "HUM"
+
+table(filtered$degree)
+kable(table(filtered$Context))
+kable(table(filtered$year.studyL2,filtered$Context))
+kable(table(filtered$year.studyL2,filtered$prof))
+```
+
 
 # Define demographic variables
 
@@ -213,10 +234,22 @@ missing_bySample[names(missing_bySample) == "5378798787"]
 #table(demo$degree,useNA = "always")
 # Remove people
 all <- all[!is.na(all$degree),]
-
-
-table(all$Context)
 ```
+
+## Stats about filtered dataset
+
+```{r}
+kable(table(all$Context))
+kable(table(all$study.year))
+kable(table(all$year.studyL2))
+```
+
+## Recoded demographic variables
+
+```{r}
+recoded_dem_richi <- read_excel("02-descriptive_data/21 03 merged_filtered_imputedMedian_likertNumber.xlsx")
+```
+
 
 ## Write filtered and merged dataset
 
@@ -312,6 +345,16 @@ ggplot(all[all$Context == "English in Italy" | all$Context == "English in German
 tabAge
 ```
 
+
+# Australian context spcific variables 
+
+```{r}
+kable(table(all$reconnect.comm,all$Context))
+kable(table(all$speakersmelb.comm,all$Context))
+kable(table(all$comecloser.comm,all$Context))
+```
+
+
 \clearpage
 
 # Likert scales
@@ -337,6 +380,7 @@ convertToNumber <- function(column){
 }
 
 table(all$Context)
+table(all$study.year)
 
 convert_likert <- data.frame(apply(subset(all,select=likert_variables_all),2,convertToNumber))
 colnames(convert_likert) <- paste0(colnames(convert_likert),"1")
