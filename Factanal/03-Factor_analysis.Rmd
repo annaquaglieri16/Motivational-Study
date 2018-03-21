@@ -3,12 +3,12 @@ title: "Factor analysis"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
-    toc: yes
-    toc_depth: '4'
   github_document:
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
   html_notebook:
     code_folding: hide
     fig_caption: yes

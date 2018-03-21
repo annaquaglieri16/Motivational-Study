@@ -3,18 +3,18 @@ title: "Analysis of merged questionnaires"
 author: "Anna Quaglieri & Riccardo Amorati"
 date: "03/09/2017"
 output:
-  html_document:
+  github_document:
     toc: yes
-    toc_depth: '4'
+    toc_depth: 4
   html_notebook:
     code_folding: hide
     fig_caption: yes
     number_sections: yes
     toc: yes
     toc_float: yes
-  github_document:
+  html_document:
     toc: yes
-    toc_depth: 4
+    toc_depth: '4'
 ---
 
 # Plan that I wrote with Richi's comments

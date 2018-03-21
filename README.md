@@ -7,10 +7,14 @@ Anna Quaglieri & Riccardo Amorati
 -   [Read in data](#read-in-data)
     -   [Variables to describe dataset (can be different between contexts)](#variables-to-describe-dataset-can-be-different-between-contexts)
 -   [Filter participants : keep only the ones that meet the inclusion criteria](#filter-participants-keep-only-the-ones-that-meet-the-inclusion-criteria)
+    -   [Imputing degree based on Quality Comments provided in the questions](#imputing-degree-based-on-quality-comments-provided-in-the-questions)
 -   [Define demographic variables](#define-demographic-variables)
     -   [Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the latest dataset?)](#need-to-check-datasets-with-rcihi-why-do-we-have-qc-in-l1-am-i-using-not-the-latest-dataset)
+    -   [Stats about filtered dataset](#stats-about-filtered-dataset)
+    -   [Recoded demographic variables](#recoded-demographic-variables)
     -   [Write filtered and merged dataset](#write-filtered-and-merged-dataset)
     -   [Descriptive plots and tables](#descriptive-plots-and-tables)
+-   [Australian context spcific variables](#australian-context-spcific-variables)
 -   [Likert scales](#likert-scales)
     -   [Impute missing values - Using median values](#impute-missing-values---using-median-values)
     -   [Save imputed data](#save-imputed-data)
@@ -202,26 +206,79 @@ Filter participants : keep only the ones that meet the inclusion criteria
 > # Filter only subject that we want to include in the study
 > # names(table(all$study.year))[1] = 1st semester"
 > 
-> filtered <- subset(all, (study.year == "1st year") | (study.year == names(table(all$study.year))[1]) & year.studyL2 != "0 years")
-> 
-> table(filtered$Context)
+> filtered <- subset(all, (study.year == "1st year") | (study.year == names(table(all$study.year))[1]))
+> #& year.studyL2 != "0 years"
 ```
 
-    ## 
-    ##   English in Germany     English in Italy  German in Australia 
-    ##                   71                   91                   89 
-    ## Italian in Australia 
-    ##                   75
+Imputing degree based on Quality Comments provided in the questions
+-------------------------------------------------------------------
+
+-   **5313976716** : SCI (wish to study science in the future)
+-   **5359866545** : HUM.SCI (based on degree.other7)
+-   **5375370122** : SCI (she wants to do science)
+-   **5375376761** : HUM (she wants to do translation/reserach/teaching)
 
 ``` r
-> table(all$Context)
+> filtered$degree[filtered$Resp.ID %in% "5313976716"] <- "SCI"
+> filtered$degree[filtered$Resp.ID %in% "5359866545"] <- "HUM.SCI"
+> filtered$degree[filtered$Resp.ID %in% "5375370122"] <- "SCI"
+> filtered$degree[filtered$Resp.ID %in% "5375376761"] <- "HUM"
+> 
+> table(filtered$degree)
 ```
 
     ## 
-    ##   English in Germany     English in Italy  German in Australia 
-    ##                   96                  113                  146 
-    ## Italian in Australia 
-    ##                  123
+    ##                     BA in Anglistik            BA in Nordamerikastudien 
+    ##                                  39                                   4 
+    ##                                 HUM                             HUM.SCI 
+    ##                                  98                                   6 
+    ##                                  LA      Lingue e letterature straniere 
+    ##                                  27                                  78 
+    ## Lingue, mercati e culture dell'Asia                                 SCI 
+    ##                                  13                                  58
+
+``` r
+> kable(table(filtered$Context))
+```
+
+| Var1                 |  Freq|
+|:---------------------|-----:|
+| English in Germany   |    72|
+| English in Italy     |    91|
+| German in Australia  |    89|
+| Italian in Australia |    75|
+
+``` r
+> kable(table(filtered$year.studyL2,filtered$Context))
+```
+
+|                              |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
+|------------------------------|-------------------:|-----------------:|--------------------:|---------------------:|
+| 0 years                      |                   0|                 0|                   22|                    11|
+| 1- 3 years                   |                   0|                 0|                    0|                     9|
+| 1-3 years                    |                   0|                 0|                    7|                     0|
+| 4-6 years                    |                   0|                 0|                   35|                    20|
+| First year of primary school |                  17|                56|                    0|                     0|
+| Kindergarten                 |                   6|                23|                    0|                     0|
+| Less than a year             |                   0|                 0|                   13|                     5|
+| more than 6 years            |                   0|                 0|                   11|                    30|
+| Other                        |                  48|                12|                    0|                     0|
+
+``` r
+> kable(table(filtered$year.studyL2,filtered$prof))
+```
+
+|                              |  Advanced|  Elementary|  Intermediate|  Upper-intermediate|
+|------------------------------|---------:|-----------:|-------------:|-------------------:|
+| 0 years                      |         0|          32|             1|                   0|
+| 1- 3 years                   |         0|           4|             5|                   0|
+| 1-3 years                    |         0|           1|             3|                   3|
+| 4-6 years                    |         1|           9|            26|                  19|
+| First year of primary school |        20|           1|             6|                  46|
+| Kindergarten                 |         8|           1|             3|                  17|
+| Less than a year             |         0|          11|             4|                   3|
+| more than 6 years            |         2|           5|            16|                  18|
+| Other                        |        33|           0|             5|                  22|
 
 Define demographic variables
 ============================
@@ -238,7 +295,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="") + theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
 ``` r
 > table(all$L1,all$Context)
@@ -304,19 +361,17 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   LA                                          0        0         0       0
     ##   Lingue e letterature straniere              0        1         0       1
     ##   Lingue, mercati e culture dell'Asia         0        0         0       1
-    ##   QC                                          0        0         0       0
     ##   SCI                                         0        0         0       2
     ##                                      
     ##                                       Dutch English English and Dutch
     ##   BA in Anglistik                         0       1                 0
     ##   BA in Nordamerikastudien                0       0                 0
-    ##   HUM                                     0      92                 1
-    ##   HUM.SCI                                 0       5                 0
+    ##   HUM                                     0      93                 1
+    ##   HUM.SCI                                 0       6                 0
     ##   LA                                      1       0                 0
     ##   Lingue e letterature straniere          0       0                 0
     ##   Lingue, mercati e culture dell'Asia     0       0                 0
-    ##   QC                                      0       4                 0
-    ##   SCI                                     0      45                 1
+    ##   SCI                                     0      47                 1
     ##                                      
     ##                                       German German and English  I
     ##   BA in Anglistik                         34                  1  0
@@ -326,7 +381,6 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   LA                                      25                  0  0
     ##   Lingue e letterature straniere           0                  0  0
     ##   Lingue, mercati e culture dell'Asia      0                  0  0
-    ##   QC                                       0                  0  0
     ##   SCI                                      0                  1  0
     ##                                      
     ##                                       Indonesian Italian Japanese Mandarin
@@ -337,7 +391,6 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   LA                                           0       0        0        0
     ##   Lingue e letterature straniere               0      75        0        0
     ##   Lingue, mercati e culture dell'Asia          0      12        0        0
-    ##   QC                                           0       0        0        0
     ##   SCI                                          1       0        1        2
     ##                                      
     ##                                       Persian (Farsi) Romanian Russian
@@ -348,7 +401,6 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   LA                                                0        0       0
     ##   Lingue e letterature straniere                    0        0       0
     ##   Lingue, mercati e culture dell'Asia               0        0       0
-    ##   QC                                                0        0       0
     ##   SCI                                               1        1       0
     ##                                      
     ##                                       Sindhi Spanish Turkish Ukrainian
@@ -359,7 +411,6 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   LA                                       0       0       1         0
     ##   Lingue e letterature straniere           0       0       0         1
     ##   Lingue, mercati e culture dell'Asia      0       0       0         0
-    ##   QC                                       0       0       0         0
     ##   SCI                                      1       0       0         0
 
 -   Check for L1 but we decided not to filter for it
@@ -373,7 +424,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 
     ## 
     ##   English in Germany     English in Italy  German in Australia 
-    ##                   71                   91                   89 
+    ##                   72                   91                   89 
     ## Italian in Australia 
     ##                   75
 
@@ -408,7 +459,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 
     ## 
     ##   English in Germany     English in Italy  German in Australia 
-    ##                   71                   91                   89 
+    ##                   72                   91                   89 
     ## Italian in Australia 
     ##                   75
 
@@ -425,7 +476,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > barplot(missing_bySample)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
 ``` r
 > d <- data.frame(miss=missing_byVar)
@@ -433,7 +484,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(data=d,aes(x=varID,y=miss)) + geom_bar(stat="identity") + theme_bw() +theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-13-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-14-2.png)
 
 ``` r
 > demo_missing <- demo %>% group_by(Context) %>% summarise(roleL2.degree_na = sum(is.na(roleL2.degree)),
@@ -470,16 +521,53 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > #table(demo$degree,useNA = "always")
 > # Remove people
 > all <- all[!is.na(all$degree),]
-> 
-> 
-> table(all$Context)
 ```
 
-    ## 
-    ##   English in Germany     English in Italy  German in Australia 
-    ##                   70                   91                   88 
-    ## Italian in Australia 
-    ##                   74
+Stats about filtered dataset
+----------------------------
+
+``` r
+> kable(table(all$Context))
+```
+
+| Var1                 |  Freq|
+|:---------------------|-----:|
+| English in Germany   |    70|
+| English in Italy     |    91|
+| German in Australia  |    88|
+| Italian in Australia |    74|
+
+``` r
+> kable(table(all$study.year))
+```
+
+| Var1         |  Freq|
+|:-------------|-----:|
+| 1st semester |    70|
+| 1st year     |   253|
+
+``` r
+> kable(table(all$year.studyL2))
+```
+
+| Var1                         |  Freq|
+|:-----------------------------|-----:|
+| 0 years                      |    33|
+| 1- 3 years                   |     9|
+| 1-3 years                    |     7|
+| 4-6 years                    |    53|
+| First year of primary school |    73|
+| Kindergarten                 |    29|
+| Less than a year             |    18|
+| more than 6 years            |    41|
+| Other                        |    59|
+
+Recoded demographic variables
+-----------------------------
+
+``` r
+> recoded_dem_richi <- read_excel("02-descriptive_data/21 03 merged_filtered_imputedMedian_likertNumber.xlsx")
+```
 
 Write filtered and merged dataset
 ---------------------------------
@@ -651,9 +739,9 @@ Descriptive plots and tables
 ```
 
     ##                       
-    ##                        HUM HUM.SCI QC SCI
-    ##   German in Australia   47       3  4  34
-    ##   Italian in Australia  50       2  0  22
+    ##                        HUM HUM.SCI SCI
+    ##   German in Australia   48       4  36
+    ##   Italian in Australia  50       2  22
 
 ``` r
 > # Australian context
@@ -681,6 +769,45 @@ Descriptive plots and tables
     ##   English in Germany                                   0
     ##   English in Italy                                    13
 
+Australian context spcific variables
+====================================
+
+``` r
+> kable(table(all$reconnect.comm,all$Context))
+```
+
+|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
+|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
+| Agree             |                   0|                 0|                    8|                    11|
+| Disagree          |                   0|                 0|                   35|                    14|
+| Not sure          |                   0|                 0|                    3|                     4|
+| Strongly agree    |                   0|                 0|                   12|                    28|
+| Strongly disagree |                   0|                 0|                   30|                    17|
+
+``` r
+> kable(table(all$speakersmelb.comm,all$Context))
+```
+
+|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
+|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
+| Agree             |                   0|                 0|                   44|                    41|
+| Disagree          |                   0|                 0|                    6|                     2|
+| Not sure          |                   0|                 0|                   25|                    12|
+| Strongly agree    |                   0|                 0|                   12|                    19|
+| Strongly disagree |                   0|                 0|                    1|                     0|
+
+``` r
+> kable(table(all$comecloser.comm,all$Context))
+```
+
+|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
+|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
+| Agree             |                   0|                 0|                   21|                    34|
+| Disagree          |                   0|                 0|                   16|                     6|
+| Not sure          |                   0|                 0|                   43|                    17|
+| Strongly agree    |                   0|                 0|                    6|                    17|
+| Strongly disagree |                   0|                 0|                    2|                     0|
+
 Likert scales
 =============
 
@@ -701,6 +828,14 @@ Likert scales
     ##                   70                   91                   88 
     ## Italian in Australia 
     ##                   74
+
+``` r
+> table(all$study.year)
+```
+
+    ## 
+    ## 1st semester     1st year 
+    ##           70          253
 
 ``` r
 > convert_likert <- data.frame(apply(subset(all,select=likert_variables_all),2,convertToNumber))
@@ -828,7 +963,7 @@ The missing values appears to be at random and there are max two missing values 
 +                     gap=1, ylab=c("Missing data","Pattern"),cex.numbers=0.5)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
     ## 
     ##  Variables sorted by number of missings: 
@@ -1123,23 +1258,23 @@ Barplot of likert variables
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
 ```
 
-    ## Warning: Too few values at 646 locations: 9368, 9369, 9370, 9371, 9372,
-    ## 9373, 9374, 9375, 9376, 9377, 9378, 9379, 9380, 9381, 9382, 9383, 9384,
-    ## 9385, 9386, 9387, ...
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows
+    ## [9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379,
+    ## 9380, 9381, 9382, 9383, 9384, 9385, 9386, 9387, ...].
 
 ``` r
 > ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack",colour="black") + 
 +   facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 ``` r
 > filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
 > ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-21-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-2.png)
 
 Barplot of Educated and Necessity in the Australian and European Contexts
 -------------------------------------------------------------------------
@@ -1173,13 +1308,13 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Educated)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-2.png)
 
 -   **Necessity**
 
@@ -1210,7 +1345,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Necessity,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Necessity)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
@@ -1220,7 +1355,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 
     ## Warning: Removed 1 rows containing missing values (geom_text).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-23-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-2.png)
 
 Correlation plot of items by context
 ====================================
@@ -1475,9 +1610,9 @@ Evaluate internal consistency of known constructs with alpha
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
 ```
 
-    ## Warning: Too few values at 646 locations: 9368, 9369, 9370, 9371, 9372,
-    ## 9373, 9374, 9375, 9376, 9377, 9378, 9379, 9380, 9381, 9382, 9383, 9384,
-    ## 9385, 9386, 9387, ...
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows
+    ## [9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379,
+    ## 9380, 9381, 9382, 9383, 9384, 9385, 9386, 9387, ...].
 
 ``` r
 > p1=ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack") + 
@@ -1496,4 +1631,4 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-1.png)
