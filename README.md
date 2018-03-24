@@ -280,6 +280,24 @@ Imputing degree based on Quality Comments provided in the questions
 | more than 6 years            |         2|           5|            16|                  18|
 | Other                        |        33|           0|             5|                  22|
 
+``` r
+> kable(table(filtered$year.studyL2,filtered$Context))
+```
+
+|                              |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
+|------------------------------|-------------------:|-----------------:|--------------------:|---------------------:|
+| 0 years                      |                   0|                 0|                   22|                    11|
+| 1- 3 years                   |                   0|                 0|                    0|                     9|
+| 1-3 years                    |                   0|                 0|                    7|                     0|
+| 4-6 years                    |                   0|                 0|                   35|                    20|
+| First year of primary school |                  17|                56|                    0|                     0|
+| Kindergarten                 |                   6|                23|                    0|                     0|
+| Less than a year             |                   0|                 0|                   13|                     5|
+| more than 6 years            |                   0|                 0|                   11|                    30|
+| Other                        |                  48|                12|                    0|                     0|
+
+People that have studied 0 years L2 are just a small subset of the German in Australia and Italian in Australia context which means that by correcting for context we are not removing the effect of the 0 years. A way to remove the effect of the 0 years participants and not including too many variables could be to estimate the effect of 0 years vs all.
+
 Define demographic variables
 ============================
 

@@ -148,8 +148,10 @@ table(filtered$degree)
 kable(table(filtered$Context))
 kable(table(filtered$year.studyL2,filtered$Context))
 kable(table(filtered$year.studyL2,filtered$prof))
+kable(table(filtered$year.studyL2,filtered$Context))
 ```
 
+People that have studied 0 years L2 are just a small subset of the German in Australia and Italian in Australia context which means that by correcting for context we are not removing the effect of the 0 years. A way to remove the effect of the 0 years participants and not including too many variables could be to estimate the effect of 0 years vs all. 
 
 # Define demographic variables
 

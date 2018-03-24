@@ -210,7 +210,41 @@ geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(
 kable(sum_stat)
 ```
 
-## Factor analysis correcting for context
+## Factor analysis correcting for context and degree
+
+### Check what is the effect of 0 years vs all
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,c(usable_items,"Context","degree","year.studyL2")]
+dat_onlyItems <- usable_data[,usable_items]
+
+# get residuals after regressing for context
+get_residuals <- function(item,pred1,pred2){
+  mod <- lm(item ~ pred1 + pred2)
+  dat <- rbind(confint(mod)[5,1],confint(mod)[5,2],summary(mod)$coefficients[5,1])
+  return(dat)
+}
+
+usable_data$year.studyL2_binary <- ifelse(usable_data$year.studyL2 == "0 years",0,1)
+mod <- lm(written.prof1 ~ Context + year.studyL2_binary,data=usable_data)
+
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred1=usable_data$Context,pred2=usable_data$year.studyL2_binary)
+
+dat <- data.frame(t(applygetRes))
+dat$item <- rownames(dat)
+dat <- dat %>% separate(item,into=c("item","variable"),sep="[.]")
+
+pos <- position_dodge(width=0.4)
+ggplot(dat,aes(x=item,y=X3,colour=variable)) + 
+geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years vs all effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
 
 ```{r}
 # items to be used for the FA
