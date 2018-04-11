@@ -43,7 +43,7 @@ Read in data
 > dim(european)
 ```
 
-    ## [1] 209 115
+    ## [1] 209 117
 
 ``` r
 > dim(australian)

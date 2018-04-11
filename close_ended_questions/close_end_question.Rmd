@@ -1,0 +1,189 @@
+---
+title: "Close ended questions"
+author: "Anna Quaglieri & Riccardo Amorati"
+date: "11/04/2018"
+output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
+  html_notebook:
+    code_folding: hide
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+
+```{r,message=FALSE, echo=FALSE}
+library(readr)
+library(tidyverse)
+library(reshape2)
+library(corrplot)
+library(psych)
+library(pheatmap)
+library(RColorBrewer)
+library(cowplot)
+library(gridExtra)
+library(cowplot)
+library(pheatmap)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(knitr)
+library(readxl)
+
+data(efc)
+theme_set(theme_sjplot())
+
+# Chunk options
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig.height = 8)
+
+```
+
+# Read in data
+
+```{r}
+all <- read.csv("../02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv")
+rownames(all) <- all$Resp.ID
+```
+
+# Attrib
+
+```{r}
+attrib <- colnames(all)[grep("attrib",colnames(all))]
+attrib <- attrib[!(attrib %in% c("other.comment9.attrib","other.attrib.richi"))]
+
+attrib_data <- subset(all,select=c("Context",attrib))
+attrib_data_long <- attrib_data %>% gather(attrib,value,succ1.attrib:interesting8.attrib)
+
+attrib_summary <- attrib_data_long %>% group_by(Context,attrib) %>%
+  summarise(Chosen = sum(value)) %>%
+  arrange(attrib)
+kable(attrib_summary)
+```
+
+
+# External
+
+```{r}
+external <- colnames(all)[grep("external",colnames(all))]
+external <- external[!(external %in% c("other7.external","other.external.richi"))]
+
+external_data <- subset(all,select=c("Context",external))
+external_data_long <- external_data %>% gather(external,value,parents1.external:noextern6.external)
+
+ext_summary <- external_data_long %>% group_by(Context,external) %>%
+  summarise(Chosen = sum(value)) %>%
+  arrange(external)
+kable(ext_summary)
+```
+
+
+# Influence
+
+```{r}
+influence <- colnames(all)[grep("influence",colnames(all))]
+influence <- influence[!(influence %in% c("other4.influence"))]
+
+influence_data <- subset(all,select=c("Context",influence))
+influence_data_long <- influence_data %>% gather(influence,value,encouragement1.influence:pressure3.influence)
+
+influence_summary <- influence_data_long %>% group_by(Context,influence) %>%
+  summarise(Chosen = sum(value,na.rm = TRUE)) %>%
+  arrange(influence)
+kable(influence_summary)
+```
+
+
+# Languages
+
+```{r}
+demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
+l2School <- "\\.L2school$"
+l2School_variables <- colnames(all)[grep(l2School,colnames(all))]
+
+all$L1_expected <- ifelse(as.character(all$L1) %in% c("German","Italian","English"),as.character(all$L1),"other")
+
+ggplot(all,aes(x=Context,fill=L1_expected)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="") + theme_bw()
+
+L1_summary <- all %>% group_by(Context,L1_expected) %>%
+  summarise(Nspeaker = length(Resp.ID)) 
+kable(L1_summary)
+```
+
+
+# L2 recoded
+
+Richi recoded:
+
+- year.studyL2, primary1.L2school, secondary2.L2sch (all the L2.school) and other.sector.richi
+
+On the base of comments from participants.
+
+```{r}
+Merged_dataset <- read_excel("Merged dataset.xlsx")
+
+sum(all$Resp.ID != Merged_dataset$Resp.ID)
+all$year.studyL2 <- Merged_dataset$year.studyL2[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$primary1.L2school <- Merged_dataset$primary1.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$secondary2.L2school <- Merged_dataset$secondary2.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$CLS3.L2school <- Merged_dataset$CLS3.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$VSL4.L2school <- Merged_dataset$VSL4.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$schooL2country5.L2school <- Merged_dataset$schooL2country5.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$other6.L2school <- Merged_dataset$other6.L2school[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$L2.VCE <- Merged_dataset$L2.VCE[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+all$other.sector.richi <- Merged_dataset$other.sector.richi[match(all$Resp.ID,Merged_dataset$Resp.ID)]
+```
+
+# Sector
+
+```{r}
+sector <- colnames(all)[grep("sector",colnames(all))]
+sector <- sector[!(sector %in% c("other11.sector"))]
+
+sector_data <- subset(all,select=c("Context",sector))
+sector_data_long <- sector_data %>% gather(sector,value,transl1.sector:Notsure10.sector)
+
+sector_summary <- sector_data_long %>% group_by(Context,sector) %>%
+  summarise(Chosen = sum(as.numeric(value),na.rm = TRUE)) %>%
+  arrange(sector) %>% spread(sector,Chosen)
+kable(sector_summary)
+
+
+kable(table(sector_data$Context,sector_data$other.sector.richi))
+```
+
+
+# L2school
+
+```{r}
+L2school <- colnames(all)[grep("L2school",colnames(all))]
+L2school <- L2school[!(L2school %in% c("other.L2school.richi"))]
+
+L2school_data <- subset(all,Context %in% c("Italian in Australia","German in Australia"),select=c("Context",L2school))
+L2school_data_long <- L2school_data %>% gather(L2school,value,primary1.L2school:schooL2country5.L2school)
+class(L2school_data_long$value)
+L2school_data_long$value <- as.numeric(L2school_data_long$value)
+
+L2school_summary <- L2school_data_long %>% group_by(Context,L2school) %>%
+  summarise(Chosen = sum(as.numeric(value),na.rm = TRUE)) %>%
+  arrange(L2school) %>% spread(L2school,Chosen)
+kable(L2school_summary)
+
+kable(table(L2school_data$Context,L2school_data$other6.L2school,useNA = "always"))
+```
+
+# L2.VCE
+
+```{r}
+kable(table(all$Context,all$L2.VCE))
+```
+
+# year.studyL2
+
+```{r}
+kable(table(all$year.studyL2,all$Context))
+```

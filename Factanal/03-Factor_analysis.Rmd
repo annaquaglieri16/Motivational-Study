@@ -71,6 +71,8 @@ likert_variables1 <- paste0(likert_variables_all,"1")
 
 # Final Factanal correcting for degree and Context and not for L2 
 
+When correcting for context what we are doing is that we are removing the context mean from every context
+
 ```{r}
 # items to be used for the FA
 usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
@@ -89,6 +91,42 @@ get_residuals <- function(item,pred1,pred2){
 applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
                      pred1=usable_data$Context,pred2=usable_data$degree_binary)
 
+
+########################
+# Barplot with residuals
+all_melt <- melt(applygetRes,measure.vars = likert_variables1)
+all_melt$Context <- all$Context[match(all_melt$Var1,all$Resp.ID)]
+
+all_melt <- all_melt %>% separate(Var2,into=c("item","type"),sep="\\.",remove=FALSE)
+ggplot(all_melt,aes(x=Var2,y=value)) + geom_bar(position = "stack",colour="black",stat="identity") + 
+  facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
+
+filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
+ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
+########################
+
+### added
+before <- data.frame(dat_onlyItems)
+after <- data.frame(applygetRes)
+
+hist(after$fail.ought1)
+plot(after$fail.ought1,before$fail.ought1)
+
+cov <- cor(after,method = "pearson",use="pairwise.complete.obs")
+
+row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
+row_infos$Variables <- as.character(row_infos$Variables)
+rownames(row_infos) <- rownames(cov)
+row_infos$Variables[which(is.na(row_infos$Variables))] <- c("educated")
+row_infos <- row_infos[order(row_infos$Variables),,drop=FALSE]
+
+ann_col_wide <- data.frame(Variable=unique(row_infos$Variables))
+ann_colors_wide <- list(Variables=c(comm1="#bd0026",educated="#b35806", id1="#f6e8c3",instru1="#35978f",integr1="#386cb0",intr1="#ffff99",ought1="grey",post1="black",prof1="pink"))
+
+pheatmap(cov, main = "All",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
+,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+### added
+
 # Factanal 
 # From a statisticak point of view 
 fap <- fa.parallel(applygetRes)
@@ -97,6 +135,9 @@ loading_cutoff <- 0.2
 fa_basic <- fa(applygetRes,fact)
 
 fa_basic
+
+# analyse residuals vs initial
+
 
 # plot loadings
 loadings_basic <- fa_basic$loadings
@@ -159,6 +200,7 @@ kable(loading_fact_reduced)
 
 # predict values per samples from initial likert scale
 pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems))
+#pred_basic <- as.data.frame(predict(fa_basic,applygetRes))
 names(pred_basic) <- paste("Factor",1:fact,sep = "")
 
 factors <- names(pred_basic)
@@ -170,7 +212,7 @@ corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use 
 # Plot loadings by context
 all_complete_melt <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
 
-ggplot(all_complete_melt)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 
 # error bar 
 sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%

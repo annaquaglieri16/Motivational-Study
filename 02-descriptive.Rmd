@@ -6,15 +6,15 @@ output:
   github_document:
     toc: yes
     toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
   html_notebook:
     code_folding: hide
     fig_caption: yes
     number_sections: yes
     toc: yes
     toc_float: yes
-  html_document:
-    toc: yes
-    toc_depth: '4'
 ---
 
 # Plan that I wrote with Richi's comments
@@ -497,6 +497,7 @@ all <- cbind(all,imputedMedian[match(rownames(imputedMedian),all$Resp.ID),])
 ## Save imputed data
 
 ```{r}
+
 write.csv(all,"02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv",row.names = FALSE)
 ```
 

@@ -1293,7 +1293,7 @@ sum(!is.na(english_in_germany$other.external.richi))
 english_in_germany[,"other7.external"] <- english_in_germany$other.external.richi
 table(english_in_germany$other7.external)
 
-english_in_germany$noextern6.external <- ifelse(english_in_germany$other7.external %in% "M.NO.EXTERNAL.FACTORS",1,english_in_germany$noextern6.external)
+english_in_germany$noextern6.external <- ifelse(!is.na(english_in_germany$other7.external) &  english_in_germany$other7.external %in% "M.NO.EXTERNAL.FACTORS",1,english_in_germany$noextern6.external)
 
 # other11.sector
 table(english_in_germany$other.sector.richi,english_in_germany$other11.sector)
@@ -1341,7 +1341,11 @@ write_csv(english_in_germany,"01-cleaning_data_data/english_in_germany_cleaned_r
 english_in_italy_cleaned_csv <-  read_excel("columns_recoded_demographics/english_in_italy_cleaned.csv.xlsx")
 colnames(english_in_italy_cleaned_csv)[!(colnames(english_in_italy_cleaned_csv) %in% colnames(english_in_italy))]
 english_in_germany_cleaned_red <- subset(english_in_italy_cleaned_csv,select=c("Resp.ID","other.attrib.richi","other.external.richi","other.sector.richi","other.year.studyL2.richi","other.other.ways.richi"))
-english_in_italy <- merge(english_in_italy,english_in_germany_cleaned_red,all = TRUE)
+
+english_in_italy1 <- english_in_italy
+
+english_in_italy <- merge(english_in_italy,english_in_italy_cleaned_csv,all = TRUE)
+
 
 # other.attrib.richi
 table(english_in_italy$other.attrib.richi,english_in_italy$other.comment9.attrib)
@@ -1357,7 +1361,9 @@ sum(!is.na(english_in_italy$other.external.richi))
 english_in_italy[,"other7.external"] <- english_in_italy$other.external.richi
 #table(english_in_italy$other7.external)
 
-english_in_italy$noextern6.external <- ifelse(english_in_italy$other7.external == "M.NO.EXTERNAL.FACTORS",1,english_in_italy$noextern6.external )
+english_in_italy$noextern6.external <- ifelse(!is.na(english_in_italy$other7.external) & english_in_italy$other7.external == "M.NO.EXTERNAL.FACTORS",1,english_in_italy$noextern6.external)
+
+#english_in_italy[english_in_italy$other7.external == "M.NO.EXTERNAL.FACTORS","Resp.ID"]
 
 # other11.sector
 table(english_in_italy$other.sector.richi,english_in_italy$other11.sector)
@@ -1409,7 +1415,7 @@ sum(!is.na(german_in_australia$other.external.richi))
 german_in_australia[,"other7.external"] <- german_in_australia$other.external.richi
 #table(german_in_australia$other7.external)
 
-german_in_australia$noextern6.external <- ifelse(german_in_australia$other7.external == "M.NO.EXTERNAL.FACTORS",1,german_in_australia$noextern6.external )
+german_in_australia$noextern6.external <- ifelse(!is.na(german_in_australia$other7.external) & german_in_australia$other7.external == "M.NO.EXTERNAL.FACTORS",1,german_in_australia$noextern6.external )
 
 # other11.sector
 table(german_in_australia$other.sector.richi,german_in_australia$other11.sector)
@@ -1418,7 +1424,7 @@ sum(!is.na(german_in_australia$other.sector.richi))
 german_in_australia[,"other11.sector"] <- german_in_australia$other.sector.richi
 #table(german_in_australia$other11.sector)
 
-german_in_australia$intrelations9.sector <- ifelse(german_in_australia$other11.sector == "M.INTERNATIONAL.RELATIONS",1,german_in_australia$intrelations9.sector)
+german_in_australia$intrelations9.sector <- ifelse(!is.na(german_in_australia$other11.sector) & german_in_australia$other11.sector == "M.INTERNATIONAL.RELATIONS",1,german_in_australia$intrelations9.sector)
 
 # other.year.studyL2.richi
 table(german_in_australia$other.L2school.richi,german_in_australia$other6.L2school)
@@ -1464,9 +1470,9 @@ sum(!is.na(italian_in_australia$other.external.richi))
 italian_in_australia[,"other7.external"] <- italian_in_australia$other.external.richi
 table(italian_in_australia$other7.external)
 
-italian_in_australia$noextern6.external <- ifelse(italian_in_australia$other7.external %in% "M.NO.EXTERNAL.FACTORS",1,italian_in_australia$noextern6.external)
+italian_in_australia$noextern6.external <- ifelse(!is.na(italian_in_australia$other7.external) & italian_in_australia$other7.external %in% "M.NO.EXTERNAL.FACTORS",1,italian_in_australia$noextern6.external)
 
-italian_in_australia$parents1.external <- ifelse(italian_in_australia$other7.external %in% "M.INFLUENCE.FROM.PARENTS",1,italian_in_australia$parents1.external)
+italian_in_australia$parents1.external <- ifelse(!is.na(italian_in_australia$other7.external) &  italian_in_australia$other7.external %in% "M.INFLUENCE.FROM.PARENTS",1,italian_in_australia$parents1.external)
 
 table(italian_in_australia$other7.external)
 
@@ -1477,7 +1483,7 @@ sum(!is.na(italian_in_australia$other.sector.richi))
 italian_in_australia[,"other11.sector"] <- italian_in_australia$other.sector.richi
 table(italian_in_australia$other11.sector)
 
-italian_in_australia$intrelations9.sector <- ifelse(italian_in_australia$other11.sector %in% "M.INTERNATIONAL.RELATIONS",1,italian_in_australia$intrelations9.sector)
+italian_in_australia$intrelations9.sector <- ifelse(!is.na(italian_in_australia$other11.sector) & italian_in_australia$other11.sector %in% "M.INTERNATIONAL.RELATIONS",1,italian_in_australia$intrelations9.sector)
 
 
 # other.year.studyL2.richi
@@ -1500,7 +1506,6 @@ italian_in_australia$private.lessons1.other.ways <- ifelse(italian_in_australia$
 
 write_csv(italian_in_australia,"01-cleaning_data_data/italian_in_australia_cleaned_recoded.csv")
 ```
-
 
 - read recoded datasets
 
