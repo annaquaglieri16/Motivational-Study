@@ -261,15 +261,18 @@ write.csv(all,file.path("02-descriptive_data/context-merged_filtered.csv"))
 
 ## Descriptive plots and tables
 
-- Summary demographics TO DO: - to change yearL2.study.richi 
+```{r speak.other.L2_binary,message=FALSE}
+all$speak.other.L2_binary <- ifelse(!is.na(all$speak.other.L2) & 
+                                      !(all$speak.other.L2 %in% c("Yes","No")),"Yes",as.character(all$speak.other.L2))
+
+
+kable(table(all$speak.other.L2_binary,all$Context,useNA = "always"))
+
+```
+
+- Age
 
 ```{r age_by_context,message=FALSE}
-# add numbers on the bar
-
-# tabAge <- t(table(all$Age,all$Context))
-# ggplot(all,aes(x=Age,fill=Context)) + geom_bar(position="dodge",colour="white")   + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2.5, y=40, width=0.3, height=0.4) + ggtitle("Participants by age")
-# tabAge
-
 tabAge <- t(table(all$Age,all$Context))
 ggdf <- data.frame(Age = rep(colnames(tabAge),each=4)[!(as.numeric(tabAge) == 0)],
   N.Participants = as.numeric(tabAge)[!(as.numeric(tabAge) == 0)],
@@ -564,7 +567,9 @@ ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Necessity)) + geom_bar(position=
 
 ```{r cor_italian_in_australia,fig.width=15,fig.height=15}
 cov <- cor(filtered_conv[filtered_conv$Context == "Italian in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
-
+data_cor_ita_in_au <- data.frame(cor_ita_in_au=cov[lower.tri(cov, diag = TRUE)],
+                var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
+                var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
 
 row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 row_infos$Variables <- as.character(row_infos$Variables)
@@ -587,6 +592,11 @@ pheatmap(cov, main = "Italian in Australia",annotation_names_row = FALSE,cluster
 
 ```{r cor_german_in_australia,fig.width=15,fig.height=15}
 cov <- cor(filtered_conv[filtered_conv$Context == "German in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
+data_cor_germ_in_au <- data.frame(cor_germ_in_au=cov[lower.tri(cov, diag = TRUE)],
+                var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
+                var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+
+
 
 row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 row_infos$Variables <- as.character(row_infos$Variables)
@@ -606,6 +616,10 @@ pheatmap(cov, main = "German in Australia",annotation_names_row = FALSE,cluster_
 
 ```{r cor_english_in_germany,fig.width=15,fig.height=15}
 cov <- cor(filtered_conv[filtered_conv$Context == "English in Germany",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1",    "speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
+data_cor_eng_in_germ <- data.frame(cor_eng_in_germ=cov[lower.tri(cov, diag = TRUE)],
+                var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
+                var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+
 
 row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 row_infos$Variables <- as.character(row_infos$Variables)
@@ -625,6 +639,10 @@ pheatmap(cov, main = "English in Germany",annotation_names_row = FALSE,cluster_c
 
 ```{r cor_english_in_italy,fig.width=15,fig.height=15}
 cov <- cor(filtered_conv[filtered_conv$Context == "English in Italy",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1","speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
+data_cor_eng_in_ita <- data.frame(cor_eng_in_ita=cov[lower.tri(cov, diag = TRUE)],
+                var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
+                var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+
 
 row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 row_infos$Variables <- as.character(row_infos$Variables)
@@ -659,6 +677,22 @@ pheatmap(cov, main = "All Contexts",annotation_names_row = FALSE,cluster_cols=TR
 ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 
 ```
+
+## Compare correlations
+
+```{r}
+library(GGally)
+combine_cor <- merge(data_cor_eng_in_ita,data_cor_eng_in_germ,all = TRUE)
+combine_cor1 <- merge(combine_cor,data_cor_germ_in_au,all = TRUE)
+combine_cor2 <- merge(combine_cor1,data_cor_ita_in_au,all = TRUE)
+combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item","variable"),sep="[.]",remove=FALSE)
+combine_cor2$variable <- ifelse(is.na(combine_cor2$variable),combine_cor2$item,combine_cor2$variable)
+
+pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
+ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
+
+```
+
 
 # Evaluate internal consistency of known constructs with alpha
 

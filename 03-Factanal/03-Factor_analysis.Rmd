@@ -1,0 +1,797 @@
+---
+title: "Factor analysis"
+author: "Anna Quaglieri & Riccardo Amorati"
+date: "03/09/2017"
+output:
+  github_document:
+    toc: yes
+    toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
+  html_notebook:
+    code_folding: hide
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+
+```{r,message=FALSE, echo=FALSE}
+library(readr)
+library(tidyverse)
+library(reshape2)
+library(corrplot)
+library(psych)
+library(pheatmap)
+library(RColorBrewer)
+library(cowplot)
+library(gridExtra)
+library(cowplot)
+library(pheatmap)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(knitr)
+
+data(efc)
+theme_set(theme_sjplot())
+
+# Chunk options
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig.height = 8)
+
+```
+
+## Basic factor analysis: 7 factors as the number of variables in the study design
+
+## Read in data
+
+```{r}
+all <- read.csv("../02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv")
+rownames(all) <- all$Resp.ID
+```
+
+Seven, is the number of factors that would be present according to the study design.
+Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
+
+### Likert variables
+
+```{r include=FALSE,message=FALSE}
+likert_grep <- "\\.id$|\\.ought$|\\.intr$|\\.instru$|\\.integr$|\\.prof$|\\.post$|\\.comm$|^necessity$|^educated$"
+
+# all
+likert_variables_all <- colnames(all)[grep(likert_grep,colnames(all))]
+likert_variables_all
+likert_variables_all <- likert_variables_all[!(likert_variables_all %in% "other.prof")]
+
+# likert variables converted to numbers
+likert_variables1 <- paste0(likert_variables_all,"1")
+
+```
+
+# Final Factanal correcting for degree and Context and not for L2 
+
+When correcting for context what we are doing is that we are removing the context mean from every context
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,c(usable_items,"Context","degree")]
+usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
+                                    ifelse(usable_data$degree %in% "LA","LA","HUM"))
+dat_onlyItems <- usable_data[,usable_items]
+
+# get residuals after regressing for context
+get_residuals <- function(item,pred1,pred2){
+  mod <- lm(item ~ pred1 + pred2)
+  return(mod$residuals)
+}
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred1=usable_data$Context,pred2=usable_data$degree_binary)
+
+
+########################
+
+### added
+# before <- data.frame(dat_onlyItems)
+# after <- data.frame(applygetRes)
+# 
+# cov <- cor(after,method = "pearson",use="pairwise.complete.obs")
+# 
+# row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
+# row_infos$Variables <- as.character(row_infos$Variables)
+# rownames(row_infos) <- rownames(cov)
+# row_infos$Variables[which(is.na(row_infos$Variables))] <- c("educated")
+# row_infos <- row_infos[order(row_infos$Variables),,drop=FALSE]
+# 
+# ann_col_wide <- data.frame(Variable=unique(row_infos$Variables))
+# ann_colors_wide <- list(Variables=c(comm1="#bd0026",educated="#b35806", id1="#f6e8c3",instru1="#35978f",integr1="#386cb0",intr1="#ffff99",ought1="grey",post1="black",prof1="pink"))
+# 
+# pheatmap(cov, main = "All",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
+# ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+# ### added
+# 
+# after$Context <- usable_data$Context[match(rownames(after),rownames(usable_data))]
+# before$Context <- usable_data$Context[match(rownames(before),rownames(usable_data))]
+# 
+# ggplot(after,aes(x=fail.ought1,fill=Context)) + geom_histogram() + facet_wrap(~Context)
+# plot(after$fail.ought1,before$fail.ought1)
+# ggplot(before,aes(x=speaking.prof1,fill=Context)) + geom_histogram() + facet_wrap(~Context)
+# ggplot(before,aes(x=fail.ought1,fill=Context)) + geom_histogram() + facet_wrap(~Context)
+
+
+# Factanal 
+# From a statisticak point of view 
+fap <- fa.parallel(applygetRes)
+fact <- 6
+loading_cutoff <- 0.2
+fa_basic <- fa(applygetRes,fact)
+
+fa_basic
+
+# analyse residuals vs initial
+#fa_basic <- fa(applygetRes, fact,scores="regression")
+#fac <- as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff = 0.3)
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:fact,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D <- rownames(loadings_basic)
+a1 <- loadings_basic
+
+a2 <- melt(a1,id.vars=c("D"))
+a2$inv <- ifelse(a2$value < 0 ,"neg","pos")
+a2$value[abs(a2$value) < loading_cutoff] <- 0
+a2 <- a2[a2$value!=0,]
+a2 <- a2 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+# Factors one by one
+ggplot(subset(a2,variable %in% "F1"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F1")+ labs(y="Items")
+
+ggplot(subset(a2,variable %in% "F2"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F2") + labs(y="Items")
+
+ggplot(subset(a2,variable %in% "F3"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F3")+ labs(y="Items")
+
+ggplot(subset(a2,variable %in% "F4"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F4")+ labs(y="Items")
+
+ggplot(subset(a2,variable %in% "F5"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F5")+ labs(y="Items")
+
+ggplot(subset(a2,variable %in% "F6"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F6")+ labs(y="Items")
+```
+
+## Chronbach alpha
+
+```{r}
+f1 <- unique(a2$D[a2$variable %in% "F1"])
+f2 <- unique(a2$D[a2$variable %in% "F2"])
+f3 <- unique(a2$D[a2$variable %in% "F3"])
+f4 <- unique(a2$D[a2$variable %in% "F4"])
+f5 <- unique(a2$D[a2$variable %in% "F5"])
+f6 <- unique(a2$D[a2$variable %in% "F6"])
+
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f1])
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f2])
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f3])
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f4])
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f5])
+psych::alpha(applygetRes[,colnames(applygetRes) %in% f6])
+```
+
+```{r}
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic) < loading_cutoff] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic=="0"] <- ""
+loading_fact_reduced <- loadings_basic
+kable(loading_fact_reduced)
+
+# predict values per samples from initial likert scale
+pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems,applygetRes))
+#pred_basic <- as.data.frame(predict(fa_basic,applygetRes))
+#https://stackoverflow.com/questions/4145400/how-to-create-factors-from-factanal
+#pred_basic <- data.frame(as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff=0))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+all_complete_basic <- data.frame(pred_basic,all[match(all$Resp.ID,rownames(pred_basic)),])
+#match_initial_data <- match(all$Resp.ID,rownames(pred_basic))
+#all_complete_basic <- cbind(all,scale(pred_basic[match_initial_data,]))
+corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
+
+# Plot loadings by context
+all_complete_melt <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+
+# error bar 
+sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Context[!is.na(value)])) %>%
+  mutate(stdMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*stdMean)
+
+ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
+
+kable(sum_stat)
+```
+
+## Linear models testing the effect of context
+
+```{r}
+pred_basic <- data.frame(pred_basic)
+fact_data <- data.frame(pred_basic,all[match(all$Resp.ID,rownames(pred_basic)),c("Context","Resp.ID")])
+sum(fact_data$Resp.ID != rownames(pred_basic))
+
+summary(lm(Factor1 ~ Context,data=fact_data))
+summary(lm(Factor2 ~ Context,data=fact_data))
+summary(lm(Factor3 ~ Context,data=fact_data))
+summary(lm(Factor4 ~ Context,data=fact_data))
+summary(lm(Factor5 ~ Context,data=fact_data))
+summary(lm(Factor6 ~ Context,data=fact_data))
+```
+
+
+# Demographics - to be updated with the final FA chosen
+
+Variables have been recoded and we need to do the models.
+
+```{r}
+demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
+
+dat_fac_demo <- all_complete_basic[,c(demographics_var,factors)]
+table(dat_fac_demo$Age) 
+
+table(dat_fac_demo$L1) # to be changed
+dat_fac_demo$L1_expected <- ifelse(as.character(dat_fac_demo$L1) %in% c("German","Italian","English"),"Yes","No")
+table(dat_fac_demo$L1_expected)
+
+table(dat_fac_demo$speak.other.L2) # to be changed
+dat_fac_demo$speak.other.L2_binary <- ifelse(!is.na(dat_fac_demo$speak.other.L2) & 
+                                      !(dat_fac_demo$speak.other.L2 %in% c("Yes","No")),"Yes",as.character(all$speak.other.L2))
+table(dat_fac_demo$speak.other.L2_binary)
+
+#table(dat_fac_demo$study.other.L2) # to be changed
+
+table(dat_fac_demo$origins)
+
+table(dat_fac_demo$year.studyL2) # da vedere only for Australian contexts
+
+table(dat_fac_demo$degree) # to be tried- only interesting for Australia
+# Merge BA in Anglistik  with BA in Nordamerikastudien
+dat_fac_demo$degree1 <- dat_fac_demo$degree
+dat_fac_demo$degree1[dat_fac_demo$degree1 %in% "BA in Nordamerikastudien"] <- "BA in Anglistik"
+
+table(dat_fac_demo$prof)
+table(dat_fac_demo$L2.VCE)
+
+#table(dat_fac_demo$other5.other.ways) # to be changed
+```
+
+```{r}
+demo_melt <- melt(all_complete_basic,id.vars = c("Age","Gender","origins","study.year","prof","L2.VCE","Context"),measure.vars = factors)
+
+# age
+ageStat <- demo_melt %>% group_by(Context,Age,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Age[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+ageStat$Demo <- "Age"
+colnames(ageStat)[2] <- "levels"
+ageStat <- data.frame(ageStat)
+
+# Gender
+GenderStat <- demo_melt %>% group_by(Context,Gender,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Gender[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+GenderStat$Demo <- "Gender"
+colnames(GenderStat)[2] <- "levels"
+GenderStat <- data.frame(GenderStat)
+
+# origins
+originsStat <- demo_melt %>% group_by(Context,origins,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(origins[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+originsStat$Demo <- "origins"
+colnames(originsStat)[2] <- "levels"
+originsStat <- data.frame(originsStat)
+
+# study.year
+study.yearStat <- demo_melt %>% group_by(Context,study.year,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(study.year[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+study.yearStat$Demo <- "Study Year"
+colnames(study.yearStat)[2] <- "levels"
+study.yearStat <- data.frame(study.yearStat)
+
+# prof
+profStat <- demo_melt %>% group_by(Context,prof,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(prof[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+profStat$Demo <- "Proficiency"
+colnames(profStat)[2] <- "levels"
+profStat$levels <- as.character(profStat$levels)
+profStat <- data.frame(profStat)
+
+# L2.VCE
+L2.VCEStat <- demo_melt %>% group_by(Context,L2.VCE,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(L2.VCE[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+L2.VCEStat$Demo <- "L2.VCE"
+colnames(L2.VCEStat)[2] <- "levels"
+L2.VCEStat$levels <- as.character(L2.VCEStat$levels)
+L2.VCEStat <- data.frame(L2.VCEStat)
+
+##################
+# Combine stats
+##################
+
+combine_stat <- rbind(data.frame(L2.VCEStat),data.frame(profStat),study.yearStat,originsStat,ageStat,GenderStat)
+```
+
+### Tables
+
+- **Age**
+
+```{r}
+kable(ageStat)
+```
+
+- **Gender**
+
+```{r}
+kable(GenderStat)
+```
+
+- **origins**
+
+```{r}
+kable(originsStat)
+```
+
+- **study.year**
+
+```{r}
+kable(study.yearStat)
+```
+
+- **prof**
+
+```{r}
+kable(profStat)
+```
+
+- **L2.VCE**
+
+```{r}
+kable(L2.VCEStat)
+```
+
+### Factor means with Confidence Intervals
+
+```{r}
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor1")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor1: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor2")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor2: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor3")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor3: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor4")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor4: Mean +- 95% CI") + theme_bw()
+
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor5")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor5: Mean +- 95% CI") + theme_bw()
+
+pos <- position_dodge(width=0.4)
+ggplot(subset(combine_stat,variable %in% c("Factor6")),aes(x=levels,y=meanFac,colour=Context,group=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2,position=pos) + facet_wrap(~Demo ,scales="free") +
+  geom_point(position=pos) + ggtitle("Factor6: Mean +- 95% CI") + theme_bw()
+```
+
+# Other tentatives
+
+## FA with 7 factors (as from design)
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,usable_items]
+sum(is.na(usable_data))
+
+# Cronbach's alpha using consistent items across contexts
+psych::alpha(usable_data,use="pairwise.complete.obs")
+
+fact <- 7
+loading_cutoff <- 0.2
+fa_basic <- fa(usable_data,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:fact,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D <- rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$inv <- ifelse(a1$value < 0 ,"neg","pos")
+a1$value[abs(a1$value) < loading_cutoff] <- 0
+a1 <- a1[a1$value!=0,]
+a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic) < loading_cutoff] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic=="0"] <- ""
+loading_fact_reduced <- loadings_basic
+loading_fact_reduced
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,usable_data))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+match_initial_data <- match(all$Resp.ID,rownames(pred_basic))
+all_complete_basic <- cbind(all,scale(pred_basic[match_initial_data,]))
+corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
+
+# Plot loadings by context
+all_complete_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+# 7 * 12 rows removed
+
+```
+
+## Basic factor analysis: 6 factors following the fa.parallel suggestion
+
+Using very relaxed cutoff of 0.2 to get rid of not important variables in each factor.
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,usable_items]
+
+# From a statisticak point of view 
+fap <- fa.parallel(usable_data)
+fact <- 6
+loading_cutoff <- 0.2
+fa_basic <- fa(usable_data,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:fact,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D <- rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$inv <- ifelse(a1$value < 0 ,"neg","pos")
+a1$value[abs(a1$value) < loading_cutoff] <- 0
+a1 <- a1[a1$value!=0,]
+a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic) < loading_cutoff] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic=="0"] <- ""
+loading_fact_reduced <- loadings_basic
+loading_fact_reduced
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,usable_data))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+match_initial_data <- match(all$Resp.ID,rownames(pred_basic))
+all_complete_basic <- cbind(all,scale(pred_basic[match_initial_data,]))
+corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
+
+# Plot loadings by context
+all_complete_basic <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+# 7 * 12 rows removed
+
+# error bar 
+sum_stat <- all_complete_basic %>% group_by(Context,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Context[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
+
+ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~Context,scales="free_y") + 
+  geom_point() + ggtitle("Mean +- 95% CI")
+
+kable(sum_stat)
+```
+
+## Factor analysis using 6 factors correcting for context and degree (which will become the final)
+
+### Check what is the effect of 0 years vs all in year.studyL2
+
+We can see that L2 o vs >1 does not have an effect on the items apart bordeline for dream. 
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,c(usable_items,"Context","degree","year.studyL2")]
+dat_onlyItems <- usable_data[,usable_items]
+
+# get residuals after regressing for context
+get_residuals <- function(item,pred1,pred2,pred3){
+  mod <- lm(item ~ pred1 + pred2 + pred3)
+  dat <- rbind(confint(mod)[7,1],confint(mod)[7,2],summary(mod)$coefficients[7,1])
+  return(dat)
+}
+
+usable_data$year.studyL2_binary <- ifelse(usable_data$year.studyL2 == "0 years",0,1)
+usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
+                                    ifelse(usable_data$degree %in% "LA","LA","HUM"))
+#mod <- lm(written.prof1 ~ Context + degree_binary + year.studyL2_binary,data=usable_data)
+#summary(mod)
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred1=usable_data$Context,pred2=usable_data$degree_binary,pred3=usable_data$year.studyL2_binary)
+
+dat <- data.frame(t(applygetRes))
+dat$item <- rownames(dat)
+dat <- dat %>% separate(item,into=c("item","variable"),sep="[.]")
+
+pos <- position_dodge(width=0.4)
+ggplot(dat,aes(x=item,y=X3,colour=variable)) + 
+geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)
+
+```
+
+### Check what is the effect of 0 years vs all in year.studyL2
+
+We can see that L2 o vs >1 does not have an effect on the items apart bordeline for dream. 
+
+```{r}
+all$L1_expected <- ifelse(as.character(all$L1) %in% c("German","Italian","English"),as.character(all$L1),"other")
+
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+# Subset only german in australia
+usable_data <- all[all$Context %in% "German in Australia",c(usable_items,"Context","degree","L1_expected")]
+dat_onlyItems <- usable_data[,usable_items]
+
+usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
+                                    ifelse(usable_data$degree %in% "LA","LA","HUM"))
+# get residuals after regressing for context
+get_residuals <- function(item,pred2,pred3){
+  mod <- lm(item ~ pred2 + pred3)
+  dat <- rbind(confint(mod)[3,1],confint(mod)[3,2],summary(mod)$coefficients[3,1])
+  return(dat)
+}
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred2=usable_data$degree_binary,pred3=usable_data$L1_expected)
+
+dat <- data.frame(t(applygetRes))
+dat$item <- rownames(dat)
+dat <- dat %>% separate(item,into=c("item","variable"),sep="[.]")
+
+pos <- position_dodge(width=0.4)
+ggplot(dat,aes(x=item,y=X3,colour=variable)) + 
+geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("L1 binary") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1) + facet_wrap(~variable,scales = "free_x")
+
+```
+
+
+## Try FA correcting also for L2 (0 vs >0) (on top of Context and degree)
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,c(usable_items,"Context","degree","year.studyL2")]
+usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
+                                    ifelse(usable_data$degree %in% "LA","LA","HUM"))
+usable_data$year.studyL2_binary <- ifelse(usable_data$year.studyL2 == "0 years",0,1)
+dat_onlyItems <- usable_data[,usable_items]
+
+
+# get residuals after regressing for context
+get_residuals <- function(item,pred1,pred2,pred3){
+  mod <- lm(item ~ pred1 + pred2 +pred3)
+  return(mod$residuals)
+}
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred1=usable_data$Context,pred2=usable_data$degree_binary,pred3=usable_data$year.studyL2_binary)
+
+# Factanal 
+# From a statisticak point of view 
+fap <- fa.parallel(applygetRes)
+fact <- 6
+loading_cutoff <- 0.2
+fa_basic <- fa(applygetRes,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:fact,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D <- rownames(loadings_basic)
+a1 <- loadings_basic
+
+a2 <- melt(a1,id.vars=c("D"))
+a2$inv <- ifelse(a2$value < 0 ,"neg","pos")
+a2$value[abs(a2$value) < loading_cutoff] <- 0
+a2 <- a2[a2$value!=0,]
+a2 <- a2 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+```
+
+
+## Factor analysis correcting for context and degree and removing 0 years for year.studyL2
+
+```{r}
+# items to be used for the FA
+usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
+
+usable_data <- all[,c(usable_items,"Context","degree","year.studyL2")]
+dat_onlyItems <- usable_data[,usable_items]
+dat_onlyItems <- dat_onlyItems[usable_data$year.studyL2 != "0 years",]
+usable_data <- usable_data[usable_data$year.studyL2 != "0 years",]
+
+
+# get residuals after regressing for context
+get_residuals <- function(item,pred1,pred2){
+  mod <- lm(item ~ pred1 + pred2)
+  return(mod$residuals)
+}
+
+applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
+                     pred1=usable_data$Context,pred2=usable_data$degree)
+
+# Factanal 
+# From a statisticak point of view 
+fap <- fa.parallel(applygetRes)
+fact <- 7
+loading_cutoff <- 0.2
+fa_basic <- fa(applygetRes,fact)
+
+fa_basic
+
+# plot loadings
+loadings_basic <- fa_basic$loadings
+class(loadings_basic)<-"matrix"
+colnames(loadings_basic)<-paste("F",1:fact,sep="")
+loadings_basic<-as.data.frame(loadings_basic)
+loadings_basic<-round(loadings_basic,2)
+loadings_basic$D <- rownames(loadings_basic)
+a1 <- loadings_basic
+
+a1 <- melt(a1,id.vars=c("D"))
+a1$inv <- ifelse(a1$value < 0 ,"neg","pos")
+a1$value[abs(a1$value) < loading_cutoff] <- 0
+a1 <- a1[a1$value!=0,]
+a1 <- a1 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
+
+ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+
+# Table of the factors
+loadings_basic$D <- NULL
+loadings_basic[abs(loadings_basic) < loading_cutoff] <- 0
+for(i in 1:ncol(loadings_basic)){loadings_basic[,i] <- as.character(loadings_basic[,i])}
+
+loadings_basic[loadings_basic=="0"] <- ""
+loading_fact_reduced <- loadings_basic
+loading_fact_reduced
+
+# predict values per samples
+pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems))
+names(pred_basic) <- paste("Factor",1:fact,sep = "")
+
+factors <- names(pred_basic)
+match_initial_data <- match(all$Resp.ID,rownames(pred_basic))
+all_complete_basic <- cbind(all,scale(pred_basic[match_initial_data,]))
+corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
+
+# Plot loadings by context
+all_complete_melt <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
+
+library(ggplot2)
+ggplot(all_complete_melt)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+
+# error bar 
+sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%
+  summarise(meanFac = mean(value,na.rm=TRUE),
+            stdFac = sd(value,na.rm=TRUE),
+            nObs = length(Context[!is.na(value)])) %>%
+  mutate(seMean = stdFac/sqrt(nObs),
+         CI95 = 1.96*seMean)
+
+ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
+
+ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
+geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~Context,scales="free_y") + 
+  geom_point() + ggtitle("Mean +- 95% CI")
+
+kable(sum_stat)
+```
+
+
+
+

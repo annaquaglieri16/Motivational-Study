@@ -26,6 +26,7 @@ Anna Quaglieri & Riccardo Amorati
     -   [English in Germany](#english-in-germany)
     -   [English in Italy](#english-in-italy)
     -   [All context together](#all-context-together)
+    -   [Compare correlations](#compare-correlations)
 -   [Evaluate internal consistency of known constructs with alpha](#evaluate-internal-consistency-of-known-constructs-with-alpha)
 
 Plan that I wrote with Richi's comments
@@ -597,15 +598,23 @@ Write filtered and merged dataset
 Descriptive plots and tables
 ----------------------------
 
--   Summary demographics TO DO: - to change yearL2.study.richi
+``` r
+> all$speak.other.L2_binary <- ifelse(!is.na(all$speak.other.L2) & 
++                                       !(all$speak.other.L2 %in% c("Yes","No")),"Yes",as.character(all$speak.other.L2))
+> 
+> 
+> kable(table(all$speak.other.L2_binary,all$Context,useNA = "always"))
+```
+
+|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| No  |                  12|                24|                   52|                    53|    0|
+| Yes |                  57|                67|                   36|                    20|    0|
+| NA  |                   1|                 0|                    0|                     1|    0|
+
+-   Age
 
 ``` r
-> # add numbers on the bar
-> 
-> # tabAge <- t(table(all$Age,all$Context))
-> # ggplot(all,aes(x=Age,fill=Context)) + geom_bar(position="dodge",colour="white")   + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2.5, y=40, width=0.3, height=0.4) + ggtitle("Participants by age")
-> # tabAge
-> 
 > tabAge <- t(table(all$Age,all$Context))
 > ggdf <- data.frame(Age = rep(colnames(tabAge),each=4)[!(as.numeric(tabAge) == 0)],
 +   N.Participants = as.numeric(tabAge)[!(as.numeric(tabAge) == 0)],
@@ -1383,7 +1392,9 @@ Italian in Australia
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "Italian in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
-> 
+> data_cor_ita_in_au <- data.frame(cor_ita_in_au=cov[lower.tri(cov, diag = TRUE)],
++                 var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
++                 var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
 > 
 > row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 > row_infos$Variables <- as.character(row_infos$Variables)
@@ -1409,6 +1420,11 @@ German in Australia
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "German in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
+> data_cor_germ_in_au <- data.frame(cor_germ_in_au=cov[lower.tri(cov, diag = TRUE)],
++                 var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
++                 var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+> 
+> 
 > 
 > row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 > row_infos$Variables <- as.character(row_infos$Variables)
@@ -1431,6 +1447,10 @@ English in Germany
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "English in Germany",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1",    "speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
+> data_cor_eng_in_germ <- data.frame(cor_eng_in_germ=cov[lower.tri(cov, diag = TRUE)],
++                 var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
++                 var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+> 
 > 
 > row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 > row_infos$Variables <- as.character(row_infos$Variables)
@@ -1453,6 +1473,10 @@ English in Italy
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "English in Italy",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1","speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
+> data_cor_eng_in_ita <- data.frame(cor_eng_in_ita=cov[lower.tri(cov, diag = TRUE)],
++                 var1 = rownames(cov)[unlist(t(mapply(":", 1:nrow(cov), nrow(cov)))[1,])],
++                 var2 = rep(colnames(cov),times=rev(seq(nrow(cov):1))))
+> 
 > 
 > row_infos <- data.frame(Variables=sapply(strsplit(colnames(cov),split="\\."),function(x) x[2]))
 > row_infos$Variables <- as.character(row_infos$Variables)
@@ -1491,6 +1515,83 @@ All context together
 ```
 
 ![](02-descriptive_files/figure-markdown_github/cor_all_contexts-1.png)
+
+Compare correlations
+--------------------
+
+``` r
+> library(GGally)
+```
+
+    ## 
+    ## Attaching package: 'GGally'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     nasa
+
+``` r
+> combine_cor <- merge(data_cor_eng_in_ita,data_cor_eng_in_germ,all = TRUE)
+> combine_cor1 <- merge(combine_cor,data_cor_germ_in_au,all = TRUE)
+> combine_cor2 <- merge(combine_cor1,data_cor_ita_in_au,all = TRUE)
+> combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item","variable"),sep="[.]",remove=FALSE)
+```
+
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 60 rows
+    ## [309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
+    ## 324, 325, 326, 327, 328, ...].
+
+``` r
+> combine_cor2$variable <- ifelse(is.na(combine_cor2$variable),combine_cor2$item,combine_cor2$variable)
+> 
+> pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-1.png)
+
+``` r
+> ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
+```
+
+    ## Warning: Removed 126 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 126 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 156 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 156 rows containing missing values
+
+    ## Warning: Removed 126 rows containing missing values (geom_point).
+
+    ## Warning: Removed 126 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 156 rows containing missing values
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 156 rows containing missing values
+
+    ## Warning: Removed 156 rows containing missing values (geom_point).
+
+    ## Warning: Removed 156 rows containing missing values (geom_point).
+
+    ## Warning: Removed 30 rows containing non-finite values (stat_density).
+
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
+    ## "pearson", : Removed 30 rows containing missing values
+
+    ## Warning: Removed 156 rows containing missing values (geom_point).
+
+    ## Warning: Removed 156 rows containing missing values (geom_point).
+
+    ## Warning: Removed 30 rows containing missing values (geom_point).
+
+    ## Warning: Removed 30 rows containing non-finite values (stat_density).
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-2.png)
 
 Evaluate internal consistency of known constructs with alpha
 ============================================================
@@ -1582,16 +1683,21 @@ Evaluate internal consistency of known constructs with alpha
     ## people.ought1         0.1919167 0.9499849 0.1246586   2.192857 0.5301959
     ## expect.ought1         0.1919167 0.9499849 0.1246586   2.192857 0.5301959
     ## fail.ought1           0.1919167 0.9499849 0.1246586   2.192857 0.5301959
-    ##                 drop.raw_alpha drop.std.alpha drop.G6.smc. drop.average_r
-    ## consider.ought1     0.10658734      0.2603802    0.3349500     0.10502423
-    ## people.ought1       0.66770987      0.6922109    0.6147672     0.42846015
-    ## expect.ought1       0.07902542      0.1229898    0.1717773     0.04465828
-    ## fail.ought1         0.32828494      0.4122936    0.3966550     0.18952428
-    ##                  drop.S.N drop.alpha.se
-    ## consider.ought1 0.3520461    0.19135896
-    ## people.ought1   2.2489778    0.06738635
-    ## expect.ought1   0.1402376    0.19008086
-    ## fail.ought1     0.7015298    0.14252260
+    ##                 alpha.median_r drop.raw_alpha drop.std.alpha drop.G6.smc.
+    ## consider.ought1      0.1756317     0.10658734      0.2603802    0.3349500
+    ## people.ought1        0.1756317     0.66770987      0.6922109    0.6147672
+    ## expect.ought1        0.1756317     0.07902542      0.1229898    0.1717773
+    ## fail.ought1          0.1756317     0.32828494      0.4122936    0.3966550
+    ##                 drop.average_r  drop.S.N drop.alpha.se drop.var.r
+    ## consider.ought1     0.10502423 0.3520461    0.19135896 0.11759748
+    ## people.ought1       0.42846015 2.2489778    0.06738635 0.01076474
+    ## expect.ought1       0.04465828 0.1402376    0.19008086 0.06563350
+    ## fail.ought1         0.18952428 0.7015298    0.14252260 0.07264751
+    ##                 drop.med.r
+    ## consider.ought1 0.04170429
+    ## people.ought1   0.47519627
+    ## expect.ought1   0.02624354
+    ## fail.ought1     0.04170429
 
 ``` r
 > eng_in_germ$var <- sapply(strsplit(rownames(eng_in_germ),split="\\."),function(x) x[1]) 
@@ -1649,4 +1755,4 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-1.png)
