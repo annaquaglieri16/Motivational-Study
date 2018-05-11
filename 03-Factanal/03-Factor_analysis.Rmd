@@ -218,10 +218,12 @@ sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%
             stdFac = sd(value,na.rm=TRUE),
             nObs = length(Context[!is.na(value)])) %>%
   mutate(stdMean = stdFac/sqrt(nObs),
-         CI95 = 1.96*stdMean)
+         CIspread=1.96*stdMean,
+         LowerBoundCI = meanFac - 1.96*stdMean,
+         UpperBoundCI = meanFac + 1.96*stdMean)
 
 ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
-geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
+geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
 
 kable(sum_stat)
 ```

@@ -581,10 +581,12 @@ Chronbach alpha
 +             stdFac = sd(value,na.rm=TRUE),
 +             nObs = length(Context[!is.na(value)])) %>%
 +   mutate(stdMean = stdFac/sqrt(nObs),
-+          CI95 = 1.96*stdMean)
++          CIspread=1.96*stdMean,
++          LowerBoundCI = meanFac - 1.96*stdMean,
++          UpperBoundCI = meanFac + 1.96*stdMean)
 > 
 > ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
-+ geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
++ geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
 ```
 
 ![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-3.png)
@@ -593,32 +595,32 @@ Chronbach alpha
 > kable(sum_stat)
 ```
 
-| Context              | variable |    meanFac|     stdFac|  nObs|    stdMean|       CI95|
-|:---------------------|:---------|----------:|----------:|-----:|----------:|----------:|
-| English in Germany   | Factor1  |   9.180216|  1.3385318|    70|  0.1599852|  0.3135709|
-| English in Germany   | Factor2  |   8.322364|  0.8798173|    70|  0.1051583|  0.2061102|
-| English in Germany   | Factor3  |   1.179170|  0.6342022|    70|  0.0758017|  0.1485712|
-| English in Germany   | Factor4  |   7.508108|  0.9099322|    70|  0.1087577|  0.2131651|
-| English in Germany   | Factor5  |   7.780045|  0.8026101|    70|  0.0959303|  0.1880233|
-| English in Germany   | Factor6  |   3.694089|  0.8195410|    70|  0.0979539|  0.1919896|
-| English in Italy     | Factor1  |  10.123788|  0.8109915|    91|  0.0850150|  0.1666294|
-| English in Italy     | Factor2  |   8.211752|  0.8294970|    91|  0.0869549|  0.1704316|
-| English in Italy     | Factor3  |   1.515703|  0.8570981|    91|  0.0898483|  0.1761027|
-| English in Italy     | Factor4  |   7.762009|  0.7910125|    91|  0.0829206|  0.1625245|
-| English in Italy     | Factor5  |   8.061022|  0.8048481|    91|  0.0843710|  0.1653672|
-| English in Italy     | Factor6  |   4.233386|  0.6562653|    91|  0.0687953|  0.1348388|
-| German in Australia  | Factor1  |  10.151486|  0.8241152|    88|  0.0878510|  0.1721879|
-| German in Australia  | Factor2  |   7.813928|  1.0284663|    88|  0.1096349|  0.2148844|
-| German in Australia  | Factor3  |   1.516524|  1.0230719|    88|  0.1090598|  0.2137573|
-| German in Australia  | Factor4  |   7.170152|  1.0085632|    88|  0.1075132|  0.2107259|
-| German in Australia  | Factor5  |   7.452820|  0.9443138|    88|  0.1006642|  0.1973018|
-| German in Australia  | Factor6  |   3.873541|  0.8184000|    88|  0.0872417|  0.1709938|
-| Italian in Australia | Factor1  |  10.160109|  0.7966791|    74|  0.0926121|  0.1815197|
-| Italian in Australia | Factor2  |   8.050933|  0.8039070|    74|  0.0934523|  0.1831665|
-| Italian in Australia | Factor3  |   1.801576|  1.0142178|    74|  0.1179004|  0.2310848|
-| Italian in Australia | Factor4  |   6.738630|  0.9220862|    74|  0.1071903|  0.2100931|
-| Italian in Australia | Factor5  |   7.572769|  0.9760002|    74|  0.1134577|  0.2223771|
-| Italian in Australia | Factor6  |   3.867960|  0.8624561|    74|  0.1002585|  0.1965066|
+| Context              | variable |    meanFac|     stdFac|  nObs|    stdMean|   CIspread|  LowerBoundCI|  UpperBoundCI|
+|:---------------------|:---------|----------:|----------:|-----:|----------:|----------:|-------------:|-------------:|
+| English in Germany   | Factor1  |   9.180216|  1.3385318|    70|  0.1599852|  0.3135709|      8.866645|      9.493787|
+| English in Germany   | Factor2  |   8.322364|  0.8798173|    70|  0.1051583|  0.2061102|      8.116254|      8.528474|
+| English in Germany   | Factor3  |   1.179170|  0.6342022|    70|  0.0758017|  0.1485712|      1.030599|      1.327741|
+| English in Germany   | Factor4  |   7.508108|  0.9099322|    70|  0.1087577|  0.2131651|      7.294943|      7.721273|
+| English in Germany   | Factor5  |   7.780045|  0.8026101|    70|  0.0959303|  0.1880233|      7.592022|      7.968069|
+| English in Germany   | Factor6  |   3.694089|  0.8195410|    70|  0.0979539|  0.1919896|      3.502099|      3.886079|
+| English in Italy     | Factor1  |  10.123788|  0.8109915|    91|  0.0850150|  0.1666294|      9.957159|     10.290418|
+| English in Italy     | Factor2  |   8.211752|  0.8294970|    91|  0.0869549|  0.1704316|      8.041320|      8.382183|
+| English in Italy     | Factor3  |   1.515703|  0.8570981|    91|  0.0898483|  0.1761027|      1.339600|      1.691805|
+| English in Italy     | Factor4  |   7.762009|  0.7910125|    91|  0.0829206|  0.1625245|      7.599485|      7.924534|
+| English in Italy     | Factor5  |   8.061022|  0.8048481|    91|  0.0843710|  0.1653672|      7.895655|      8.226390|
+| English in Italy     | Factor6  |   4.233386|  0.6562653|    91|  0.0687953|  0.1348388|      4.098547|      4.368225|
+| German in Australia  | Factor1  |  10.151486|  0.8241152|    88|  0.0878510|  0.1721879|      9.979299|     10.323674|
+| German in Australia  | Factor2  |   7.813928|  1.0284663|    88|  0.1096349|  0.2148844|      7.599044|      8.028813|
+| German in Australia  | Factor3  |   1.516524|  1.0230719|    88|  0.1090598|  0.2137573|      1.302767|      1.730281|
+| German in Australia  | Factor4  |   7.170152|  1.0085632|    88|  0.1075132|  0.2107259|      6.959427|      7.380878|
+| German in Australia  | Factor5  |   7.452820|  0.9443138|    88|  0.1006642|  0.1973018|      7.255519|      7.650122|
+| German in Australia  | Factor6  |   3.873541|  0.8184000|    88|  0.0872417|  0.1709938|      3.702548|      4.044535|
+| Italian in Australia | Factor1  |  10.160109|  0.7966791|    74|  0.0926121|  0.1815197|      9.978589|     10.341629|
+| Italian in Australia | Factor2  |   8.050933|  0.8039070|    74|  0.0934523|  0.1831665|      7.867767|      8.234099|
+| Italian in Australia | Factor3  |   1.801576|  1.0142178|    74|  0.1179004|  0.2310848|      1.570491|      2.032661|
+| Italian in Australia | Factor4  |   6.738630|  0.9220862|    74|  0.1071903|  0.2100931|      6.528537|      6.948723|
+| Italian in Australia | Factor5  |   7.572769|  0.9760002|    74|  0.1134577|  0.2223771|      7.350392|      7.795146|
+| Italian in Australia | Factor6  |   3.867960|  0.8624561|    74|  0.1002585|  0.1965066|      3.671454|      4.064467|
 
 Linear models testing the effect of context
 -------------------------------------------
