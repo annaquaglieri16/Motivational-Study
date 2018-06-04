@@ -129,8 +129,6 @@ fact <- 6
 loading_cutoff <- 0.2
 fa_basic <- fa(applygetRes,fact)
 
-fa_basic
-
 # analyse residuals vs initial
 #fa_basic <- fa(applygetRes, fact,scores="regression")
 #fac <- as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff = 0.3)
@@ -210,7 +208,7 @@ corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use 
 # Plot loadings by context
 all_complete_melt <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
 
-ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context)) + facet_wrap(~variable) + coord_flip() + guides(color=F)
 
 # error bar 
 sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%
@@ -241,18 +239,49 @@ summary(lm(Factor3 ~ Context,data=fact_data))
 summary(lm(Factor4 ~ Context,data=fact_data))
 summary(lm(Factor5 ~ Context,data=fact_data))
 summary(lm(Factor6 ~ Context,data=fact_data))
+
+summary(aov(Factor1 ~ Context,data=fact_data))
+summary(aov(Factor2 ~ Context,data=fact_data))
+summary(aov(Factor3 ~ Context,data=fact_data))
+summary(aov(Factor4 ~ Context,data=fact_data))
+summary(aov(Factor5 ~ Context,data=fact_data))
+summary(aov(Factor6 ~ Context,data=fact_data))
 ```
 
+## All pairwise comparisons
 
-# Demographics - to be updated with the final FA chosen
+```{r}
+fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
+```
+
+# Demographics
 
 Variables have been recoded and we need to do the models.
 
-```{r}
+```{r eval=FALSE}
 demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
 
-dat_fac_demo <- all_complete_basic[,c(demographics_var,factors)]
-table(dat_fac_demo$Age) 
+# Combine with demo variables
+pred_basic <- data.frame(pred_basic)
+demo_data <- data.frame(pred_basic,all[match(all$Resp.ID,rownames(pred_basic)),c("Resp.ID",demographics_var)])
+sum(demo_data$Resp.ID != rownames(pred_basic))
+
+# Gender
+longData <- demo_data %>% gather(key = FactorLabel,value = FactorValue,Factor1:Factor6) %>%
+  group_by(Gender,FactorLabel) %>%
+  summarise(meanDemo = mean(FactorValue),
+            sdDemo =  sd(FactorValue))
+
+summary(lm(Factor1 ~ prof + Gender + Age + Context,data = demo_data))
+summary(lm(Factor1 ~ Context:prof,data = demo_data))
+summary(lm(Factor2 ~ prof + Context,data = demo_data))
+summary(lm(Factor3 ~ prof + Context,data = demo_data))
+
+summary(lm(Factor1 ~ origin + Gender + Age + Context,data = demo_data))
+summary(lm(Factor1 ~ Context:prof,data = demo_data))
+summary(lm(Factor2 ~ prof + Context,data = demo_data))
+summary(lm(Factor3 ~ prof + Context,data = demo_data))
+
 
 table(dat_fac_demo$L1) # to be changed
 dat_fac_demo$L1_expected <- ifelse(as.character(dat_fac_demo$L1) %in% c("German","Italian","English"),"Yes","No")

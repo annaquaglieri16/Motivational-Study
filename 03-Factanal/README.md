@@ -9,7 +9,8 @@ Anna Quaglieri & Riccardo Amorati
 -   [Final Factanal correcting for degree and Context and not for L2](#final-factanal-correcting-for-degree-and-context-and-not-for-l2)
     -   [Chronbach alpha](#chronbach-alpha)
     -   [Linear models testing the effect of context](#linear-models-testing-the-effect-of-context)
--   [Demographics - to be updated with the final FA chosen](#demographics---to-be-updated-with-the-final-fa-chosen)
+    -   [All pairwise comparisons](#all-pairwise-comparisons)
+-   [Demographics](#demographics)
     -   [Tables](#tables)
     -   [Factor means with Confidence Intervals](#factor-means-with-confidence-intervals)
 -   [Other tentatives](#other-tentatives)
@@ -106,86 +107,6 @@ When correcting for context what we are doing is that we are removing the contex
 ```
 
     ## Loading required namespace: GPArotation
-
-``` r
-> fa_basic
-```
-
-    ## Factor Analysis using method =  minres
-    ## Call: fa(r = applygetRes, nfactors = fact)
-    ## Standardized loadings (pattern matrix) based upon correlation matrix
-    ##                      MR2   MR1   MR3   MR4   MR5   MR6   h2   u2 com
-    ## converse.id1        0.06  0.44  0.04  0.13  0.13  0.10 0.39 0.61 1.5
-    ## dream.id1           0.15  0.29  0.04  0.21  0.21 -0.27 0.34 0.66 4.3
-    ## usewell.id1         0.09  0.15  0.05  0.22  0.24 -0.12 0.23 0.77 3.6
-    ## whenever.id1        0.01  0.23  0.09  0.20  0.34 -0.02 0.35 0.65 2.6
-    ## consider.ought1     0.08  0.02  0.56  0.04 -0.09  0.09 0.36 0.64 1.2
-    ## people.ought1       0.01  0.04  0.53  0.17 -0.01 -0.10 0.32 0.68 1.3
-    ## expect.ought1       0.00  0.01  0.82 -0.02 -0.01  0.00 0.67 0.33 1.0
-    ## fail.ought1        -0.01 -0.03  0.62 -0.05  0.06  0.01 0.38 0.62 1.0
-    ## enjoy.intr1         0.02  0.00 -0.11 -0.01  0.74 -0.03 0.56 0.44 1.1
-    ## life.intr1         -0.09  0.18  0.17  0.06  0.55  0.14 0.51 0.49 1.7
-    ## exciting.intr1      0.17  0.21 -0.02  0.10  0.38 -0.07 0.37 0.63 2.3
-    ## challenge.intr1     0.17 -0.07 -0.01 -0.04  0.46  0.14 0.29 0.71 1.6
-    ## job.instru1        -0.01 -0.04  0.07  0.78 -0.05  0.05 0.60 0.40 1.0
-    ## knowledge.instru1   0.03 -0.02  0.05  0.06  0.22  0.37 0.24 0.76 1.8
-    ## career.instru1     -0.01  0.03 -0.07  0.71  0.03 -0.04 0.51 0.49 1.0
-    ## money.instru1      -0.01 -0.14  0.07  0.53  0.08  0.12 0.32 0.68 1.3
-    ## time.integr1        0.04  0.64 -0.05 -0.01  0.09 -0.03 0.47 0.53 1.1
-    ## becomelike.integr1  0.00  0.37  0.10 -0.06  0.04  0.27 0.27 0.73 2.1
-    ## meeting.integr1     0.08  0.56 -0.08  0.01  0.10 -0.08 0.39 0.61 1.2
-    ## affinity.integr1   -0.10  0.68  0.10 -0.07 -0.07  0.09 0.44 0.56 1.2
-    ## improve.prof1       0.64  0.14 -0.06 -0.05 -0.06  0.06 0.44 0.56 1.2
-    ## speaking.prof1      0.74  0.12 -0.07  0.13 -0.15 -0.02 0.61 0.39 1.2
-    ## reading.prof1       0.68 -0.13  0.01 -0.10  0.12 -0.01 0.48 0.52 1.2
-    ## written.prof1       0.78 -0.05  0.07  0.03  0.06 -0.04 0.61 0.39 1.0
-    ## listening.prof1     0.83 -0.04  0.04 -0.05  0.04  0.05 0.69 0.31 1.0
-    ## citizen.post1       0.06  0.04  0.06  0.13  0.01  0.56 0.41 0.59 1.2
-    ## interact.post1      0.09  0.21 -0.17  0.14  0.14  0.18 0.25 0.75 4.9
-    ## overseas.post1      0.29  0.19 -0.07  0.18 -0.02  0.26 0.34 0.66 3.6
-    ## globalaccess.post1  0.05  0.15 -0.19  0.30  0.16  0.33 0.45 0.55 3.7
-    ## 
-    ##                        MR2  MR1  MR3  MR4  MR5  MR6
-    ## SS loadings           3.08 2.27 1.86 2.03 1.98 1.07
-    ## Proportion Var        0.11 0.08 0.06 0.07 0.07 0.04
-    ## Cumulative Var        0.11 0.18 0.25 0.32 0.39 0.42
-    ## Proportion Explained  0.25 0.18 0.15 0.17 0.16 0.09
-    ## Cumulative Proportion 0.25 0.44 0.59 0.75 0.91 1.00
-    ## 
-    ##  With factor correlations of 
-    ##       MR2  MR1   MR3  MR4   MR5  MR6
-    ## MR2  1.00 0.20 -0.05 0.22  0.27 0.10
-    ## MR1  0.20 1.00  0.03 0.35  0.39 0.21
-    ## MR3 -0.05 0.03  1.00 0.06 -0.04 0.14
-    ## MR4  0.22 0.35  0.06 1.00  0.30 0.27
-    ## MR5  0.27 0.39 -0.04 0.30  1.00 0.15
-    ## MR6  0.10 0.21  0.14 0.27  0.15 1.00
-    ## 
-    ## Mean item complexity =  1.8
-    ## Test of the hypothesis that 6 factors are sufficient.
-    ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  9.54 with Chi Square of  2973.11
-    ## The degrees of freedom for the model are 247  and the objective function was  1.4 
-    ## 
-    ## The root mean square of the residuals (RMSR) is  0.03 
-    ## The df corrected root mean square of the residuals is  0.04 
-    ## 
-    ## The harmonic number of observations is  323 with the empirical chi square  305.61  with prob <  0.0065 
-    ## The total number of observations was  323  with Likelihood Chi Square =  429.33  with prob <  5.4e-12 
-    ## 
-    ## Tucker Lewis Index of factoring reliability =  0.881
-    ## RMSEA index =  0.05  and the 90 % confidence intervals are  0.04 0.055
-    ## BIC =  -997.75
-    ## Fit based upon off diagonal values = 0.98
-    ## Measures of factor score adequacy             
-    ##                                                    MR2  MR1  MR3  MR4  MR5
-    ## Correlation of (regression) scores with factors   0.94 0.88 0.89 0.89 0.88
-    ## Multiple R square of scores with factors          0.88 0.78 0.80 0.79 0.77
-    ## Minimum correlation of possible factor scores     0.76 0.56 0.60 0.58 0.54
-    ##                                                    MR6
-    ## Correlation of (regression) scores with factors   0.78
-    ## Multiple R square of scores with factors          0.61
-    ## Minimum correlation of possible factor scores     0.23
 
 ``` r
 > # analyse residuals vs initial
@@ -569,7 +490,7 @@ Chronbach alpha
 > # Plot loadings by context
 > all_complete_melt <- melt(all_complete_basic,id.vars = "Context",measure.vars = factors)
 > 
-> ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
+> ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context)) + facet_wrap(~variable) + coord_flip() + guides(color=F)
 ```
 
 ![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-2.png)
@@ -783,214 +704,126 @@ Linear models testing the effect of context
     ## Multiple R-squared:  0.06095,    Adjusted R-squared:  0.05212 
     ## F-statistic: 6.901 on 3 and 319 DF,  p-value: 0.0001625
 
-Demographics - to be updated with the final FA chosen
-=====================================================
+``` r
+> summary(aov(Factor1 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Context       3   51.0  16.999   18.81 2.93e-11 ***
+    ## Residuals   319  288.2   0.904                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+> summary(aov(Factor2 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## Context       3  11.95   3.983   4.991 0.00214 **
+    ## Residuals   319 254.54   0.798                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+> summary(aov(Factor3 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Context       3  13.96   4.653   5.708 0.000812 ***
+    ## Residuals   319 260.02   0.815                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+> summary(aov(Factor4 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Context       3  47.22  15.740   19.02 2.26e-11 ***
+    ## Residuals   319 264.01   0.828                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+> summary(aov(Factor5 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Context       3  18.72   6.240   7.966 3.88e-05 ***
+    ## Residuals   319 249.87   0.783                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+> summary(aov(Factor6 ~ Context,data=fact_data))
+```
+
+    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Context       3  12.83   4.277   6.901 0.000163 ***
+    ## Residuals   319 197.68   0.620                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+All pairwise comparisons
+------------------------
+
+``` r
+> fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
+```
+
+Demographics
+============
 
 Variables have been recoded and we need to do the models.
 
 ``` r
 > demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
 > 
-> dat_fac_demo <- all_complete_basic[,c(demographics_var,factors)]
-> table(dat_fac_demo$Age) 
-```
-
-    ## 
-    ## 18-25 26-30 31-35 
-    ##   318     4     1
-
-``` r
+> # Combine with demo variables
+> pred_basic <- data.frame(pred_basic)
+> demo_data <- data.frame(pred_basic,all[match(all$Resp.ID,rownames(pred_basic)),c("Resp.ID",demographics_var)])
+> sum(demo_data$Resp.ID != rownames(pred_basic))
+> 
+> # Gender
+> longData <- demo_data %>% gather(key = FactorLabel,value = FactorValue,Factor1:Factor6) %>%
++   group_by(Gender,FactorLabel) %>%
++   summarise(meanDemo = mean(FactorValue),
++             sdDemo =  sd(FactorValue))
+> 
+> summary(lm(Factor1 ~ prof + Gender + Age + Context,data = demo_data))
+> summary(lm(Factor1 ~ Context:prof,data = demo_data))
+> summary(lm(Factor2 ~ prof + Context,data = demo_data))
+> summary(lm(Factor3 ~ prof + Context,data = demo_data))
+> 
+> summary(lm(Factor1 ~ origin + Gender + Age + Context,data = demo_data))
+> summary(lm(Factor1 ~ Context:prof,data = demo_data))
+> summary(lm(Factor2 ~ prof + Context,data = demo_data))
+> summary(lm(Factor3 ~ prof + Context,data = demo_data))
+> 
+> 
 > table(dat_fac_demo$L1) # to be changed
-```
-
-    ## 
-    ##          Afrikaans           Albanian          Cantonese 
-    ##                  1                  1                  2 
-    ##            Chinese              Dutch            English 
-    ##                  4                  1                147 
-    ##  English and Dutch             German German and English 
-    ##                  2                 63                  2 
-    ##                  I         Indonesian            Italian 
-    ##                  1                  1                 87 
-    ##           Japanese           Mandarin    Persian (Farsi) 
-    ##                  1                  2                  1 
-    ##           Romanian            Russian             Sindhi 
-    ##                  1                  2                  1 
-    ##            Spanish            Turkish          Ukrainian 
-    ##                  1                  1                  1
-
-``` r
 > dat_fac_demo$L1_expected <- ifelse(as.character(dat_fac_demo$L1) %in% c("German","Italian","English"),"Yes","No")
 > table(dat_fac_demo$L1_expected)
-```
-
-    ## 
-    ##  No Yes 
-    ##  26 297
-
-``` r
+> 
 > table(dat_fac_demo$speak.other.L2) # to be changed
-```
-
-    ## 
-    ##                                                              Afrikaans 
-    ##                                                                      1 
-    ##                                                                 Arabic 
-    ##                                                                      1 
-    ##                                             Azeri, Turkish and English 
-    ##                                                                      1 
-    ##                                                                Chinese 
-    ##                                                                      1 
-    ##                                                    Chinese (Cantonese) 
-    ##                                                                      1 
-    ##                                                     Dutch (and German) 
-    ##                                                                      1 
-    ##                                                                English 
-    ##                                                                      5 
-    ##                                                      English\nJapanese 
-    ##                                                                      1 
-    ##                                                      English, Javanese 
-    ##                                                                      1 
-    ##                                                      English, Mandarin 
-    ##                                                                      1 
-    ##                                                                 French 
-    ##                                                                     10 
-    ##                                            French and learning Spanish 
-    ##                                                                      1 
-    ##                                                         French, Greek. 
-    ##                                                                      1 
-    ##                French, not fluent, but have a fair amount of knowledge 
-    ##                                                                      1 
-    ##                                                                French. 
-    ##                                                                      1 
-    ##                                                                 German 
-    ##                                                                      1 
-    ##                                     German (proficient/advanced level) 
-    ##                                                                      1 
-    ##                                                    German and Japanese 
-    ##                                                                      1 
-    ##                                                         German, French 
-    ##                                                                      1 
-    ##                                                                German. 
-    ##                                                                      1 
-    ##                                                                  Greek 
-    ##                                                                      2 
-    ##                                                                  Hindi 
-    ##                                                                      1 
-    ##                                                             Indonesian 
-    ##                                                                      1 
-    ## Indonesian and French (not fluent in either, but did VCE both of them) 
-    ##                                                                      1 
-    ##                                                                  Irish 
-    ##                                                                      1 
-    ##                                                                Italian 
-    ##                                                                      5 
-    ##                                                               Japanese 
-    ##                                                                      1 
-    ##                                                             Macedonian 
-    ##                                                                      1 
-    ##                                                                     No 
-    ##                                                                    141 
-    ##                                                            Only German 
-    ##                                                                      1 
-    ##                                                                 Polish 
-    ##                                                                      1 
-    ##                                                                Russian 
-    ##                                                                      1 
-    ##                                                                Serbian 
-    ##                                                                      1 
-    ##                                                           Some Italian 
-    ##                                                                      1 
-    ##                                                                Spanish 
-    ##                                                                      2 
-    ##                                                                Swedish 
-    ##                                                                      1 
-    ##                                                                 Telugu 
-    ##                                                                      1 
-    ##                                                          Urdu, English 
-    ##                                                                      1 
-    ##                                                                    Yes 
-    ##                                                                    124
-
-``` r
 > dat_fac_demo$speak.other.L2_binary <- ifelse(!is.na(dat_fac_demo$speak.other.L2) & 
 +                                       !(dat_fac_demo$speak.other.L2 %in% c("Yes","No")),"Yes",as.character(all$speak.other.L2))
 > table(dat_fac_demo$speak.other.L2_binary)
-```
-
-    ## 
-    ##  No Yes 
-    ## 141 180
-
-``` r
+> 
 > #table(dat_fac_demo$study.other.L2) # to be changed
 > 
 > table(dat_fac_demo$origins)
-```
-
-    ## 
-    ##  No Yes 
-    ## 254  69
-
-``` r
+> 
 > table(dat_fac_demo$year.studyL2) # da vedere only for Australian contexts
-```
-
-    ## 
-    ##                      0 years                   1- 3 years 
-    ##                           33                            9 
-    ##                    1-3 years                    4-6 years 
-    ##                            7                           53 
-    ##                    BILINGUAL First year of primary school 
-    ##                            4                           73 
-    ##         FIRST.YEAR.SECONDARY          FOURTH.YEAR.PRIMARY 
-    ##                           10                            5 
-    ##                 Kindergarten             Less than a year 
-    ##                           29                           18 
-    ##              LOWER.SECONDARY            more than 6 years 
-    ##                            4                           41 
-    ##                     PERSONAL          SECOND.YEAR.PRIMARY 
-    ##                            2                            2 
-    ##        SECOND.YEAR.SECONDARY           THIRD.YEAR.PRIMARY 
-    ##                            2                           28
-
-``` r
+> 
 > table(dat_fac_demo$degree) # to be tried- only interesting for Australia
-```
-
-    ## 
-    ##                     BA in Anglistik            BA in Nordamerikastudien 
-    ##                                  39                                   4 
-    ##                                 HUM                             HUM.SCI 
-    ##                                  98                                   6 
-    ##                                  LA      Lingue e letterature straniere 
-    ##                                  27                                  78 
-    ## Lingue, mercati e culture dell'Asia                                 SCI 
-    ##                                  13                                  58
-
-``` r
 > # Merge BA in Anglistik  with BA in Nordamerikastudien
 > dat_fac_demo$degree1 <- dat_fac_demo$degree
 > dat_fac_demo$degree1[dat_fac_demo$degree1 %in% "BA in Nordamerikastudien"] <- "BA in Anglistik"
 > 
 > table(dat_fac_demo$prof)
-```
-
-    ## 
-    ##           Advanced         Elementary       Intermediate 
-    ##                 65                 63                 68 
-    ## Upper-intermediate 
-    ##                127
-
-``` r
 > table(dat_fac_demo$L2.VCE)
-```
-
-    ## 
-    ##  No Yes 
-    ##  47  90
-
-``` r
+> 
 > #table(dat_fac_demo$other5.other.ways) # to be changed
 ```
 
@@ -1463,7 +1296,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1474,7 +1307,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-2.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1485,7 +1318,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-3.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1496,7 +1329,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-4.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1507,7 +1340,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-5.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1518,7 +1351,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-16-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-6.png)
 
 Other tentatives
 ================
@@ -1781,7 +1614,7 @@ FA with 7 factors (as from design)
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-1.png)
 
 ``` r
 > # Table of the factors
@@ -1836,7 +1669,7 @@ FA with 7 factors (as from design)
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-2.png)
 
 ``` r
 > # Plot loadings by context
@@ -1846,7 +1679,7 @@ FA with 7 factors (as from design)
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-3.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -1867,7 +1700,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > fap <- fa.parallel(usable_data)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -1974,7 +1807,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-2.png)
 
 ``` r
 > # Table of the factors
@@ -2029,7 +1862,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -2039,7 +1872,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-4.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -2056,7 +1889,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2064,7 +1897,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-6.png)
 
 ``` r
 > kable(sum_stat)
@@ -2136,7 +1969,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-20-1.png)
 
 ### Check what is the effect of 0 years vs all in year.studyL2
 
@@ -2173,7 +2006,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("L1 binary") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1) + facet_wrap(~variable,scales = "free_x")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 -------------------------------------------------------------------------
@@ -2203,7 +2036,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
 
@@ -2310,7 +2143,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-2.png)
 
 Factor analysis correcting for context and degree and removing 0 years for year.studyL2
 ---------------------------------------------------------------------------------------
@@ -2339,9 +2172,9 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
-    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
+    ## Parallel analysis suggests that the number of factors =  7  and the number of components =  5
 
 ``` r
 > fact <- 7
@@ -2447,7 +2280,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-2.png)
 
 ``` r
 > # Table of the factors
@@ -2502,7 +2335,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -2514,7 +2347,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 
     ## Warning: Removed 252 rows containing non-finite values (stat_boxplot).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-4.png)
 
 ``` r
 > # error bar 
@@ -2529,7 +2362,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2537,7 +2370,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-6.png)
 
 ``` r
 > kable(sum_stat)
