@@ -421,7 +421,11 @@ dat_noNA <- usable_data_context[rowSums(is.na(usable_data_context)) == 0,]
 all_noNA <- all[rowSums(is.na(usable_data_context)) == 0,]
 table(rowSums(is.na(usable_data_context)))
 # Participants with NA to remove
-table(rowSums(is.na(usable_data_context)),usable_data_context$Context)
+table(rowSums(is.na(usable_data_context)),usable_data_context$Context,useNA = "always")
+
+# Variable missing values
+table(colSums(is.na(usable_data_context)))
+table(rowSums(is.na(usable_data_context)),usable_data_context$Context,useNA = "always")
 
 # check what to use to impute
 # have a look at the distribution of missing values
@@ -448,7 +452,6 @@ imputedMedian$job.instru1 <- with(imputedMedian[,usable_items], impute(job.instr
 imputedMedian$career.instru1 <- with(imputedMedian[,usable_items], impute(career.instru1, median))
 imputedMedian$meeting.integr1 <- with(imputedMedian[,usable_items], impute(meeting.integr1, median))
 imputedMedian$interact.post1 <- with(imputedMedian[,usable_items], impute(interact.post1, median))
-
 
 # check before after
 table(imputedMedian$time.integr1)
@@ -497,10 +500,26 @@ sum(!(colnames(imputedMedian) %in% usable_items))
 all <- cbind(all,imputedMedian[match(rownames(imputedMedian),all$Resp.ID),])
 ```
 
+**Add some updates that Richi did in Date 7th June 2018**
+
+```{r eval=FALSE}
+Other_ways_and_degree_role_with_respondent_IDs <- read_excel("Other-ways-and-degree-role-with-respondent-IDs.xlsx")
+sum(Other_ways_and_degree_role_with_respondent_IDs$Resp.ID != Other_ways_and_degree_role_with_respondent_IDs$Resp.ID__1)
+# to replace 
+# match for the NA degree.role
+
+match_updates <- match(all$Resp.ID,Other_ways_and_degree_role_with_respondent_IDs$Resp.ID)
+all$private.lessons1.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$private.lessons1.other.ways
+all$study.holiday2.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$study.holiday2.other.ways
+all$year.sem.abroad3.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$year.sem.abroad3.other.ways
+all$online.course4.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$online.course4.other.ways
+all$other5.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$other5.other.ways
+all$degree.role[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$degree.role
+```
+
 ## Save imputed data
 
 ```{r}
-
 write.csv(all,"02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv",row.names = FALSE)
 ```
 
@@ -586,6 +605,8 @@ ann_colors_wide <- list(Variables=c(comm1="#bd0026",educated="#b35806", id1="#f6
 diag(cov) <- NA
 pheatmap(cov, main = "Italian in Australia",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
 ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+
+cov_ItaAus <- cov
 ```
 
 ## German in Australia
@@ -610,6 +631,9 @@ ann_colors_wide <- list(Variables=c(comm1="#bd0026",educated="#b35806", id1="#f6
 diag(cov) <- NA
 pheatmap(cov, main = "German in Australia",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
 ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+
+# 
+cov_GermAus <- cov
 ```
 
 ## English in Germany
@@ -633,6 +657,8 @@ ann_colors_wide <- list(Variables=c(id1="#f6e8c3",necessity="#b35806",instru1="#
 diag(cov) <- NA
 pheatmap(cov, main = "English in Germany",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
 ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+
+cov_EngGerm <- cov
 ```
 
 ## English in Italy
@@ -656,7 +682,24 @@ ann_colors_wide <- list(Variables=c(comm1="#bd0026",necessity="#b35806", id1="#f
 diag(cov) <- NA
 pheatmap(cov, main = "English in Italy",annotation_names_row = FALSE,cluster_cols=TRUE,cluster_rows=TRUE,annotation_col = row_infos[,1,drop=FALSE], annotation_row = row_infos[,1,drop=FALSE]
 ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
+
+# 
+cov_EngIta <- cov
 ```
+
+## Correlation between correlation in the different contexts
+
+```{r}
+common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
+sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
+sum(rownames(cov_EngIta) != rownames(cov_GermAus))
+sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
+sum(rownames(cov_GermAus) != rownames(cov_ItaAus))
+
+plot(cov_GermAus,cov_ItaAus)
+plot(cov_EngIta,cov_EngGerm)
+```
+
 
 ## All context together
 

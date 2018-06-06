@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig
 
 ```
 
-## Basic factor analysis: 7 factors as the number of variables in the study design
+## Exploratory factor analysis: 7 factors as the number of variables in the study design
 
 ## Read in data
 
@@ -91,7 +91,20 @@ get_residuals <- function(item,pred1,pred2){
 applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
                      pred1=usable_data$Context,pred2=usable_data$degree_binary)
 
+```
 
+**Compare correlation matrix before and after correcting**
+
+```{r}
+before <- cor(as.matrix(dat_onlyItems))
+after <- cor(applygetRes)
+
+dif <- before - after
+hist(dif)
+```
+
+
+```{r}
 ########################
 
 ### added
