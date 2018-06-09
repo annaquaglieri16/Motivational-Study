@@ -25,6 +25,7 @@ Anna Quaglieri & Riccardo Amorati
     -   [German in Australia](#german-in-australia)
     -   [English in Germany](#english-in-germany)
     -   [English in Italy](#english-in-italy)
+    -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts)
     -   [All context together](#all-context-together)
     -   [Compare correlations](#compare-correlations)
 -   [Evaluate internal consistency of known constructs with alpha](#evaluate-internal-consistency-of-known-constructs-with-alpha)
@@ -917,17 +918,43 @@ The missing values appears to be at random and there are max two missing values 
 
 ``` r
 > # Participants with NA to remove
-> table(rowSums(is.na(usable_data_context)),usable_data_context$Context)
+> table(rowSums(is.na(usable_data_context)),usable_data_context$Context,useNA = "always")
 ```
 
-    ##    
-    ##     English in Germany English in Italy German in Australia
-    ##   0                 70               85                  87
-    ##   1                  0                6                   1
-    ##    
-    ##     Italian in Australia
-    ##   0                   69
-    ##   1                    5
+    ##       
+    ##        English in Germany English in Italy German in Australia
+    ##   0                    70               85                  87
+    ##   1                     0                6                   1
+    ##   <NA>                  0                0                   0
+    ##       
+    ##        Italian in Australia <NA>
+    ##   0                      69    0
+    ##   1                       5    0
+    ##   <NA>                    0    0
+
+``` r
+> # Variable missing values
+> table(colSums(is.na(usable_data_context)))
+```
+
+    ## 
+    ##  0  1  2 
+    ## 19 10  1
+
+``` r
+> table(rowSums(is.na(usable_data_context)),usable_data_context$Context,useNA = "always")
+```
+
+    ##       
+    ##        English in Germany English in Italy German in Australia
+    ##   0                    70               85                  87
+    ##   1                     0                6                   1
+    ##   <NA>                  0                0                   0
+    ##       
+    ##        Italian in Australia <NA>
+    ##   0                      69    0
+    ##   1                       5    0
+    ##   <NA>                    0    0
 
 ``` r
 > # check what to use to impute
@@ -943,6 +970,10 @@ The missing values appears to be at random and there are max two missing values 
     ## The following object is masked from 'package:tidyr':
     ## 
     ##     complete
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     cbind, rbind
 
 ``` r
 > library(VIM)
@@ -1067,7 +1098,6 @@ The missing values appears to be at random and there are max two missing values 
 > imputedMedian$career.instru1 <- with(imputedMedian[,usable_items], impute(career.instru1, median))
 > imputedMedian$meeting.integr1 <- with(imputedMedian[,usable_items], impute(meeting.integr1, median))
 > imputedMedian$interact.post1 <- with(imputedMedian[,usable_items], impute(interact.post1, median))
-> 
 > 
 > # check before after
 > table(imputedMedian$time.integr1)
@@ -1259,6 +1289,23 @@ The missing values appears to be at random and there are max two missing values 
 > all <- cbind(all,imputedMedian[match(rownames(imputedMedian),all$Resp.ID),])
 ```
 
+**Add some updates that Richi did in Date 7th June 2018**
+
+``` r
+> Other_ways_and_degree_role_with_respondent_IDs <- read_excel("Other-ways-and-degree-role-with-respondent-IDs.xlsx")
+> sum(Other_ways_and_degree_role_with_respondent_IDs$Resp.ID != Other_ways_and_degree_role_with_respondent_IDs$Resp.ID__1)
+> # to replace 
+> # match for the NA degree.role
+> 
+> match_updates <- match(all$Resp.ID,Other_ways_and_degree_role_with_respondent_IDs$Resp.ID)
+> all$private.lessons1.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$private.lessons1.other.ways
+> all$study.holiday2.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$study.holiday2.other.ways
+> all$year.sem.abroad3.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$year.sem.abroad3.other.ways
+> all$online.course4.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$online.course4.other.ways
+> all$other5.other.ways[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$other5.other.ways
+> all$degree.role[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$degree.role
+```
+
 Save imputed data
 -----------------
 
@@ -1294,14 +1341,14 @@ Barplot of likert variables
 +   facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 ``` r
 > filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
 > ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-25-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-2.png)
 
 Barplot of Educated and Necessity in the Australian and European Contexts
 -------------------------------------------------------------------------
@@ -1335,13 +1382,13 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Educated)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-2.png)
 
 -   **Necessity**
 
@@ -1372,7 +1419,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Necessity,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Necessity)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
@@ -1382,7 +1429,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 
     ## Warning: Removed 1 rows containing missing values (geom_text).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-2.png)
 
 Correlation plot of items by context
 ====================================
@@ -1415,6 +1462,10 @@ Italian in Australia
 
 ![](02-descriptive_files/figure-markdown_github/cor_italian_in_australia-1.png)
 
+``` r
+> cov_ItaAus <- cov
+```
+
 German in Australia
 -------------------
 
@@ -1442,6 +1493,11 @@ German in Australia
 
 ![](02-descriptive_files/figure-markdown_github/cor_german_in_australia-1.png)
 
+``` r
+> # 
+> cov_GermAus <- cov
+```
+
 English in Germany
 ------------------
 
@@ -1468,6 +1524,10 @@ English in Germany
 
 ![](02-descriptive_files/figure-markdown_github/cor_english_in_germany-1.png)
 
+``` r
+> cov_EngGerm <- cov
+```
+
 English in Italy
 ----------------
 
@@ -1493,6 +1553,144 @@ English in Italy
 ```
 
 ![](02-descriptive_files/figure-markdown_github/cor_english_in_italy-1.png)
+
+``` r
+> # 
+> cov_EngIta <- cov
+```
+
+Correlation between correlation in the different contexts
+---------------------------------------------------------
+
+We will perform an exploratory FA combining all the contexts together. This means that we are assuming that the correlation between items across context has the same direction (does not happen that cor(item1,item2)\_context1 &gt; 0 and cor(item1,item2)\_context2 &lt; 0).
+
+``` r
+> common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
+> sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(cov_EngIta) != rownames(cov_GermAus))
+```
+
+    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object
+    ## length is not a multiple of shorter object length
+
+    ## [1] 4
+
+``` r
+> sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
+```
+
+    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object
+    ## length is not a multiple of shorter object length
+
+    ## [1] 4
+
+``` r
+> sum(rownames(cov_GermAus) != rownames(cov_ItaAus))
+```
+
+    ## [1] 0
+
+``` r
+> common_EngIta <- cov_EngIta[rownames(cov_EngIta) %in% common,colnames(cov_EngIta) %in% common]
+> common_EngGerm <- cov_EngGerm[rownames(cov_EngGerm) %in% common,colnames(cov_EngGerm) %in% common]
+> common_GermAus <- cov_GermAus[rownames(cov_GermAus) %in% common,colnames(cov_GermAus) %in% common]
+> common_ItaAus <- cov_ItaAus[rownames(cov_ItaAus) %in% common,colnames(cov_ItaAus) %in% common]
+> 
+> sum(rownames(common_EngIta) != colnames(common_EngIta))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_EngGerm) != colnames(common_EngGerm))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_GermAus) != colnames(common_GermAus))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_ItaAus) != colnames(common_ItaAus))
+```
+
+    ## [1] 0
+
+``` r
+> par(mfrow=c(2,3))
+> plot(common_EngIta,common_EngGerm)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngIta,common_GermAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngIta,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> 
+> plot(common_EngGerm,common_GermAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngGerm,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> 
+> plot(common_GermAus,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-1.png)
+
+``` r
+> # Largest differences
+> low_EngGerm <- lower.tri(common_EngGerm)
+> common_EngGerm[!low_EngGerm] <- NA
+> common_GermAus[!(lower.tri(common_GermAus))] <- NA
+> common_ItaAus[!(lower.tri(common_ItaAus))] <- NA
+> common_EngIta[!(lower.tri(common_EngIta))] <- NA
+> 
+> 
+> mat <- data.frame(common_EngGerm=c(common_EngGerm),
++                   common_EngIta=c(common_EngIta),
++                   common_GermAus = c(common_GermAus),
++                   common_ItaAus = c(common_ItaAus),
++                   compare = paste(rownames(common_EngGerm),colnames(common_EngGerm),sep=".")) %>%
++   filter(!is.na(common_EngGerm)) %>%
++   separate(compare,into=c("item1","variable1","item2","variable2"),remove=FALSE,sep="[.]") %>%
++   unite(group,variable1,variable2,sep=".")
+> 
+> library(ggrepel)
+> ggplot(mat,aes(x=common_EngGerm,y=common_GermAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-2.png)
+
+``` r
+> ggplot(mat,aes(x=common_EngGerm,y=common_ItaAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-3.png)
+
+``` r
+> ggplot(mat,aes(x=common_EngGerm,y=common_EngIta,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-4.png)
 
 All context together
 --------------------
@@ -1547,7 +1745,7 @@ Compare correlations
 > pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-1.png)
 
 ``` r
 > ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
@@ -1591,7 +1789,7 @@ Compare correlations
 
     ## Warning: Removed 30 rows containing non-finite values (stat_density).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-2.png)
 
 Evaluate internal consistency of known constructs with alpha
 ============================================================
@@ -1755,4 +1953,4 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-32-1.png)

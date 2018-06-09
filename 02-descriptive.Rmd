@@ -689,7 +689,9 @@ cov_EngIta <- cov
 
 ## Correlation between correlation in the different contexts
 
-```{r}
+We will perform an exploratory FA combining all the contexts together. This means that we are assuming that the correlation between items across context has the same direction (does not happen that cor(item1,item2)_context1 > 0 and cor(item1,item2)_context2 < 0). 
+
+```{r fig.width=10,fig.height=10}
 common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
 sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
 sum(rownames(cov_EngIta) != rownames(cov_GermAus))
@@ -709,19 +711,57 @@ sum(rownames(common_ItaAus) != colnames(common_ItaAus))
 
 par(mfrow=c(2,3))
 plot(common_EngIta,common_EngGerm)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
 plot(common_EngIta,common_GermAus)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
 plot(common_EngIta,common_ItaAus)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
 
 plot(common_EngGerm,common_GermAus)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
 plot(common_EngGerm,common_ItaAus)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
 
 plot(common_GermAus,common_ItaAus)
-abline(h=0,v=0,lty=2,col = "dark red")
+abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+abline(a=0,b=1,lty=2,col = "dark red")
+
+# Largest differences
+low_EngGerm <- lower.tri(common_EngGerm)
+common_EngGerm[!low_EngGerm] <- NA
+common_GermAus[!(lower.tri(common_GermAus))] <- NA
+common_ItaAus[!(lower.tri(common_ItaAus))] <- NA
+common_EngIta[!(lower.tri(common_EngIta))] <- NA
+
+
+mat <- data.frame(common_EngGerm=c(common_EngGerm),
+                  common_EngIta=c(common_EngIta),
+                  common_GermAus = c(common_GermAus),
+                  common_ItaAus = c(common_ItaAus),
+                  compare = paste(rownames(common_EngGerm),colnames(common_EngGerm),sep=".")) %>%
+  filter(!is.na(common_EngGerm)) %>%
+  separate(compare,into=c("item1","variable1","item2","variable2"),remove=FALSE,sep="[.]") %>%
+  unite(group,variable1,variable2,sep=".")
+
+library(ggrepel)
+ggplot(mat,aes(x=common_EngGerm,y=common_GermAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
+  geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
+geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+
+
+ggplot(mat,aes(x=common_EngGerm,y=common_ItaAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
+  geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
+geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+
+ggplot(mat,aes(x=common_EngGerm,y=common_EngIta,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
+  geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
+geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+
 ```
 
 
@@ -752,8 +792,9 @@ library(GGally)
 combine_cor <- merge(data_cor_eng_in_ita,data_cor_eng_in_germ,all = TRUE)
 combine_cor1 <- merge(combine_cor,data_cor_germ_in_au,all = TRUE)
 combine_cor2 <- merge(combine_cor1,data_cor_ita_in_au,all = TRUE)
-combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item","variable"),sep="[.]",remove=FALSE)
-combine_cor2$variable <- ifelse(is.na(combine_cor2$variable),combine_cor2$item,combine_cor2$variable)
+combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item1","variable1"),sep="[.]",remove=FALSE) %>%
+  separate(var2,into=c("item2","variable2"),sep="[.]",remove=FALSE) %>%
+  unite(group,variable1,variable2,sep=".")
 
 pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
 ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])

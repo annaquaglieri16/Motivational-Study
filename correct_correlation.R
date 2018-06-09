@@ -1,0 +1,31 @@
+
+
+The factor analysis will be performed combining together all the items across all contexts. It is fair to assume that every context might have an average effect which is different from the other contexts (compute mean -). This means that before performing exploratory factor analysis with on the combined dataset one can remove the average effect from every context to avoid confounding effects when computing correlations between items using all the context together. We applied the same consideration to 'degree' since we know that there can be an average effect of degree which could confound the real correlation between items. Following this procedure the factor loading will be computed using the residuals of a linear model where the context ad degree effect was removed from the original item values. Then, the actual factor scores will be computed using the original items values and the corrected loadings.
+
+
+item1 <- c(rnorm(50),rnorm(50,3))
+item2 <- c(rnorm(50),rnorm(50,2))
+pairs(item)
+item <- data.frame(item1,item2)
+item$context <- c(rep("Ita",50),rep("Aus",50))
+plot(item1,item2)
+points(item1[1:50],item2[1:50],col="red")
+points(item1[51:100],item2[51:100],col="blue")
+cor(item1,item2)
+
+get_residuals <- function(item,pred1){
+mod <- lm(item ~ pred1)
+  return(mod$residuals)
+  }
+
+applygetRes <- apply(as.matrix(item[,-3]),2,get_residuals,
+                    pred1=item$context)
+
+pairs(applygetRes,main="after")
+pairs(item[,-3],main="before")
+
+# Incorrelated
+item1 <- c(rnorm(50),rnorm(50))
+item2 <- c(rnorm(50),rnorm(50))
+plot(item1,item2)
+cor(item1,item2)
