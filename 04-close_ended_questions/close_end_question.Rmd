@@ -207,3 +207,40 @@ kable(table(all$Context,all$L2.VCE))
 ```{r}
 kable(table(all$year.studyL2,all$Context))
 ```
+
+# private.lessons1.other.ways
+
+```{r}
+kable(table(all$private.lessons1.other.ways,all$Context,useNA = "always"))
+```
+
+# year.sem.abroad3.other.ways
+
+```{r}
+kable(table(all$year.sem.abroad3.other.ways,all$Context,useNA = "always"))
+```
+
+# study.holiday2.other.ways
+
+```{r}
+kable(table(all$study.holiday2.other.ways,all$Context,useNA = "always"))
+```
+
+# online.course4.other.ways
+
+```{r}
+kable(table(all$online.course4.other.ways,all$Context,useNA = "always"))
+```
+
+# other5.other.ways
+
+```{r}
+kable(table(all$other5.other.ways,all$Context,useNA = "always"))
+```
+
+# degree.role
+
+```{r}
+kable(table(all$degree.role,all$Context,useNA = "always"))
+```
+

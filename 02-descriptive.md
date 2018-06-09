@@ -25,6 +25,7 @@ Anna Quaglieri & Riccardo Amorati
     -   [German in Australia](#german-in-australia)
     -   [English in Germany](#english-in-germany)
     -   [English in Italy](#english-in-italy)
+    -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts)
     -   [All context together](#all-context-together)
     -   [Compare correlations](#compare-correlations)
 -   [Evaluate internal consistency of known constructs with alpha](#evaluate-internal-consistency-of-known-constructs-with-alpha)
@@ -1558,7 +1559,11 @@ English in Italy
 > cov_EngIta <- cov
 ```
 
+Correlation between correlation in the different contexts
+---------------------------------------------------------
+
 ``` r
+> common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
 > sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
 ```
 
@@ -1589,16 +1594,53 @@ English in Italy
     ## [1] 0
 
 ``` r
-> plot(cov_GermAus,cov_ItaAus)
+> common_EngIta <- cov_EngIta[rownames(cov_EngIta) %in% common,colnames(cov_EngIta) %in% common]
+> common_EngGerm <- cov_EngGerm[rownames(cov_EngGerm) %in% common,colnames(cov_EngGerm) %in% common]
+> common_GermAus <- cov_GermAus[rownames(cov_GermAus) %in% common,colnames(cov_GermAus) %in% common]
+> common_ItaAus <- cov_ItaAus[rownames(cov_ItaAus) %in% common,colnames(cov_ItaAus) %in% common]
+> 
+> sum(rownames(common_EngIta) != colnames(common_EngIta))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_EngGerm) != colnames(common_EngGerm))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_GermAus) != colnames(common_GermAus))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_ItaAus) != colnames(common_ItaAus))
+```
+
+    ## [1] 0
+
+``` r
+> par(mfrow=c(2,3))
+> plot(common_EngIta,common_EngGerm)
+> abline(h=0,v=0,lty=2,col = "dark red")
+> plot(common_EngIta,common_GermAus)
+> abline(h=0,v=0,lty=2,col = "dark red")
+> plot(common_EngIta,common_ItaAus)
+> abline(h=0,v=0,lty=2,col = "dark red")
+> 
+> plot(common_EngGerm,common_GermAus)
+> abline(h=0,v=0,lty=2,col = "dark red")
+> plot(common_EngGerm,common_ItaAus)
+> abline(h=0,v=0,lty=2,col = "dark red")
+> 
+> plot(common_GermAus,common_ItaAus)
+> abline(h=0,v=0,lty=2,col = "dark red")
 ```
 
 ![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-1.png)
-
-``` r
-> plot(cov_EngIta,cov_EngGerm)
-```
-
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-2.png)
 
 All context together
 --------------------

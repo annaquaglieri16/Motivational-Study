@@ -696,8 +696,32 @@ sum(rownames(cov_EngIta) != rownames(cov_GermAus))
 sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
 sum(rownames(cov_GermAus) != rownames(cov_ItaAus))
 
-plot(cov_GermAus,cov_ItaAus)
-plot(cov_EngIta,cov_EngGerm)
+common_EngIta <- cov_EngIta[rownames(cov_EngIta) %in% common,colnames(cov_EngIta) %in% common]
+common_EngGerm <- cov_EngGerm[rownames(cov_EngGerm) %in% common,colnames(cov_EngGerm) %in% common]
+common_GermAus <- cov_GermAus[rownames(cov_GermAus) %in% common,colnames(cov_GermAus) %in% common]
+common_ItaAus <- cov_ItaAus[rownames(cov_ItaAus) %in% common,colnames(cov_ItaAus) %in% common]
+
+sum(rownames(common_EngIta) != colnames(common_EngIta))
+sum(rownames(common_EngGerm) != colnames(common_EngGerm))
+sum(rownames(common_GermAus) != colnames(common_GermAus))
+sum(rownames(common_ItaAus) != colnames(common_ItaAus))
+
+
+par(mfrow=c(2,3))
+plot(common_EngIta,common_EngGerm)
+abline(h=0,v=0,lty=2,col = "dark red")
+plot(common_EngIta,common_GermAus)
+abline(h=0,v=0,lty=2,col = "dark red")
+plot(common_EngIta,common_ItaAus)
+abline(h=0,v=0,lty=2,col = "dark red")
+
+plot(common_EngGerm,common_GermAus)
+abline(h=0,v=0,lty=2,col = "dark red")
+plot(common_EngGerm,common_ItaAus)
+abline(h=0,v=0,lty=2,col = "dark red")
+
+plot(common_GermAus,common_ItaAus)
+abline(h=0,v=0,lty=2,col = "dark red")
 ```
 
 
