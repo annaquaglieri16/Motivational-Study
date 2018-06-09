@@ -13,6 +13,12 @@ Anna Quaglieri & Riccardo Amorati
 -   [L2school](#l2school)
 -   [L2.VCE](#l2.vce)
 -   [year.studyL2](#year.studyl2)
+-   [private.lessons1.other.ways](#private.lessons1.other.ways)
+-   [year.sem.abroad3.other.ways](#year.sem.abroad3.other.ways)
+-   [study.holiday2.other.ways](#study.holiday2.other.ways)
+-   [online.course4.other.ways](#online.course4.other.ways)
+-   [other5.other.ways](#other5.other.ways)
+-   [degree.role](#degree.role)
 
 Read in data
 ============
@@ -402,3 +408,104 @@ year.studyL2
 | PRIMARY                      |                  28|                 6|                    0|                     0|
 | SECONDARY                    |                  12|                 4|                    0|                     0|
 | THIRD.YEAR.PRIMARY           |                   1|                 0|                    0|                     0|
+
+private.lessons1.other.ways
+===========================
+
+``` r
+> kable(table(all$private.lessons1.other.ways,all$Context,useNA = "always"))
+```
+
+|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| 0   |                  69|                75|                   19|                    66|    0|
+| 1   |                   1|                16|                    2|                     8|    0|
+| NA  |                   0|                 0|                   67|                     0|    0|
+
+year.sem.abroad3.other.ways
+===========================
+
+``` r
+> kable(table(all$year.sem.abroad3.other.ways,all$Context,useNA = "always"))
+```
+
+|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| 0   |                  56|                84|                   73|                    72|    0|
+| 1   |                  14|                 7|                   15|                     2|    0|
+| NA  |                   0|                 0|                    0|                     0|    0|
+
+study.holiday2.other.ways
+=========================
+
+``` r
+> kable(table(all$study.holiday2.other.ways,all$Context,useNA = "always"))
+```
+
+|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| 0   |                  60|                46|                   80|                    64|    0|
+| 1   |                  10|                45|                    8|                    10|    0|
+| NA  |                   0|                 0|                    0|                     0|    0|
+
+online.course4.other.ways
+=========================
+
+``` r
+> kable(table(all$online.course4.other.ways,all$Context,useNA = "always"))
+```
+
+|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| 0   |                  70|                89|                   17|                    67|    0|
+| 1   |                   0|                 2|                    4|                     7|    0|
+| NA  |                   0|                 0|                   67|                     0|    0|
+
+other5.other.ways
+=================
+
+``` r
+> kable(table(all$other5.other.ways,all$Context,useNA = "always"))
+```
+
+|                             |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|-----------------------------|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| COURSE                      |                   1|                 2|                    2|                     0|    0|
+| COURSE; MEDIA               |                   0|                 1|                    0|                     0|    0|
+| EXCHANGE                    |                   0|                 0|                    6|                     0|    0|
+| FRIENDS                     |                   3|                 1|                    0|                     0|    0|
+| HERITAGE                    |                   0|                 0|                    1|                     3|    0|
+| L2.RESOURCES                |                   7|                12|                    0|                     0|    0|
+| L2.RESOURCES, MEDIA         |                   0|                 1|                    0|                     0|    0|
+| L2.RESOURCES; MEDIA         |                   0|                 1|                    0|                     0|    0|
+| LIVING.L2                   |                   5|                 0|                    1|                     1|    0|
+| M.PRIVATE.LESSONS           |                   0|                 0|                    1|                     1|    0|
+| NO.OTHER.WAYS               |                   0|                 0|                    1|                     0|    0|
+| ONLINE.COURSE               |                   0|                 0|                    3|                     1|    0|
+| PERSONAL                    |                   0|                 0|                    1|                     2|    0|
+| PERSONAL.HERITAGE           |                   2|                 0|                    0|                     0|    0|
+| QC                          |                   0|                 0|                    0|                     1|    0|
+| SELF.STUDY                  |                   4|                 2|                    1|                     0|    0|
+| STUDY.HOLIDAY               |                   2|                 0|                    1|                     2|    0|
+| TRAVEL.FRIENDS.L2.RESOURCES |                   1|                 0|                    0|                     0|    0|
+| TRAVELLING                  |                   4|                 0|                    3|                     1|    0|
+| WORK.L2                     |                   2|                 0|                    0|                     0|    0|
+| NA                          |                  39|                71|                   67|                    62|    0|
+
+degree.role
+===========
+
+``` r
+> kable(table(all$degree.role,all$Context,useNA = "always"))
+```
+
+|               |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
+|---------------|-------------------:|-----------------:|--------------------:|---------------------:|----:|
+| BREADTH       |                   0|                 0|                   12|                    18|    0|
+| DIPLOMA       |                   0|                 0|                   13|                    10|    0|
+| ELECTIVE      |                   0|                 0|                    2|                     4|    0|
+| MAJOR         |                   0|                 0|                   21|                    16|    0|
+| MINOR         |                   0|                 0|                    7|                    21|    0|
+| MINOR.BREADTH |                   0|                 0|                   26|                     0|    0|
+| PENDING       |                   0|                 0|                    3|                     2|    0|
+| NA            |                  70|                91|                    4|                     3|    0|
