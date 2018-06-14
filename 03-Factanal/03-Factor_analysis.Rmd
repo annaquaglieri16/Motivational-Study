@@ -263,6 +263,39 @@ summary(aov(Factor6 ~ Context,data=fact_data))
 
 ## All pairwise comparisons
 
+Unpaired t-test are performed between every pair of contexts within every factor. The Bonferroni correction is used to adjust the p-values for multiple testing.
+
+```{r}
+f1 <- pairwise.t.test(x = fact_data$Factor1, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f1$p.value,digits = 20)
+```
+
+```{r}
+f2 <- pairwise.t.test(x = fact_data$Factor2, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f2$p.value,digits = 20)
+```
+
+```{r}
+f3 <- pairwise.t.test(x = fact_data$Factor3, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f3$p.value,digits = 20)
+```
+
+```{r}
+f4 <- pairwise.t.test(x = fact_data$Factor4, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f4$p.value,digits = 20)
+```
+
+```{r}
+f5 <- pairwise.t.test(x = fact_data$Factor5, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f5$p.value,digits = 20)
+```
+
+```{r}
+f6 <- pairwise.t.test(x = fact_data$Factor6, g = fact_data$Context,p.adjust.method = "bonferroni")
+kable(f6$p.value,digits = 20)
+```
+
+
 ```{r}
 fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
 ```

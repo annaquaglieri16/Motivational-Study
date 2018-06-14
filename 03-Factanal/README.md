@@ -3,7 +3,7 @@ Factor analysis
 Anna Quaglieri & Riccardo Amorati
 03/09/2017
 
--   [Basic factor analysis: 7 factors as the number of variables in the study design](#basic-factor-analysis-7-factors-as-the-number-of-variables-in-the-study-design)
+-   [Exploratory factor analysis: 7 factors as the number of variables in the study design](#exploratory-factor-analysis-7-factors-as-the-number-of-variables-in-the-study-design)
 -   [Read in data](#read-in-data)
     -   [Likert variables](#likert-variables)
 -   [Final Factanal correcting for degree and Context and not for L2](#final-factanal-correcting-for-degree-and-context-and-not-for-l2)
@@ -22,8 +22,8 @@ Anna Quaglieri & Riccardo Amorati
     -   [Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)](#try-fa-correcting-also-for-l2-0-vs-0-on-top-of-context-and-degree)
     -   [Factor analysis correcting for context and degree and removing 0 years for year.studyL2](#factor-analysis-correcting-for-context-and-degree-and-removing-0-years-for-year.studyl2)
 
-Basic factor analysis: 7 factors as the number of variables in the study design
--------------------------------------------------------------------------------
+Exploratory factor analysis: 7 factors as the number of variables in the study design
+-------------------------------------------------------------------------------------
 
 Read in data
 ------------
@@ -59,8 +59,21 @@ When correcting for context what we are doing is that we are removing the contex
 > 
 > applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
 +                      pred1=usable_data$Context,pred2=usable_data$degree_binary)
+```
+
+**Compare correlation matrix before and after correcting**
+
+``` r
+> before <- cor(as.matrix(dat_onlyItems))
+> after <- cor(applygetRes)
 > 
-> 
+> dif <- before - after
+> hist(dif)
+```
+
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+``` r
 > ########################
 > 
 > ### added
@@ -96,7 +109,7 @@ When correcting for context what we are doing is that we are removing the contex
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  6
 
@@ -131,44 +144,44 @@ When correcting for context what we are doing is that we are removing the contex
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 ``` r
 > # Factors one by one
 > ggplot(subset(a2,variable %in% "F1"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F1")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-3.png)
 
 ``` r
 > ggplot(subset(a2,variable %in% "F2"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F2") + labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-4.png)
 
 ``` r
 > ggplot(subset(a2,variable %in% "F3"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F3")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-5.png)
 
 ``` r
 > ggplot(subset(a2,variable %in% "F4"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F4")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-6.png)
 
 ``` r
 > ggplot(subset(a2,variable %in% "F5"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F5")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-7.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-7.png)
 
 ``` r
 > ggplot(subset(a2,variable %in% "F6"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F6")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-4-8.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-8.png)
 
 Chronbach alpha
 ---------------
@@ -484,7 +497,7 @@ Chronbach alpha
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 > # Plot loadings by context
@@ -493,7 +506,7 @@ Chronbach alpha
 > ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context)) + facet_wrap(~variable) + coord_flip() + guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 ``` r
 > # error bar 
@@ -510,7 +523,7 @@ Chronbach alpha
 + geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-6-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-8-3.png)
 
 ``` r
 > kable(sum_stat)
@@ -766,6 +779,74 @@ Linear models testing the effect of context
 
 All pairwise comparisons
 ------------------------
+
+Unpaired t-test are performed between every pair of contexts within every factor. The Bonferroni correction is used to adjust the p-values for multiple testing.
+
+``` r
+> f1 <- pairwise.t.test(x = fact_data$Factor1, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f1$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |        8.165581e-09|                NA|                   NA|
+| German in Australia  |        3.734503e-09|                 1|                   NA|
+| Italian in Australia |        1.155136e-08|                 1|                    1|
+
+``` r
+> f2 <- pairwise.t.test(x = fact_data$Factor2, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f2$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |         1.000000000|                NA|                   NA|
+| German in Australia  |         0.002620701|        0.01869323|                   NA|
+| Italian in Australia |         0.415913871|        1.00000000|            0.5610609|
+
+``` r
+> f3 <- pairwise.t.test(x = fact_data$Factor3, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f3$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |        0.1179495214|                NA|                   NA|
+| German in Australia  |        0.1215730499|         1.0000000|                   NA|
+| Italian in Australia |        0.0002728677|         0.2635429|             0.276929|
+
+``` r
+> f4 <- pairwise.t.test(x = fact_data$Factor4, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f4$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |        4.807667e-01|                NA|                   NA|
+| German in Australia  |        1.259696e-01|      1.093568e-04|                   NA|
+| Italian in Australia |        3.994923e-06|      2.840699e-11|           0.01706683|
+
+``` r
+> f5 <- pairwise.t.test(x = fact_data$Factor5, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f5$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |           0.2800757|                NA|                   NA|
+| German in Australia  |           0.1296285|      3.720038e-05|                   NA|
+| Italian in Australia |           0.9665595|      2.919537e-03|                    1|
+
+``` r
+> f6 <- pairwise.t.test(x = fact_data$Factor6, g = fact_data$Context,p.adjust.method = "bonferroni")
+> kable(f6$p.value,digits = 20)
+```
+
+|                      |  English in Germany|  English in Italy|  German in Australia|
+|----------------------|-------------------:|-----------------:|--------------------:|
+| English in Italy     |        0.0001310701|                NA|                   NA|
+| German in Australia  |        0.9335690801|        0.01452346|                   NA|
+| Italian in Australia |        1.0000000000|        0.01949286|                    1|
 
 ``` r
 > fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
@@ -1296,7 +1377,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1307,7 +1388,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-2.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1318,7 +1399,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-3.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1329,7 +1410,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-4.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1340,7 +1421,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-5.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1351,7 +1432,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-17-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-6.png)
 
 Other tentatives
 ================
@@ -1614,7 +1695,7 @@ FA with 7 factors (as from design)
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 ``` r
 > # Table of the factors
@@ -1669,7 +1750,7 @@ FA with 7 factors (as from design)
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-2.png)
 
 ``` r
 > # Plot loadings by context
@@ -1679,7 +1760,7 @@ FA with 7 factors (as from design)
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-18-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-3.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -1700,7 +1781,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > fap <- fa.parallel(usable_data)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -1807,7 +1888,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-2.png)
 
 ``` r
 > # Table of the factors
@@ -1862,7 +1943,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -1872,7 +1953,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-4.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -1889,7 +1970,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -1897,7 +1978,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-19-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-6.png)
 
 ``` r
 > kable(sum_stat)
@@ -1969,7 +2050,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 ### Check what is the effect of 0 years vs all in year.studyL2
 
@@ -2006,7 +2087,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("L1 binary") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1) + facet_wrap(~variable,scales = "free_x")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 -------------------------------------------------------------------------
@@ -2036,7 +2117,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-30-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
 
@@ -2143,7 +2224,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-30-2.png)
 
 Factor analysis correcting for context and degree and removing 0 years for year.studyL2
 ---------------------------------------------------------------------------------------
@@ -2172,7 +2253,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-1.png)
 
     ## Parallel analysis suggests that the number of factors =  7  and the number of components =  5
 
@@ -2280,7 +2361,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-2.png)
 
 ``` r
 > # Table of the factors
@@ -2335,7 +2416,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -2347,7 +2428,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 
     ## Warning: Removed 252 rows containing non-finite values (stat_boxplot).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-4.png)
 
 ``` r
 > # error bar 
@@ -2362,7 +2443,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2370,7 +2451,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-6.png)
 
 ``` r
 > kable(sum_stat)
