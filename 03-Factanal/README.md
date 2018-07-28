@@ -780,73 +780,179 @@ Linear models testing the effect of context
 All pairwise comparisons
 ------------------------
 
-Unpaired t-test are performed between every pair of contexts within every factor. The Bonferroni correction is used to adjust the p-values for multiple testing.
+Independent t-test are performed between every pair of contexts within every factor. The Bonferroni correction is used to adjust the p-values for multiple testing.
 
 ``` r
-> f1 <- pairwise.t.test(x = fact_data$Factor1, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f1$p.value,digits = 20)
+> pairwise.t.test.with.t.and.df <- function (x, g, p.adjust.method = p.adjust.methods, pool.sd = !paired, 
++                                            paired = FALSE, alternative = c("two.sided", "less", "greater"), 
++                                            ...) 
++ {
++     if (paired & pool.sd) 
++         stop("pooling of SD is incompatible with paired tests")
++     DNAME <- paste(deparse(substitute(x)), "and", deparse(substitute(g)))
++     g <- factor(g)
++     p.adjust.method <- match.arg(p.adjust.method)
++     alternative <- match.arg(alternative)
++     if (pool.sd) {
++         METHOD <- "t tests with pooled SD"
++         xbar <- tapply(x, g, mean, na.rm = TRUE)
++         s <- tapply(x, g, sd, na.rm = TRUE)
++         n <- tapply(!is.na(x), g, sum)
++         degf <- n - 1
++         total.degf <- sum(degf)
++         pooled.sd <- sqrt(sum(s^2 * degf)/total.degf)
++         compare.levels <- function(i, j) {
++             dif <- xbar[i] - xbar[j]
++             se.dif <- pooled.sd * sqrt(1/n[i] + 1/n[j])
++             t.val <- dif/se.dif
++             if (alternative == "two.sided") 
++                 2 * pt(-abs(t.val), total.degf)
++             else pt(t.val, total.degf, lower.tail = (alternative == 
++                                                          "less"))
++         }
++         compare.levels.t <- function(i, j) {
++             dif <- xbar[i] - xbar[j]
++             se.dif <- pooled.sd * sqrt(1/n[i] + 1/n[j])
++             t.val = dif/se.dif 
++             t.val
++         }       
++     }
++     else {
++         METHOD <- if (paired) 
++             "paired t tests"
++         else "t tests with non-pooled SD"
++         compare.levels <- function(i, j) {
++             xi <- x[as.integer(g) == i]
++             xj <- x[as.integer(g) == j]
++             t.test(xi, xj, paired = paired, alternative = alternative, 
++                    ...)$p.value
++         }
++         compare.levels.t <- function(i, j) {
++             xi <- x[as.integer(g) == i]
++             xj <- x[as.integer(g) == j]
++             t.test(xi, xj, paired = paired, alternative = alternative, 
++                    ...)$statistic
++         }
++         compare.levels.df <- function(i, j) {
++             xi <- x[as.integer(g) == i]
++             xj <- x[as.integer(g) == j]
++             t.test(xi, xj, paired = paired, alternative = alternative, 
++                    ...)$parameter
++         }
++     }
++     PVAL <- pairwise.table(compare.levels, levels(g), p.adjust.method)
++     TVAL <- pairwise.table.t(compare.levels.t, levels(g), p.adjust.method)
++     if (pool.sd) 
++         DF <- total.degf
++     else
++         DF <- pairwise.table.t(compare.levels.df, levels(g), p.adjust.method)           
++     ans <- list(method = METHOD, data.name = DNAME, p.value = PVAL, 
++                 p.adjust.method = p.adjust.method, t.value = TVAL, dfs = DF)
++     class(ans) <- "pairwise.htest"
++     ans
++ }
+> pairwise.table.t <- function (compare.levels.t, level.names, p.adjust.method) 
++ {
++     ix <- setNames(seq_along(level.names), level.names)
++     pp <- outer(ix[-1L], ix[-length(ix)], function(ivec, jvec) sapply(seq_along(ivec), 
++         function(k) {
++             i <- ivec[k]
++             j <- jvec[k]
++             if (i > j)
++                 compare.levels.t(i, j)               
++             else NA
++         }))
++     pp[lower.tri(pp, TRUE)] <- pp[lower.tri(pp, TRUE)]
++     pp
++ }
 ```
 
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |        8.165581e-09|                NA|                   NA|
-| German in Australia  |        3.734503e-09|                 1|                   NA|
-| Italian in Australia |        1.155136e-08|                 1|                    1|
+<https://stackoverflow.com/questions/27544438/how-to-get-df-and-t-values-from-pairwise-t-test>
 
 ``` r
-> f2 <- pairwise.t.test(x = fact_data$Factor2, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f2$p.value,digits = 20)
+> #f1 <- pairwise.t.test(x = fact_data$Factor1, g = fact_data$Context,p.adjust.method = "none",pool.sd = TRUE)
+> #kable(f1$p.value,digits = 20)
+> 
+> pair.t.test <- function(x, context,fname = "F1"){
++   a <- x[context %in% "English in Germany"]
++   b <- x[context %in% "English in Italy"]
++   c <- x[context %in% "German in Australia"]
++   d <- x[context %in% "Italian in Australia"]
++   
++   ab <- t.test(a,b,var.equal = TRUE)
++   ac <- t.test(a,c,var.equal = TRUE)
++   ad <- t.test(a,d,var.equal = TRUE)
++   bc <- t.test(b,c,var.equal = TRUE)
++   bd <- t.test(b,d,var.equal = TRUE)
++   cd <- t.test(c,d,var.equal = TRUE)
++   
++   test_out <- data.frame(Factor = fname,
++                          Context1 = c("English in Germany","English in Germany","English in Germany",
++                                       "English in Italy","English in Italy","German in Australia"),
++                          Context2 = c("English in Italy","German in Australia","Italian in Australia",
++                                       "German in Australia","Italian in Australia","Italian in Australia"),
++                          t.value = c(ab$statistic,ac$statistic,ad$statistic,bc$statistic,bd$statistic,cd$statistic),
++                          p.value = c(ab$p.value,ac$p.value,ad$p.value,bc$p.value,bd$p.value,cd$p.value),
++                          estimate1 = c(ab$estimate[1],ac$estimate[1],ad$estimate[1],bc$estimate[1],bd$estimate[1],cd$estimate[1]),
++                          estimate2 = c(ab$estimate[2],ac$estimate[2],ad$estimate[2],bc$estimate[2],bd$estimate[2],cd$estimate[2]),
++                          confint1 = c(ab$conf.int[1],ac$conf.int[1],ad$conf.int[1],bc$conf.int[1],bd$conf.int[1],cd$conf.int[1]),
++                          confint2 = c(ab$conf.int[2],ac$conf.int[2],ad$conf.int[2],bc$conf.int[2],bd$conf.int[2],cd$conf.int[2]),
++                          df = c(ab$parameter,ac$parameter,ad$parameter,bc$parameter,bd$parameter,cd$parameter))
++   
++   return(test_out)
++ }
+> 
+> f1 <- pair.t.test(x=fact_data$Factor1,fact_data$Context,fname = "F1")
+> f2 <- pair.t.test(x=fact_data$Factor2,fact_data$Context,fname = "F2")
+> f3 <- pair.t.test(x=fact_data$Factor3,fact_data$Context,fname = "F3")
+> f4 <- pair.t.test(x=fact_data$Factor4,fact_data$Context,fname = "F4")
+> f5 <- pair.t.test(x=fact_data$Factor5,fact_data$Context,fname = "F5")
+> f6 <- pair.t.test(x=fact_data$Factor6,fact_data$Context,fname = "F6")
+> 
+> tott <- rbind(f1,f2,f3,f4,f5,f6)
+> tott$p.adjusted <- p.adjust(tott$p.value,method = "fdr")
+> 
+> kable(tott)
 ```
 
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |         1.000000000|                NA|                   NA|
-| German in Australia  |         0.002620701|        0.01869323|                   NA|
-| Italian in Australia |         0.415913871|        1.00000000|            0.5610609|
-
-``` r
-> f3 <- pairwise.t.test(x = fact_data$Factor3, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f3$p.value,digits = 20)
-```
-
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |        0.1179495214|                NA|                   NA|
-| German in Australia  |        0.1215730499|         1.0000000|                   NA|
-| Italian in Australia |        0.0002728677|         0.2635429|             0.276929|
-
-``` r
-> f4 <- pairwise.t.test(x = fact_data$Factor4, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f4$p.value,digits = 20)
-```
-
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |        4.807667e-01|                NA|                   NA|
-| German in Australia  |        1.259696e-01|      1.093568e-04|                   NA|
-| Italian in Australia |        3.994923e-06|      2.840699e-11|           0.01706683|
-
-``` r
-> f5 <- pairwise.t.test(x = fact_data$Factor5, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f5$p.value,digits = 20)
-```
-
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |           0.2800757|                NA|                   NA|
-| German in Australia  |           0.1296285|      3.720038e-05|                   NA|
-| Italian in Australia |           0.9665595|      2.919537e-03|                    1|
-
-``` r
-> f6 <- pairwise.t.test(x = fact_data$Factor6, g = fact_data$Context,p.adjust.method = "bonferroni")
-> kable(f6$p.value,digits = 20)
-```
-
-|                      |  English in Germany|  English in Italy|  German in Australia|
-|----------------------|-------------------:|-----------------:|--------------------:|
-| English in Italy     |        0.0001310701|                NA|                   NA|
-| German in Australia  |        0.9335690801|        0.01452346|                   NA|
-| Italian in Australia |        1.0000000000|        0.01949286|                    1|
+| Factor | Context1            | Context2             |     t.value|    p.value|  estimate1|  estimate2|    confint1|    confint2|   df|  p.adjusted|
+|:-------|:--------------------|:---------------------|-----------:|----------:|----------:|----------:|-----------:|-----------:|----:|-----------:|
+| F1     | English in Germany  | English in Italy     |  -5.5350351|  0.0000001|   9.180216|  10.123788|  -1.2802557|  -0.6068896|  159|   0.0000015|
+| F1     | English in Germany  | German in Australia  |  -5.6037708|  0.0000001|   9.180216|  10.151486|  -1.3136366|  -0.6289051|  156|   0.0000015|
+| F1     | English in Germany  | Italian in Australia |  -5.3719985|  0.0000003|   9.180216|  10.160109|  -1.3404789|  -0.6193081|  142|   0.0000028|
+| F1     | English in Italy    | German in Australia  |  -0.2266294|  0.8209735|  10.123788|  10.151486|  -0.2688904|   0.2134940|  177|   0.8956074|
+| F1     | English in Italy    | Italian in Australia |  -0.2883786|  0.7734234|  10.123788|  10.160109|  -0.2850215|   0.2123799|  163|   0.8701013|
+| F1     | German in Australia | Italian in Australia |  -0.0673497|  0.9463874|  10.151486|  10.160109|  -0.2614639|   0.2442187|  160|   0.9940132|
+| F2     | English in Germany  | English in Italy     |   0.8169086|  0.4152030|   8.322364|   8.211752|  -0.1568090|   0.3780334|  159|   0.4980776|
+| F2     | English in Germany  | German in Australia  |   3.2879532|  0.0012471|   8.322364|   7.813928|   0.2029853|   0.8138862|  156|   0.0040814|
+| F2     | English in Germany  | Italian in Australia |   1.9342479|  0.0550713|   8.322364|   8.050933|  -0.0059728|   0.5488347|  142|   0.0901167|
+| F2     | English in Italy    | German in Australia  |   2.8531425|  0.0048450|   8.211752|   7.813928|   0.1226576|   0.6729895|  177|   0.0124585|
+| F2     | English in Italy    | Italian in Australia |   1.2557581|  0.2110008|   8.211752|   8.050933|  -0.0920617|   0.4136991|  163|   0.2700050|
+| F2     | German in Australia | Italian in Australia |  -1.6110000|  0.1091507|   7.813928|   8.050933|  -0.5275456|   0.0535360|  160|   0.1571770|
+| F3     | English in Germany  | English in Italy     |  -2.7550121|  0.0065540|   1.179170|   1.515703|  -0.5777844|  -0.0952812|  159|   0.0147465|
+| F3     | English in Germany  | German in Australia  |  -2.4136673|  0.0169514|   1.179170|   1.516524|  -0.6134368|  -0.0612716|  156|   0.0358971|
+| F3     | English in Germany  | Italian in Australia |  -4.3864589|  0.0000223|   1.179170|   1.801576|  -0.9029014|  -0.3419114|  142|   0.0000892|
+| F3     | English in Italy    | German in Australia  |  -0.0058302|  0.9953548|   1.515703|   1.516524|  -0.2788562|   0.2772134|  177|   0.9953548|
+| F3     | English in Italy    | Italian in Australia |  -1.9621658|  0.0514459|   1.515703|   1.801576|  -0.5735623|   0.0018152|  163|   0.0881930|
+| F3     | German in Australia | Italian in Australia |  -1.7735037|  0.0780476|   1.516524|   1.801576|  -0.6024747|   0.0323703|  160|   0.1170714|
+| F4     | English in Germany  | English in Italy     |  -1.8907362|  0.0604787|   7.508108|   7.762009|  -0.5191181|   0.0113150|  159|   0.0946623|
+| F4     | English in Germany  | German in Australia  |   2.1840519|  0.0304517|   7.508108|   7.170152|   0.0323038|   0.6436071|  156|   0.0548130|
+| F4     | English in Germany  | Italian in Australia |   5.0372008|  0.0000014|   7.508108|   6.738630|   0.4675022|   1.0714537|  142|   0.0000102|
+| F4     | English in Italy    | German in Australia  |   4.3766364|  0.0000206|   7.762009|   7.170152|   0.3249844|   0.8587296|  177|   0.0000892|
+| F4     | English in Italy    | Italian in Australia |   7.6715730|  0.0000000|   7.762009|   6.738630|   0.7599667|   1.2867922|  163|   0.0000000|
+| F4     | German in Australia | Italian in Australia |   2.8203459|  0.0054046|   7.170152|   6.738630|   0.1293558|   0.7336891|  160|   0.0129711|
+| F5     | English in Germany  | English in Italy     |  -2.1985578|  0.0293541|   7.780045|   8.061022|  -0.5333831|  -0.0285713|  159|   0.0548130|
+| F5     | English in Germany  | German in Australia  |   2.3101435|  0.0221908|   7.780045|   7.452820|   0.0474314|   0.6070185|  156|   0.0443816|
+| F5     | English in Germany  | Italian in Australia |   1.3875540|  0.1674465|   7.780045|   7.572769|  -0.0880246|   0.5025768|  142|   0.2309192|
+| F5     | English in Italy    | German in Australia  |   4.6429211|  0.0000067|   8.061022|   7.452820|   0.3496880|   0.8667163|  177|   0.0000378|
+| F5     | English in Italy    | Italian in Australia |   3.5221107|  0.0005555|   8.061022|   7.572769|   0.2145206|   0.7619860|  163|   0.0019998|
+| F5     | German in Australia | Italian in Australia |  -0.7930895|  0.4289002|   7.452820|   7.572769|  -0.4186380|   0.1787402|  160|   0.4980776|
+| F6     | English in Germany  | English in Italy     |  -4.6366600|  0.0000073|   3.694089|   4.233386|  -0.7690120|  -0.3095822|  159|   0.0000378|
+| F6     | English in Germany  | German in Australia  |  -1.3682880|  0.1731894|   3.694089|   3.873541|  -0.4385133|   0.0796086|  156|   0.2309192|
+| F6     | English in Germany  | Italian in Australia |  -1.2386899|  0.2175041|   3.694089|   3.867960|  -0.4513498|   0.1036077|  142|   0.2700050|
+| F6     | English in Italy    | German in Australia  |   3.2507169|  0.0013781|   4.233386|   3.873541|   0.1413889|   0.5783006|  177|   0.0041342|
+| F6     | English in Italy    | Italian in Australia |   3.0896095|  0.0023571|   4.233386|   3.867960|   0.1318757|   0.5989764|  163|   0.0065273|
+| F6     | German in Australia | Italian in Australia |   0.0421876|  0.9664018|   3.873541|   3.867960|  -0.2556936|   0.2668563|  160|   0.9940132|
 
 ``` r
 > fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
@@ -1377,7 +1483,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1388,7 +1494,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-2.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1399,7 +1505,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-3.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1410,7 +1516,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-4.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1421,7 +1527,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-5.png)
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1432,7 +1538,7 @@ Variables have been recoded and we need to do the models.
 
     ## Warning: Removed 7 rows containing missing values (geom_errorbar).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-21-6.png)
 
 Other tentatives
 ================
@@ -1595,7 +1701,11 @@ FA with 7 factors (as from design)
 > fact <- 7
 > loading_cutoff <- 0.2
 > fa_basic <- fa(usable_data,fact)
-> 
+```
+
+    ## Loading required namespace: GPArotation
+
+``` r
 > fa_basic
 ```
 
@@ -1695,7 +1805,7 @@ FA with 7 factors (as from design)
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 ``` r
 > # Table of the factors
@@ -1750,7 +1860,7 @@ FA with 7 factors (as from design)
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-2.png)
 
 ``` r
 > # Plot loadings by context
@@ -1760,7 +1870,7 @@ FA with 7 factors (as from design)
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-22-3.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -1781,7 +1891,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > fap <- fa.parallel(usable_data)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -1888,7 +1998,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-2.png)
 
 ``` r
 > # Table of the factors
@@ -1943,7 +2053,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -1953,7 +2063,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-4.png)
 
 ``` r
 > # 7 * 12 rows removed
@@ -1970,7 +2080,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -1978,7 +2088,7 @@ Using very relaxed cutoff of 0.2 to get rid of not important variables in each f
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-23-6.png)
 
 ``` r
 > kable(sum_stat)
@@ -2050,7 +2160,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
 ### Check what is the effect of 0 years vs all in year.studyL2
 
@@ -2087,7 +2197,7 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 + geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("L1 binary") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1) + facet_wrap(~variable,scales = "free_x")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 -------------------------------------------------------------------------
@@ -2117,7 +2227,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
 
@@ -2224,7 +2334,7 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-30-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-26-2.png)
 
 Factor analysis correcting for context and degree and removing 0 years for year.studyL2
 ---------------------------------------------------------------------------------------
@@ -2253,9 +2363,9 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-1.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
-    ## Parallel analysis suggests that the number of factors =  7  and the number of components =  5
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
 
 ``` r
 > fact <- 7
@@ -2361,7 +2471,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-2.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-2.png)
 
 ``` r
 > # Table of the factors
@@ -2416,7 +2526,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-3.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-3.png)
 
 ``` r
 > # Plot loadings by context
@@ -2428,7 +2538,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 
     ## Warning: Removed 252 rows containing non-finite values (stat_boxplot).
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-4.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-4.png)
 
 ``` r
 > # error bar 
@@ -2443,7 +2553,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-5.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-5.png)
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2451,7 +2561,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-31-6.png)
+![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-6.png)
 
 ``` r
 > kable(sum_stat)
