@@ -233,6 +233,8 @@ sum_stat <- all_complete_melt %>% group_by(Context,variable) %>%
          LowerBoundCI = meanFac - 1.96*stdMean,
          UpperBoundCI = meanFac + 1.96*stdMean)
 
+sum_stat$Context <- factor(sum_stat$Context,levels=c("English in Italy", "English in Germany", "Italian in Australia", "German in Australia"))
+
 ggplot(sum_stat,aes(x=Context,y=meanFac,colour=Context)) + 
 geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
 
