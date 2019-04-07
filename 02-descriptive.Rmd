@@ -765,6 +765,89 @@ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
 
+## Different correlation plot and Pearson's correlation
+
+```{r fig.width=12,fig.height=8, include=FALSE}
+common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
+sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
+sum(rownames(cov_EngIta) != rownames(cov_GermAus))
+sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
+sum(rownames(cov_GermAus) != rownames(cov_ItaAus))
+
+common_EngIta <- cov_EngIta[rownames(cov_EngIta) %in% common,colnames(cov_EngIta) %in% common]
+common_EngGerm <- cov_EngGerm[rownames(cov_EngGerm) %in% common,colnames(cov_EngGerm) %in% common]
+common_GermAus <- cov_GermAus[rownames(cov_GermAus) %in% common,colnames(cov_GermAus) %in% common]
+common_ItaAus <- cov_ItaAus[rownames(cov_ItaAus) %in% common,colnames(cov_ItaAus) %in% common]
+
+sum(rownames(common_EngIta) != colnames(common_EngIta))
+sum(rownames(common_EngGerm) != colnames(common_EngGerm))
+sum(rownames(common_GermAus) != colnames(common_GermAus))
+sum(rownames(common_ItaAus) != colnames(common_ItaAus))
+
+contexts_df <- data.frame(x = c("common_EngIta","common_EngIta","common_EngIta",
+"common_EngGerm","common_EngGerm",
+"common_GermAus"),
+                          y = c("common_EngGerm","common_ItaAus","common_GermAus",
+                                "common_GermAus","common_ItaAus",
+                               "common_ItaAus")) %>%
+  tidyr::unite(name,x,y,sep="-",remove=FALSE)
+
+scor <- vector("list",length=nrow(contexts_df))
+names(scor) <- contexts_df$name
+names_plot <- paste0("p",1:nrow(contexts_df))
+names_plot1 <- paste0("p_var1_",1:nrow(contexts_df))
+names_plot2 <- paste0("p_var2_",1:nrow(contexts_df))
+
+for(i in 1:nrow(contexts_df)) {
+  
+  comp <- contexts_df[i,]
+  cont1 <- get(as.character(comp$x))
+  cont2 <- get(as.character(comp$y))
+  
+  names_comp <- data.frame(item1 = rep(colnames(cont1),each=ncol(cont1)),
+                         item2 = rep(colnames(cont1),
+                        times=ncol(cont1))) %>%
+  tidyr::unite(name_comp, item1,item2,sep="-",remove=FALSE) %>%
+  tidyr::unite(name_comp1, item2,item1,sep="-",remove=FALSE) %>%
+  dplyr::mutate(cont1_vec = c(cont1),
+                cont2_vec = c(cont2)) %>%
+  dplyr::filter(name_comp != name_comp1) %>%
+    tidyr::separate(item1 , into=c("type1","variable1"),sep="[.]",remove=FALSE) %>%
+    tidyr::separate(item2 , into=c("type2","variable2"),sep="[.]",remove=FALSE)
+
+scor[[i]] = cor(names_comp$cont1_vec,names_comp$cont2_vec)
+assign(names_plot[i],ggplot(names_comp,aes(x=cont1_vec,y=cont2_vec)) + geom_hex()+
+  geom_vline(xintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") +
+  geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")+
+  labs(x=paste0(gsub("common_","",as.character(comp$x))),y=gsub("common_","",as.character(comp$y))))
+  
+assign(names_plot1[i],ggplot(names_comp,aes(x=cont1_vec,y=cont2_vec,colour=variable1)) + geom_point()+
+  geom_vline(xintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") +
+  geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")+
+  labs(x=paste0(gsub("common_","",as.character(comp$x))),y=gsub("common_","",as.character(comp$y))))
+
+  assign(names_plot2[i],ggplot(names_comp,aes(x=cont1_vec,y=cont2_vec,colour=variable2)) + geom_point()+
+  geom_vline(xintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") +
+  geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")+
+  labs(x=paste0(gsub("common_","",as.character(comp$x))),y=gsub("common_","",as.character(comp$y))))
+
+print(i)
+  
+}
+
+cor_data <- data.frame(comparison = names(scor),r_squared = do.call(c,scor)) %>% 
+  arrange(r_squared)
+```
+
+```{r fig.width=12,fig.height=8}
+cowplot::plot_grid(p1,p2,p3,p4,p5,p6,nrow=3)
+```
+
+```{r}
+knitr::kable(cor_data)
+```
+
+
 ## All context together
 
 ```{r cor_all_contexts}
