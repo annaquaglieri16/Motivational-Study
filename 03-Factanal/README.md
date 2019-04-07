@@ -18,9 +18,13 @@ Anna Quaglieri & Riccardo Amorati
     -   [Basic factor analysis: 6 factors following the fa.parallel suggestion](#basic-factor-analysis-6-factors-following-the-fa.parallel-suggestion)
     -   [Factor analysis using 6 factors correcting for context and degree (which will become the final)](#factor-analysis-using-6-factors-correcting-for-context-and-degree-which-will-become-the-final)
         -   [Check what is the effect of 0 years vs all in year.studyL2](#check-what-is-the-effect-of-0-years-vs-all-in-year.studyl2)
-        -   [Check what is the effect of 0 years vs all in year.studyL2](#check-what-is-the-effect-of-0-years-vs-all-in-year.studyl2-1)
     -   [Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)](#try-fa-correcting-also-for-l2-0-vs-0-on-top-of-context-and-degree)
     -   [Factor analysis correcting for context and degree and removing 0 years for year.studyL2](#factor-analysis-correcting-for-context-and-degree-and-removing-0-years-for-year.studyl2)
+
+    ## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
+    ## TMB was built with Matrix version 1.2.15
+    ## Current Matrix version is 1.2.17
+    ## Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package
 
 Exploratory factor analysis: 7 factors as the number of variables in the study design
 -------------------------------------------------------------------------------------
@@ -2140,7 +2144,9 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 > # get residuals after regressing for context
 > get_residuals <- function(item,pred1,pred2,pred3){
 +   mod <- lm(item ~ pred1 + pred2 + pred3)
-+   dat <- rbind(confint(mod)[7,1],confint(mod)[7,2],summary(mod)$coefficients[7,1])
++   dat <- rbind(confint(mod)[7,1],confint(mod)[7,2],
++                summary(mod)$coefficients[7,1],
++                pval = summary(mod)$coefficients[7,4])
 +   return(dat)
 + }
 > 
@@ -2158,48 +2164,26 @@ We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeli
 > dat <- dat %>% separate(item,into=c("item","variable"),sep="[.]")
 > 
 > pos <- position_dodge(width=0.4)
-> ggplot(dat,aes(x=item,y=X3,colour=variable)) + 
-+ geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)
+> dat <- dat %>%
++   dplyr::mutate(item = fct_reorder(item,X4),.desc = FALSE) %>%
++   dplyr::rename(Effect = X3,
++                 low95CI = X1,
++                 high95CI = X2,
++                 pval = X4)
+> ggplot(dat,aes(x=item,y=Effect,colour=variable)) + 
++ geom_errorbar(aes(ymin=low95CI, ymax=high95CI),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)+ ylab("Effect +- 95% CI\nOrdered by p-value") + coord_flip()
 ```
 
 ![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
-### Check what is the effect of 0 years vs all in year.studyL2
-
-We can see that L2 o vs &gt;1 does not have an effect on the items apart bordeline for dream.
+-   Effect and 95%CI for `dream`
 
 ``` r
-> all$L1_expected <- ifelse(as.character(all$L1) %in% c("German","Italian","English"),as.character(all$L1),"other")
-> 
-> # items to be used for the FA
-> usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-> 
-> # Subset only german in australia
-> usable_data <- all[all$Context %in% "German in Australia",c(usable_items,"Context","degree","L1_expected")]
-> dat_onlyItems <- usable_data[,usable_items]
-> 
-> usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
-+                                     ifelse(usable_data$degree %in% "LA","LA","HUM"))
-> # get residuals after regressing for context
-> get_residuals <- function(item,pred2,pred3){
-+   mod <- lm(item ~ pred2 + pred3)
-+   dat <- rbind(confint(mod)[3,1],confint(mod)[3,2],summary(mod)$coefficients[3,1])
-+   return(dat)
-+ }
-> 
-> applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
-+                      pred2=usable_data$degree_binary,pred3=usable_data$L1_expected)
-> 
-> dat <- data.frame(t(applygetRes))
-> dat$item <- rownames(dat)
-> dat <- dat %>% separate(item,into=c("item","variable"),sep="[.]")
-> 
-> pos <- position_dodge(width=0.4)
-> ggplot(dat,aes(x=item,y=X3,colour=variable)) + 
-+ geom_errorbar(aes(ymin=X1, ymax=X2),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("L1 binary") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1) + facet_wrap(~variable,scales = "free_x")
+> dat[dat$item %in% "dream",]
 ```
 
-![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-25-1.png)
+    ##      low95CI   high95CI     Effect       pval  item variable .desc
+    ## 2 -0.4741239 0.01756174 -0.2282811 0.06864911 dream      id1 FALSE
 
 Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 -------------------------------------------------------------------------
@@ -2237,7 +2221,11 @@ Try FA correcting also for L2 (0 vs &gt;0) (on top of Context and degree)
 > fact <- 6
 > loading_cutoff <- 0.2
 > fa_basic <- fa(applygetRes,fact)
-> 
+```
+
+    ## Loading required namespace: GPArotation
+
+``` r
 > fa_basic
 ```
 
@@ -2367,7 +2355,7 @@ Factor analysis correcting for context and degree and removing 0 years for year.
 
 ![](03-Factor_analysis_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
-    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
 ``` r
 > fact <- 7
