@@ -26,14 +26,21 @@ Anna Quaglieri & Riccardo Amorati
     -   [English in Germany](#english-in-germany)
     -   [English in Italy](#english-in-italy)
     -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts)
+    -   [Different correlation plot and Pearson's correlation](#different-correlation-plot-and-pearsons-correlation)
     -   [All context together](#all-context-together)
     -   [Compare correlations](#compare-correlations)
+    -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts-1)
 -   [Evaluate internal consistency of known constructs with alpha](#evaluate-internal-consistency-of-known-constructs-with-alpha)
 
 Plan that I wrote with Richi's comments
 =======================================
 
 Link at <https://docs.google.com/document/d/1bdNeOMAYY90k8FAbPRWGBgS1YBEdP09kP0vcW0tNgPc/edit?usp=sharing>
+
+    ## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
+    ## TMB was built with Matrix version 1.2.15
+    ## Current Matrix version is 1.2.17
+    ## Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package
 
 Read in data
 ============
@@ -1692,6 +1699,28 @@ We will perform an exploratory FA combining all the contexts together. This mean
 
 ![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-4.png)
 
+Different correlation plot and Pearson's correlation
+----------------------------------------------------
+
+``` r
+> cowplot::plot_grid(p1,p2,p3,p4,p5,p6,nrow=3)
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-31-1.png)
+
+``` r
+> knitr::kable(cor_data)
+```
+
+| comparison                      |  r\_squared|
+|:--------------------------------|-----------:|
+| common\_EngGerm-common\_ItaAus  |   0.4538018|
+| common\_EngGerm-common\_GermAus |   0.4757044|
+| common\_EngIta-common\_GermAus  |   0.5091050|
+| common\_EngIta-common\_ItaAus   |   0.5384113|
+| common\_EngIta-common\_EngGerm  |   0.5957948|
+| common\_GermAus-common\_ItaAus  |   0.5999612|
+
 All context together
 --------------------
 
@@ -1719,33 +1748,26 @@ Compare correlations
 
 ``` r
 > library(GGally)
-```
-
-    ## 
-    ## Attaching package: 'GGally'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     nasa
-
-``` r
 > combine_cor <- merge(data_cor_eng_in_ita,data_cor_eng_in_germ,all = TRUE)
 > combine_cor1 <- merge(combine_cor,data_cor_germ_in_au,all = TRUE)
 > combine_cor2 <- merge(combine_cor1,data_cor_ita_in_au,all = TRUE)
-> combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item","variable"),sep="[.]",remove=FALSE)
+> combine_cor2 <- combine_cor2 %>% separate(var1,into=c("item1","variable1"),sep="[.]",remove=FALSE) %>%
++   separate(var2,into=c("item2","variable2"),sep="[.]",remove=FALSE) %>%
++   unite(group,variable1,variable2,sep=".")
 ```
 
     ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 60 rows
     ## [309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
     ## 324, 325, 326, 327, 328, ...].
 
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 5 rows [330,
+    ## 496, 528, 558, 589].
+
 ``` r
-> combine_cor2$variable <- ifelse(is.na(combine_cor2$variable),combine_cor2$item,combine_cor2$variable)
-> 
 > pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-33-1.png)
 
 ``` r
 > ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
@@ -1789,7 +1811,140 @@ Compare correlations
 
     ## Warning: Removed 30 rows containing non-finite values (stat_density).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-30-2.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-33-2.png)
+
+Correlation between correlation in the different contexts
+---------------------------------------------------------
+
+We will perform an exploratory FA combining all the contexts together. This means that we are assuming that the correlation between items across context has the same direction (does not happen that cor(item1,item2)\_context1 &gt; 0 and cor(item1,item2)\_context2 &lt; 0).
+
+``` r
+> common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
+> sum(rownames(cov_EngIta) != rownames(cov_EngGerm))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(cov_EngIta) != rownames(cov_GermAus))
+```
+
+    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object
+    ## length is not a multiple of shorter object length
+
+    ## [1] 4
+
+``` r
+> sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
+```
+
+    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object
+    ## length is not a multiple of shorter object length
+
+    ## [1] 4
+
+``` r
+> sum(rownames(cov_GermAus) != rownames(cov_ItaAus))
+```
+
+    ## [1] 0
+
+``` r
+> common_EngIta <- cov_EngIta[rownames(cov_EngIta) %in% common,colnames(cov_EngIta) %in% common]
+> common_EngGerm <- cov_EngGerm[rownames(cov_EngGerm) %in% common,colnames(cov_EngGerm) %in% common]
+> common_GermAus <- cov_GermAus[rownames(cov_GermAus) %in% common,colnames(cov_GermAus) %in% common]
+> common_ItaAus <- cov_ItaAus[rownames(cov_ItaAus) %in% common,colnames(cov_ItaAus) %in% common]
+> 
+> sum(rownames(common_EngIta) != colnames(common_EngIta))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_EngGerm) != colnames(common_EngGerm))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_GermAus) != colnames(common_GermAus))
+```
+
+    ## [1] 0
+
+``` r
+> sum(rownames(common_ItaAus) != colnames(common_ItaAus))
+```
+
+    ## [1] 0
+
+``` r
+> par(mfrow=c(2,3))
+> plot(common_EngIta,common_EngGerm)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngIta,common_GermAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngIta,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> 
+> plot(common_EngGerm,common_GermAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> plot(common_EngGerm,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+> 
+> plot(common_GermAus,common_ItaAus)
+> abline(h=c(0,0.3),v=c(0,0.3),lty=2,col = "dark red")
+> abline(a=0,b=1,lty=2,col = "dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-1.png)
+
+``` r
+> # Largest differences
+> low_EngGerm <- lower.tri(common_EngGerm)
+> common_EngGerm[!low_EngGerm] <- NA
+> common_GermAus[!(lower.tri(common_GermAus))] <- NA
+> common_ItaAus[!(lower.tri(common_ItaAus))] <- NA
+> common_EngIta[!(lower.tri(common_EngIta))] <- NA
+> 
+> 
+> mat <- data.frame(common_EngGerm=c(common_EngGerm),
++                   common_EngIta=c(common_EngIta),
++                   common_GermAus = c(common_GermAus),
++                   common_ItaAus = c(common_ItaAus),
++                   compare = paste(rownames(common_EngGerm),colnames(common_EngGerm),sep=".")) %>%
++   filter(!is.na(common_EngGerm)) %>%
++   separate(compare,into=c("item1","variable1","item2","variable2"),remove=FALSE,sep="[.]") %>%
++   unite(group,variable1,variable2,sep=".")
+> 
+> library(ggrepel)
+> ggplot(mat,aes(x=common_EngGerm,y=common_GermAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-2.png)
+
+``` r
+> ggplot(mat,aes(x=common_EngGerm,y=common_ItaAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-3.png)
+
+``` r
+> ggplot(mat,aes(x=common_EngGerm,y=common_EngIta,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
++   geom_hline(yintercept=c(0,0.3),linetype="dotted",colour="dark red") +
++ geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
+```
+
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-4.png)
 
 Evaluate internal consistency of known constructs with alpha
 ============================================================
@@ -1953,4 +2108,4 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-32-1.png)
+![](02-descriptive_files/figure-markdown_github/unnamed-chunk-36-1.png)
