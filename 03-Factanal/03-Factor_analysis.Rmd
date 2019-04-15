@@ -258,15 +258,17 @@ sum_stat %>%
     dplyr::filter(variable %in% fac) %>%
     ungroup() %>%
   ggplot(aes(x=Context,y=meanFac,colour=Context)) + 
-  geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") +
+  geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ 
     theme(axis.text.x = element_blank()) +
      scale_colour_manual(values = cols,name = '', 
-          labels = expression("English in Italy "(E[I]),"English in Germany "(E[G]),"Italian in Australia "(I[A]),"German in Australia "(G[A])))+
-    labs(y="Mean factor with 95%CIå")
+          labels = expression("English in Italy "(E[I]),"English in Germany "(E[G]),"Italian in Australia "(I[A]),"German in Australia "(G[A]))) +
+    labs(y="Mean with 95%CI")
 
-ggsave(file.path("03-Factanal/03-Factor_analysis_figures",paste0("final-FA-",fac,".png")),width = 7,height = 5)
+ggsave(file.path("03-Factor_analysis_figures",paste0("final-FA-",fac,".png")),width = 7,height = 5)
+ggsave(file.path("03-Factor_analysis_figures",paste0("final-FA-",fac,".pdf")),width = 7,height = 5)
 
 }
+
 ```
 
 
@@ -806,7 +808,8 @@ get_residuals <- function(item,pred1,pred2,pred3){
   mod <- lm(item ~ pred1 + pred2 + pred3)
   dat <- rbind(confint(mod)[7,1],confint(mod)[7,2],
                summary(mod)$coefficients[7,1],
-               pval = summary(mod)$coefficients[7,4])
+               pval = summary(mod)$coefficients[7,4],
+               tval = summary(mod)$coefficients[7,3])
   return(dat)
 }
 
@@ -829,7 +832,8 @@ dat <- dat %>%
   dplyr::rename(Effect = X3,
                 low95CI = X1,
                 high95CI = X2,
-                pval = X4)
+                pval = X4,
+                tval=X5)
 ggplot(dat,aes(x=item,y=Effect,colour=variable)) + 
 geom_errorbar(aes(ymin=low95CI, ymax=high95CI),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)+ ylab("Effect +- 95% CI\nOrdered by p-value") + coord_flip()
 ```
@@ -839,7 +843,6 @@ geom_errorbar(aes(ymin=low95CI, ymax=high95CI),width=0.2,position=pos) +  geom_p
 ```{r}
 dat[dat$item %in% "dream",]
 ```
-
 
 
 
