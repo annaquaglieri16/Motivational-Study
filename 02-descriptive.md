@@ -3,47 +3,12 @@ Analysis of merged questionnaires
 Anna Quaglieri & Riccardo Amorati
 03/09/2017
 
--   [Plan that I wrote with Richi's comments](#plan-that-i-wrote-with-richis-comments)
--   [Read in data](#read-in-data)
-    -   [Variables to describe dataset (can be different between contexts)](#variables-to-describe-dataset-can-be-different-between-contexts)
--   [Filter participants : keep only the ones that meet the inclusion criteria](#filter-participants-keep-only-the-ones-that-meet-the-inclusion-criteria)
-    -   [Imputing degree based on Quality Comments provided in the questions](#imputing-degree-based-on-quality-comments-provided-in-the-questions)
--   [Define demographic variables](#define-demographic-variables)
-    -   [Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the latest dataset?)](#need-to-check-datasets-with-rcihi-why-do-we-have-qc-in-l1-am-i-using-not-the-latest-dataset)
-    -   [Stats about filtered dataset](#stats-about-filtered-dataset)
-    -   [Recoded demographic variables](#recoded-demographic-variables)
-    -   [Write filtered and merged dataset](#write-filtered-and-merged-dataset)
-    -   [Descriptive plots and tables](#descriptive-plots-and-tables)
--   [Australian context spcific variables](#australian-context-spcific-variables)
--   [Likert scales](#likert-scales)
-    -   [Impute missing values - Using median values](#impute-missing-values---using-median-values)
-    -   [Save imputed data](#save-imputed-data)
--   [Barplot of likert variables](#barplot-of-likert-variables)
-    -   [Barplot of Educated and Necessity in the Australian and European Contexts](#barplot-of-educated-and-necessity-in-the-australian-and-european-contexts)
--   [Correlation plot of items by context](#correlation-plot-of-items-by-context)
-    -   [Italian in Australia](#italian-in-australia)
-    -   [German in Australia](#german-in-australia)
-    -   [English in Germany](#english-in-germany)
-    -   [English in Italy](#english-in-italy)
-    -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts)
-    -   [Different correlation plot and Pearson's correlation](#different-correlation-plot-and-pearsons-correlation)
-    -   [All context together](#all-context-together)
-    -   [Compare correlations](#compare-correlations)
-    -   [Correlation between correlation in the different contexts](#correlation-between-correlation-in-the-different-contexts-1)
--   [Evaluate internal consistency of known constructs with alpha](#evaluate-internal-consistency-of-known-constructs-with-alpha)
+# Plan that I wrote with Richi’s comments
 
-Plan that I wrote with Richi's comments
-=======================================
+Link at
+<https://docs.google.com/document/d/1bdNeOMAYY90k8FAbPRWGBgS1YBEdP09kP0vcW0tNgPc/edit?usp=sharing>
 
-Link at <https://docs.google.com/document/d/1bdNeOMAYY90k8FAbPRWGBgS1YBEdP09kP0vcW0tNgPc/edit?usp=sharing>
-
-    ## Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
-    ## TMB was built with Matrix version 1.2.15
-    ## Current Matrix version is 1.2.17
-    ## Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package
-
-Read in data
-============
+# Read in data
 
 ``` r
 > european <- read_csv("01-cleaning_data_data/european_recoded.csv")
@@ -74,8 +39,7 @@ Read in data
     ##   1      0  209
     ##   <NA> 269    0
 
-Variables to describe dataset (can be different between contexts)
------------------------------------------------------------------
+## Variables to describe dataset (can be different between contexts)
 
 ``` r
 > demographics_var <- c("Age","Gender","L1","speak.other.L2","study.other.L2","origins","year.studyL2","other5.other.ways","degree","roleL2.degree","study.year","prof","L2.VCE","uni1.year","Context")
@@ -83,7 +47,10 @@ Variables to describe dataset (can be different between contexts)
 > l2School_variables <- colnames(all)[grep(l2School,colnames(all))]
 ```
 
--   First language
+  - First
+language
+
+<!-- end list -->
 
 ``` r
 > #table(all$L1,all$Context) # too many levels - needs to be cleaned (ex tot number of languages?)
@@ -91,22 +58,18 @@ Variables to describe dataset (can be different between contexts)
 ```
 
     ## 
-    ##          Afrikaans           Albanian            Burmese 
-    ##                  1                  2                  1 
-    ##          Cantonese            Chinese           Croatian 
-    ##                  4                  7                  1 
-    ##              Dutch            English  English and Dutch 
-    ##                  1                201                  2 
-    ##             German German and English German and Turkish 
-    ##                 77                  2                  1 
-    ##                  I         Indonesian            Italian 
-    ##                  1                  1                 89 
-    ##           Japanese           Mandarin            Persian 
-    ##                  1                  5                  1 
-    ##    Persian (Farsi)           Romanian            Russian 
-    ##                  1                  3                  2 
-    ##             Sindhi             Slovak            Spanish 
-    ##                  1                  1                  3 
+    ##          Afrikaans           Albanian            Burmese          Cantonese 
+    ##                  1                  2                  1                  4 
+    ##            Chinese           Croatian              Dutch            English 
+    ##                  7                  1                  1                201 
+    ##  English and Dutch             German German and English German and Turkish 
+    ##                  2                 77                  2                  1 
+    ##                  I         Indonesian            Italian           Japanese 
+    ##                  1                  1                 89                  1 
+    ##           Mandarin            Persian    Persian (Farsi)           Romanian 
+    ##                  5                  1                  1                  3 
+    ##            Russian             Sindhi             Slovak            Spanish 
+    ##                  2                  1                  1                  3 
     ##            Turkish          Ukrainian               <NA> 
     ##                  1                  1                 67
 
@@ -114,7 +77,7 @@ Variables to describe dataset (can be different between contexts)
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="")+theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 > #table(all$speak.other.L2,all$Context)
@@ -134,7 +97,9 @@ Variables to describe dataset (can be different between contexts)
     ## 5   Italian         7  Italian
     ## 6  Japanese         4 Japanese
 
--   origins
+  - origins
+
+<!-- end list -->
 
 ``` r
 > table(all$origins,useNA = "always")
@@ -176,7 +141,10 @@ Variables to describe dataset (can be different between contexts)
     ##                                 SCI 
     ##                                  86
 
--   study.year in the European context is uni1.year in the Australian context
+  - study.year in the European context is uni1.year in the Australian
+    context
+
+<!-- end list -->
 
 ``` r
 > all$study.year[is.na(all$study.year)] <- all$uni1.year[is.na(all$study.year)]
@@ -186,29 +154,28 @@ Variables to describe dataset (can be different between contexts)
 ```
 
     ## 
-    ##       1st semester           1st year       2nd semester 
-    ##                 72                255                  5 
-    ##           2nd year       3rd semester           3rd year 
-    ##                 37                  5                 20 
-    ## 3rd year of Master  4th year bachelor       5th semester 
-    ##                  1                  8                  2 
-    ##       6th semester           7th year             Master 
-    ##                  3                  1                  3
+    ##       1st semester           1st year       2nd semester           2nd year 
+    ##                 72                255                  5                 37 
+    ##       3rd semester           3rd year 3rd year of Master  4th year bachelor 
+    ##                  5                 20                  1                  8 
+    ##       5th semester       6th semester           7th year             Master 
+    ##                  2                  3                  1                  3
 
--   proficiency
+  - proficiency
+
+<!-- end list -->
 
 ``` r
 > table(all$prof,useNA = "always")
 ```
 
     ## 
-    ##           Advanced         Elementary       Intermediate 
-    ##                 78                105                 84 
-    ## Upper-intermediate               <NA> 
-    ##                146                 65
+    ##           Advanced         Elementary       Intermediate Upper-intermediate 
+    ##                 78                105                 84                146 
+    ##               <NA> 
+    ##                 65
 
-Filter participants : keep only the ones that meet the inclusion criteria
-=========================================================================
+# Filter participants : keep only the ones that meet the inclusion criteria
 
 ``` r
 > all$study.year[is.na(all$study.year)] <- all$uni1.year[is.na(all$study.year)]
@@ -219,13 +186,14 @@ Filter participants : keep only the ones that meet the inclusion criteria
 > #& year.studyL2 != "0 years"
 ```
 
-Imputing degree based on Quality Comments provided in the questions
--------------------------------------------------------------------
+## Imputing degree based on Quality Comments provided in the questions
 
--   **5313976716** : SCI (wish to study science in the future)
--   **5359866545** : HUM.SCI (based on degree.other7)
--   **5375370122** : SCI (she wants to do science)
--   **5375376761** : HUM (she wants to do translation/reserach/teaching)
+  - **5313976716** : SCI (wish to study science in the future)
+  - **5359866545** : HUM.SCI (based on degree.other7)
+  - **5375370122** : SCI (she wants to do science)
+  - **5375376761** : HUM (she wants to do translation/reserach/teaching)
+
+<!-- end list -->
 
 ``` r
 > filtered$degree[filtered$Resp.ID %in% "5313976716"] <- "SCI"
@@ -250,68 +218,71 @@ Imputing degree based on Quality Comments provided in the questions
 > kable(table(filtered$Context))
 ```
 
-| Var1                 |  Freq|
-|:---------------------|-----:|
-| English in Germany   |    72|
-| English in Italy     |    91|
-| German in Australia  |    89|
-| Italian in Australia |    75|
+| Var1                 | Freq |
+| :------------------- | ---: |
+| English in Germany   |   72 |
+| English in Italy     |   91 |
+| German in Australia  |   89 |
+| Italian in Australia |   75 |
 
 ``` r
 > kable(table(filtered$year.studyL2,filtered$Context))
 ```
 
-|                              |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
-|------------------------------|-------------------:|-----------------:|--------------------:|---------------------:|
-| 0 years                      |                   0|                 0|                   22|                    11|
-| 1- 3 years                   |                   0|                 0|                    0|                     9|
-| 1-3 years                    |                   0|                 0|                    7|                     0|
-| 4-6 years                    |                   0|                 0|                   35|                    20|
-| First year of primary school |                  17|                56|                    0|                     0|
-| Kindergarten                 |                   6|                23|                    0|                     0|
-| Less than a year             |                   0|                 0|                   13|                     5|
-| more than 6 years            |                   0|                 0|                   11|                    30|
-| Other                        |                  48|                12|                    0|                     0|
+|                              | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| ---------------------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| 0 years                      |                  0 |                0 |                  22 |                   11 |
+| 1- 3 years                   |                  0 |                0 |                   0 |                    9 |
+| 1-3 years                    |                  0 |                0 |                   7 |                    0 |
+| 4-6 years                    |                  0 |                0 |                  35 |                   20 |
+| First year of primary school |                 17 |               56 |                   0 |                    0 |
+| Kindergarten                 |                  6 |               23 |                   0 |                    0 |
+| Less than a year             |                  0 |                0 |                  13 |                    5 |
+| more than 6 years            |                  0 |                0 |                  11 |                   30 |
+| Other                        |                 48 |               12 |                   0 |                    0 |
 
 ``` r
 > kable(table(filtered$year.studyL2,filtered$prof))
 ```
 
-|                              |  Advanced|  Elementary|  Intermediate|  Upper-intermediate|
-|------------------------------|---------:|-----------:|-------------:|-------------------:|
-| 0 years                      |         0|          32|             1|                   0|
-| 1- 3 years                   |         0|           4|             5|                   0|
-| 1-3 years                    |         0|           1|             3|                   3|
-| 4-6 years                    |         1|           9|            26|                  19|
-| First year of primary school |        20|           1|             6|                  46|
-| Kindergarten                 |         8|           1|             3|                  17|
-| Less than a year             |         0|          11|             4|                   3|
-| more than 6 years            |         2|           5|            16|                  18|
-| Other                        |        33|           0|             5|                  22|
+|                              | Advanced | Elementary | Intermediate | Upper-intermediate |
+| ---------------------------- | -------: | ---------: | -----------: | -----------------: |
+| 0 years                      |        0 |         32 |            1 |                  0 |
+| 1- 3 years                   |        0 |          4 |            5 |                  0 |
+| 1-3 years                    |        0 |          1 |            3 |                  3 |
+| 4-6 years                    |        1 |          9 |           26 |                 19 |
+| First year of primary school |       20 |          1 |            6 |                 46 |
+| Kindergarten                 |        8 |          1 |            3 |                 17 |
+| Less than a year             |        0 |         11 |            4 |                  3 |
+| more than 6 years            |        2 |          5 |           16 |                 18 |
+| Other                        |       33 |          0 |            5 |                 22 |
 
 ``` r
 > kable(table(filtered$year.studyL2,filtered$Context))
 ```
 
-|                              |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
-|------------------------------|-------------------:|-----------------:|--------------------:|---------------------:|
-| 0 years                      |                   0|                 0|                   22|                    11|
-| 1- 3 years                   |                   0|                 0|                    0|                     9|
-| 1-3 years                    |                   0|                 0|                    7|                     0|
-| 4-6 years                    |                   0|                 0|                   35|                    20|
-| First year of primary school |                  17|                56|                    0|                     0|
-| Kindergarten                 |                   6|                23|                    0|                     0|
-| Less than a year             |                   0|                 0|                   13|                     5|
-| more than 6 years            |                   0|                 0|                   11|                    30|
-| Other                        |                  48|                12|                    0|                     0|
+|                              | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| ---------------------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| 0 years                      |                  0 |                0 |                  22 |                   11 |
+| 1- 3 years                   |                  0 |                0 |                   0 |                    9 |
+| 1-3 years                    |                  0 |                0 |                   7 |                    0 |
+| 4-6 years                    |                  0 |                0 |                  35 |                   20 |
+| First year of primary school |                 17 |               56 |                   0 |                    0 |
+| Kindergarten                 |                  6 |               23 |                   0 |                    0 |
+| Less than a year             |                  0 |                0 |                  13 |                    5 |
+| more than 6 years            |                  0 |                0 |                  11 |                   30 |
+| Other                        |                 48 |               12 |                   0 |                    0 |
 
-People that have studied 0 years L2 are just a small subset of the German in Australia and Italian in Australia context which means that by correcting for context we are not removing the effect of the 0 years. A way to remove the effect of the 0 years participants and not including too many variables could be to estimate the effect of 0 years vs all.
+People that have studied 0 years L2 are just a small subset of the
+German in Australia and Italian in Australia context which means that by
+correcting for context we are not removing the effect of the 0 years. A
+way to remove the effect of the 0 years participants and not including
+too many variables could be to estimate the effect of 0 years vs
+all.
 
-Define demographic variables
-============================
+# Define demographic variables
 
-Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the latest dataset?)
------------------------------------------------------------------------------------------------
+## Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the latest dataset?)
 
 ``` r
 > all <- filtered
@@ -322,58 +293,58 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(all,aes(x=L1,fill=Context)) + geom_bar() + coord_flip() + ggtitle("First Language") + labs(y="N. of participants",x="") + theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 > table(all$L1,all$Context)
 ```
 
     ##                     
-    ##                      English in Germany English in Italy
-    ##   Afrikaans                           0                0
-    ##   Albanian                            0                1
-    ##   Cantonese                           0                0
-    ##   Chinese                             0                2
-    ##   Dutch                               1                0
-    ##   English                             1                0
-    ##   English and Dutch                   0                0
-    ##   German                             64                0
-    ##   German and English                  1                0
-    ##   I                                   0                0
-    ##   Indonesian                          0                0
-    ##   Italian                             0               87
-    ##   Japanese                            0                0
-    ##   Mandarin                            0                0
-    ##   Persian (Farsi)                     0                0
-    ##   Romanian                            0                0
-    ##   Russian                             2                0
-    ##   Sindhi                              0                0
-    ##   Spanish                             1                0
-    ##   Turkish                             1                0
-    ##   Ukrainian                           0                1
+    ##                      English in Germany English in Italy German in Australia
+    ##   Afrikaans                           0                0                   1
+    ##   Albanian                            0                1                   0
+    ##   Cantonese                           0                0                   2
+    ##   Chinese                             0                2                   2
+    ##   Dutch                               1                0                   0
+    ##   English                             1                0                  75
+    ##   English and Dutch                   0                0                   2
+    ##   German                             64                0                   0
+    ##   German and English                  1                0                   1
+    ##   I                                   0                0                   0
+    ##   Indonesian                          0                0                   1
+    ##   Italian                             0               87                   0
+    ##   Japanese                            0                0                   1
+    ##   Mandarin                            0                0                   1
+    ##   Persian (Farsi)                     0                0                   1
+    ##   Romanian                            0                0                   1
+    ##   Russian                             2                0                   0
+    ##   Sindhi                              0                0                   1
+    ##   Spanish                             1                0                   0
+    ##   Turkish                             1                0                   0
+    ##   Ukrainian                           0                1                   0
     ##                     
-    ##                      German in Australia Italian in Australia
-    ##   Afrikaans                            1                    0
-    ##   Albanian                             0                    0
-    ##   Cantonese                            2                    0
-    ##   Chinese                              2                    0
-    ##   Dutch                                0                    0
-    ##   English                             75                   73
-    ##   English and Dutch                    2                    0
-    ##   German                               0                    0
-    ##   German and English                   1                    0
-    ##   I                                    0                    1
-    ##   Indonesian                           1                    0
-    ##   Italian                              0                    0
-    ##   Japanese                             1                    0
-    ##   Mandarin                             1                    1
-    ##   Persian (Farsi)                      1                    0
-    ##   Romanian                             1                    0
-    ##   Russian                              0                    0
-    ##   Sindhi                               1                    0
-    ##   Spanish                              0                    0
-    ##   Turkish                              0                    0
-    ##   Ukrainian                            0                    0
+    ##                      Italian in Australia
+    ##   Afrikaans                             0
+    ##   Albanian                              0
+    ##   Cantonese                             0
+    ##   Chinese                               0
+    ##   Dutch                                 0
+    ##   English                              73
+    ##   English and Dutch                     0
+    ##   German                                0
+    ##   German and English                    0
+    ##   I                                     1
+    ##   Indonesian                            0
+    ##   Italian                               0
+    ##   Japanese                              0
+    ##   Mandarin                              1
+    ##   Persian (Farsi)                       0
+    ##   Romanian                              0
+    ##   Russian                               0
+    ##   Sindhi                                0
+    ##   Spanish                               0
+    ##   Turkish                               0
+    ##   Ukrainian                             0
 
 ``` r
 > table(all$degree,all$L1)
@@ -390,57 +361,59 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ##   Lingue, mercati e culture dell'Asia         0        0         0       1
     ##   SCI                                         0        0         0       2
     ##                                      
-    ##                                       Dutch English English and Dutch
-    ##   BA in Anglistik                         0       1                 0
-    ##   BA in Nordamerikastudien                0       0                 0
-    ##   HUM                                     0      93                 1
-    ##   HUM.SCI                                 0       6                 0
-    ##   LA                                      1       0                 0
-    ##   Lingue e letterature straniere          0       0                 0
-    ##   Lingue, mercati e culture dell'Asia     0       0                 0
-    ##   SCI                                     0      47                 1
+    ##                                       Dutch English English and Dutch German
+    ##   BA in Anglistik                         0       1                 0     34
+    ##   BA in Nordamerikastudien                0       0                 0      4
+    ##   HUM                                     0      93                 1      0
+    ##   HUM.SCI                                 0       6                 0      0
+    ##   LA                                      1       0                 0     25
+    ##   Lingue e letterature straniere          0       0                 0      0
+    ##   Lingue, mercati e culture dell'Asia     0       0                 0      0
+    ##   SCI                                     0      47                 1      0
     ##                                      
-    ##                                       German German and English  I
-    ##   BA in Anglistik                         34                  1  0
-    ##   BA in Nordamerikastudien                 4                  0  0
-    ##   HUM                                      0                  0  1
-    ##   HUM.SCI                                  0                  0  0
-    ##   LA                                      25                  0  0
-    ##   Lingue e letterature straniere           0                  0  0
-    ##   Lingue, mercati e culture dell'Asia      0                  0  0
-    ##   SCI                                      0                  1  0
+    ##                                       German and English  I Indonesian Italian
+    ##   BA in Anglistik                                      1  0          0       0
+    ##   BA in Nordamerikastudien                             0  0          0       0
+    ##   HUM                                                  0  1          0       0
+    ##   HUM.SCI                                              0  0          0       0
+    ##   LA                                                   0  0          0       0
+    ##   Lingue e letterature straniere                       0  0          0      75
+    ##   Lingue, mercati e culture dell'Asia                  0  0          0      12
+    ##   SCI                                                  1  0          1       0
     ##                                      
-    ##                                       Indonesian Italian Japanese Mandarin
-    ##   BA in Anglistik                              0       0        0        0
-    ##   BA in Nordamerikastudien                     0       0        0        0
-    ##   HUM                                          0       0        0        0
-    ##   HUM.SCI                                      0       0        0        0
-    ##   LA                                           0       0        0        0
-    ##   Lingue e letterature straniere               0      75        0        0
-    ##   Lingue, mercati e culture dell'Asia          0      12        0        0
-    ##   SCI                                          1       0        1        2
+    ##                                       Japanese Mandarin Persian (Farsi)
+    ##   BA in Anglistik                            0        0               0
+    ##   BA in Nordamerikastudien                   0        0               0
+    ##   HUM                                        0        0               0
+    ##   HUM.SCI                                    0        0               0
+    ##   LA                                         0        0               0
+    ##   Lingue e letterature straniere             0        0               0
+    ##   Lingue, mercati e culture dell'Asia        0        0               0
+    ##   SCI                                        1        2               1
     ##                                      
-    ##                                       Persian (Farsi) Romanian Russian
-    ##   BA in Anglistik                                   0        0       2
-    ##   BA in Nordamerikastudien                          0        0       0
-    ##   HUM                                               0        0       0
-    ##   HUM.SCI                                           0        0       0
-    ##   LA                                                0        0       0
-    ##   Lingue e letterature straniere                    0        0       0
-    ##   Lingue, mercati e culture dell'Asia               0        0       0
-    ##   SCI                                               1        1       0
+    ##                                       Romanian Russian Sindhi Spanish Turkish
+    ##   BA in Anglistik                            0       2      0       1       0
+    ##   BA in Nordamerikastudien                   0       0      0       0       0
+    ##   HUM                                        0       0      0       0       0
+    ##   HUM.SCI                                    0       0      0       0       0
+    ##   LA                                         0       0      0       0       1
+    ##   Lingue e letterature straniere             0       0      0       0       0
+    ##   Lingue, mercati e culture dell'Asia        0       0      0       0       0
+    ##   SCI                                        1       0      1       0       0
     ##                                      
-    ##                                       Sindhi Spanish Turkish Ukrainian
-    ##   BA in Anglistik                          0       1       0         0
-    ##   BA in Nordamerikastudien                 0       0       0         0
-    ##   HUM                                      0       0       0         0
-    ##   HUM.SCI                                  0       0       0         0
-    ##   LA                                       0       0       1         0
-    ##   Lingue e letterature straniere           0       0       0         1
-    ##   Lingue, mercati e culture dell'Asia      0       0       0         0
-    ##   SCI                                      1       0       0         0
+    ##                                       Ukrainian
+    ##   BA in Anglistik                             0
+    ##   BA in Nordamerikastudien                    0
+    ##   HUM                                         0
+    ##   HUM.SCI                                     0
+    ##   LA                                          0
+    ##   Lingue e letterature straniere              1
+    ##   Lingue, mercati e culture dell'Asia         0
+    ##   SCI                                         0
 
--   Check for L1 but we decided not to filter for it
+  - Check for L1 but we decided not to filter for it
+
+<!-- end list -->
 
 ``` r
 > #Filter by L1
@@ -490,9 +463,11 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
     ## Italian in Australia 
     ##                   75
 
--   Filter missing value:
--   Filter participants who didn't put the degree
--   we don't care about speak.other.L2 and study.other.L2
+  - Filter missing value:
+      - Filter participants who didn’t put the degree
+      - we don’t care about speak.other.L2 and study.other.L2
+
+<!-- end list -->
 
 ``` r
 > missing_bySample <- rowSums(is.na(demo))
@@ -503,7 +478,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > barplot(missing_bySample)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 > d <- data.frame(miss=missing_byVar)
@@ -511,7 +486,7 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > ggplot(data=d,aes(x=varID,y=miss)) + geom_bar(stat="identity") + theme_bw() +theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-14-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
 
 ``` r
 > demo_missing <- demo %>% group_by(Context) %>% summarise(roleL2.degree_na = sum(is.na(roleL2.degree)),
@@ -550,61 +525,57 @@ Need to check datasets with Rcihi (why do we have QC in L1? Am I using not the l
 > all <- all[!is.na(all$degree),]
 ```
 
-Stats about filtered dataset
-----------------------------
+## Stats about filtered dataset
 
 ``` r
 > kable(table(all$Context))
 ```
 
-| Var1                 |  Freq|
-|:---------------------|-----:|
-| English in Germany   |    70|
-| English in Italy     |    91|
-| German in Australia  |    88|
-| Italian in Australia |    74|
+| Var1                 | Freq |
+| :------------------- | ---: |
+| English in Germany   |   70 |
+| English in Italy     |   91 |
+| German in Australia  |   88 |
+| Italian in Australia |   74 |
 
 ``` r
 > kable(table(all$study.year))
 ```
 
-| Var1         |  Freq|
-|:-------------|-----:|
-| 1st semester |    70|
-| 1st year     |   253|
+| Var1         | Freq |
+| :----------- | ---: |
+| 1st semester |   70 |
+| 1st year     |  253 |
 
 ``` r
 > kable(table(all$year.studyL2))
 ```
 
-| Var1                         |  Freq|
-|:-----------------------------|-----:|
-| 0 years                      |    33|
-| 1- 3 years                   |     9|
-| 1-3 years                    |     7|
-| 4-6 years                    |    53|
-| First year of primary school |    73|
-| Kindergarten                 |    29|
-| Less than a year             |    18|
-| more than 6 years            |    41|
-| Other                        |    59|
+| Var1                         | Freq |
+| :--------------------------- | ---: |
+| 0 years                      |   33 |
+| 1- 3 years                   |    9 |
+| 1-3 years                    |    7 |
+| 4-6 years                    |   53 |
+| First year of primary school |   73 |
+| Kindergarten                 |   29 |
+| Less than a year             |   18 |
+| more than 6 years            |   41 |
+| Other                        |   59 |
 
-Recoded demographic variables
------------------------------
+## Recoded demographic variables
 
 ``` r
 > recoded_dem_richi <- read_excel("02-descriptive_data/21 03 merged_filtered_imputedMedian_likertNumber.xlsx")
 ```
 
-Write filtered and merged dataset
----------------------------------
+## Write filtered and merged dataset
 
 ``` r
 > write.csv(all,file.path("02-descriptive_data/context-merged_filtered.csv"))
 ```
 
-Descriptive plots and tables
-----------------------------
+## Descriptive plots and tables
 
 ``` r
 > all$speak.other.L2_binary <- ifelse(!is.na(all$speak.other.L2) & 
@@ -614,13 +585,15 @@ Descriptive plots and tables
 > kable(table(all$speak.other.L2_binary,all$Context,useNA = "always"))
 ```
 
-|     |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|   NA|
-|-----|-------------------:|-----------------:|--------------------:|---------------------:|----:|
-| No  |                  12|                24|                   52|                    53|    0|
-| Yes |                  57|                67|                   36|                    20|    0|
-| NA  |                   1|                 0|                    0|                     1|    0|
+|     | English in Germany | English in Italy | German in Australia | Italian in Australia | NA |
+| --- | -----------------: | ---------------: | ------------------: | -------------------: | -: |
+| No  |                 12 |               24 |                  52 |                   53 |  0 |
+| Yes |                 57 |               67 |                  36 |                   20 |  0 |
+| NA  |                  1 |                0 |                   0 |                    1 |  0 |
 
--   Age
+  - Age
+
+<!-- end list -->
 
 ``` r
 > tabAge <- t(table(all$Age,all$Context))
@@ -632,7 +605,7 @@ Descriptive plots and tables
 +   geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/age_by_context-1.png)
+![](02-descriptive_files/figure-gfm/age_by_context-1.png)<!-- -->
 
 ``` r
 > # add numbers on the bar
@@ -646,7 +619,7 @@ Descriptive plots and tables
 > ggplot(ggdf,aes(x=Gender,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + ggtitle("Participants by gender")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/gender_by_context-1.png)
+![](02-descriptive_files/figure-gfm/gender_by_context-1.png)<!-- -->
 
 ``` r
 > # add numbers on the bar
@@ -654,7 +627,7 @@ Descriptive plots and tables
 > ggplot(all,aes(x=origins,fill=Context)) + geom_bar(position="dodge",colour="white") + ggtitle("Origins by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=60, width=0.3, height=0.4) + ggtitle("Participants by origins")
 ```
 
-![](02-descriptive_files/figure-markdown_github/origns_by_context-1.png)
+![](02-descriptive_files/figure-gfm/origns_by_context-1.png)<!-- -->
 
 ``` r
 > tabAge
@@ -667,14 +640,16 @@ Descriptive plots and tables
     ##   German in Australia  63  25
     ##   Italian in Australia 36  38
 
--   proficiency
+  - proficiency
+
+<!-- end list -->
 
 ``` r
 > tabAge <- t(table(all$prof,all$Context))
 > ggplot(all,aes(x=Context,fill=prof)) + geom_bar(position="dodge",colour="white") + ggtitle("Proficiency by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github/proficiency_by_context-1.png)
+![](02-descriptive_files/figure-gfm/proficiency_by_context-1.png)<!-- -->
 
 ``` r
 > tabAge
@@ -687,7 +662,9 @@ Descriptive plots and tables
     ##   German in Australia         4         32           25                 27
     ##   Italian in Australia        0         29           29                 16
 
--   L2.VCE
+  - L2.VCE
+
+<!-- end list -->
 
 ``` r
 > tabAge <- t(table(all[all$Context != "English in Germany" & all$Context != "English in Italy","L2.VCE"],all[all$Context != "English in Germany" & all$Context != "English in Italy",'Context'],useNA = "always"))
@@ -696,9 +673,11 @@ Descriptive plots and tables
 > ggplot(all[all$Context != "English in Germany" & all$Context != "English in Italy",],aes(x=Context,fill=L2.VCE)) + geom_bar(position="dodge",colour="white") + ggtitle("L2.VCE by context") + scale_y_continuous(breaks=seq(0,90,10),limits=c(0,90)) + theme_bw() + draw_grob(tableGrob(tabAge), x=2, y=80, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github/L2VCE_by_context-1.png)
+![](02-descriptive_files/figure-gfm/L2VCE_by_context-1.png)<!-- -->
 
--   da mettere a posto con Richi
+  - da mettere a posto con Richi
+
+<!-- end list -->
 
 ``` r
 > # year study L2
@@ -717,38 +696,38 @@ Descriptive plots and tables
     ##   more than 6 years                    0                    0
     ##   Other                                4                   10
     ##                               
-    ##                                FOURTH.YEAR.PRIMARY LOWER.SECONDARY
-    ##   0 years                                        0               0
-    ##   1- 3 years                                     0               0
-    ##   1-3 years                                      0               0
-    ##   4-6 years                                      0               0
-    ##   First year of primary school                   0               0
-    ##   Kindergarten                                   0               0
-    ##   Less than a year                               0               0
-    ##   more than 6 years                              0               0
-    ##   Other                                          5               4
+    ##                                FOURTH.YEAR.PRIMARY LOWER.SECONDARY PERSONAL
+    ##   0 years                                        0               0        0
+    ##   1- 3 years                                     0               0        0
+    ##   1-3 years                                      0               0        0
+    ##   4-6 years                                      0               0        0
+    ##   First year of primary school                   0               0        0
+    ##   Kindergarten                                   0               0        0
+    ##   Less than a year                               0               0        0
+    ##   more than 6 years                              0               0        0
+    ##   Other                                          5               4        2
     ##                               
-    ##                                PERSONAL SECOND.YEAR.PRIMARY
-    ##   0 years                             0                   0
-    ##   1- 3 years                          0                   0
-    ##   1-3 years                           0                   0
-    ##   4-6 years                           0                   0
-    ##   First year of primary school        0                   0
-    ##   Kindergarten                        0                   0
-    ##   Less than a year                    0                   0
-    ##   more than 6 years                   0                   0
-    ##   Other                               2                   2
+    ##                                SECOND.YEAR.PRIMARY SECOND.YEAR.SECONDARY
+    ##   0 years                                        0                     0
+    ##   1- 3 years                                     0                     0
+    ##   1-3 years                                      0                     0
+    ##   4-6 years                                      0                     0
+    ##   First year of primary school                   0                     0
+    ##   Kindergarten                                   0                     0
+    ##   Less than a year                               0                     0
+    ##   more than 6 years                              0                     0
+    ##   Other                                          2                     2
     ##                               
-    ##                                SECOND.YEAR.SECONDARY THIRD.YEAR.PRIMARY
-    ##   0 years                                          0                  0
-    ##   1- 3 years                                       0                  0
-    ##   1-3 years                                        0                  0
-    ##   4-6 years                                        0                  0
-    ##   First year of primary school                     0                  0
-    ##   Kindergarten                                     0                  0
-    ##   Less than a year                                 0                  0
-    ##   more than 6 years                                0                  0
-    ##   Other                                            2                 28
+    ##                                THIRD.YEAR.PRIMARY
+    ##   0 years                                       0
+    ##   1- 3 years                                    0
+    ##   1-3 years                                     0
+    ##   4-6 years                                     0
+    ##   First year of primary school                  0
+    ##   Kindergarten                                  0
+    ##   Less than a year                              0
+    ##   more than 6 years                             0
+    ##   Other                                        28
 
 ``` r
 > all$year.studyL2 <- ifelse(all$year.studyL2 == "Other",all$other.year.studyL2.richi,all$year.studyL2 )
@@ -757,9 +736,11 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "English in Germany" | all$Context == "English in Italy",],aes(x=degree,fill=year.studyL2)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree by study year L2, by Context") +  facet_grid(~Context,scales="free") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(y = "N participants", x = "degree")
 ```
 
-![](02-descriptive_files/figure-markdown_github/year.studyL2_European_context-1.png)
+![](02-descriptive_files/figure-gfm/year.studyL2_European_context-1.png)<!-- -->
 
--   Degree of enrolment
+  - Degree of enrolment
+
+<!-- end list -->
 
 ``` r
 > # Australian context
@@ -767,7 +748,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "Italian in Australia" | all$Context == "German in Australia",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in Australian Contexts") + draw_grob(tableGrob(tabAge), x=1., y=40, width=0.3, height=0.4)
 ```
 
-![](02-descriptive_files/figure-markdown_github/degree_by_context-1.png)
+![](02-descriptive_files/figure-gfm/degree_by_context-1.png)<!-- -->
 
 ``` r
 > tabAge
@@ -785,7 +766,7 @@ Descriptive plots and tables
 > ggplot(all[all$Context == "English in Italy" | all$Context == "English in Germany",],aes(x=Context,fill=degree)) + geom_bar(position="dodge",colour="white") + theme_bw() + ggtitle("Degree in European Contexts")
 ```
 
-![](02-descriptive_files/figure-markdown_github/year.studyL2_Australian_context-1.png)
+![](02-descriptive_files/figure-gfm/year.studyL2_Australian_context-1.png)<!-- -->
 
 ``` r
 > tabAge
@@ -804,49 +785,49 @@ Descriptive plots and tables
     ##   English in Germany                                   0
     ##   English in Italy                                    13
 
-Australian context spcific variables
-====================================
+# Australian context spcific variables
 
 ``` r
 > kable(table(all$reconnect.comm,all$Context))
 ```
 
-|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
-|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
-| Agree             |                   0|                 0|                    8|                    11|
-| Disagree          |                   0|                 0|                   35|                    14|
-| Not sure          |                   0|                 0|                    3|                     4|
-| Strongly agree    |                   0|                 0|                   12|                    28|
-| Strongly disagree |                   0|                 0|                   30|                    17|
+|                   | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| ----------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| Agree             |                  0 |                0 |                   8 |                   11 |
+| Disagree          |                  0 |                0 |                  35 |                   14 |
+| Not sure          |                  0 |                0 |                   3 |                    4 |
+| Strongly agree    |                  0 |                0 |                  12 |                   28 |
+| Strongly disagree |                  0 |                0 |                  30 |                   17 |
 
 ``` r
 > kable(table(all$speakersmelb.comm,all$Context))
 ```
 
-|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
-|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
-| Agree             |                   0|                 0|                   44|                    41|
-| Disagree          |                   0|                 0|                    6|                     2|
-| Not sure          |                   0|                 0|                   25|                    12|
-| Strongly agree    |                   0|                 0|                   12|                    19|
-| Strongly disagree |                   0|                 0|                    1|                     0|
+|                   | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| ----------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| Agree             |                  0 |                0 |                  44 |                   41 |
+| Disagree          |                  0 |                0 |                   6 |                    2 |
+| Not sure          |                  0 |                0 |                  25 |                   12 |
+| Strongly agree    |                  0 |                0 |                  12 |                   19 |
+| Strongly disagree |                  0 |                0 |                   1 |                    0 |
 
 ``` r
 > kable(table(all$comecloser.comm,all$Context))
 ```
 
-|                   |  English in Germany|  English in Italy|  German in Australia|  Italian in Australia|
-|-------------------|-------------------:|-----------------:|--------------------:|---------------------:|
-| Agree             |                   0|                 0|                   21|                    34|
-| Disagree          |                   0|                 0|                   16|                     6|
-| Not sure          |                   0|                 0|                   43|                    17|
-| Strongly agree    |                   0|                 0|                    6|                    17|
-| Strongly disagree |                   0|                 0|                    2|                     0|
+|                   | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| ----------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| Agree             |                  0 |                0 |                  21 |                   34 |
+| Disagree          |                  0 |                0 |                  16 |                    6 |
+| Not sure          |                  0 |                0 |                  43 |                   17 |
+| Strongly agree    |                  0 |                0 |                   6 |                   17 |
+| Strongly disagree |                  0 |                0 |                   2 |                    0 |
 
-Likert scales
-=============
+# Likert scales
 
--   **Convert Likert scales to numbers**
+  - **Convert Likert scales to numbers**
+
+<!-- end list -->
 
 ``` r
 > convertToNumber <- function(column){
@@ -897,10 +878,12 @@ Likert scales
 > write.csv(filtered_conv,"02-descriptive_data/merged_filtered_likertNumber.csv",row.names = FALSE)
 ```
 
-Impute missing values - Using median values
--------------------------------------------
+## Impute missing values - Using median values
 
-The missing values appears to be at random and there are max two missing values in one variable (see plots below). In order not to loose 12 participants while doing the factor analysis across contexts it is preferable to impute the 12 missing values.
+The missing values appears to be at random and there are max two missing
+values in one variable (see plots below). In order not to loose 12
+participants while doing the factor analysis across contexts it is
+preferable to impute the 12 missing values.
 
 ``` r
 > all <- filtered_conv
@@ -969,14 +952,8 @@ The missing values appears to be at random and there are max two missing values 
 > library(mice)
 ```
 
-    ## Loading required package: lattice
-
     ## 
     ## Attaching package: 'mice'
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     complete
 
     ## The following objects are masked from 'package:base':
     ## 
@@ -1007,6 +984,13 @@ The missing values appears to be at random and there are max two missing values 
     ## 
     ##     transpose
 
+    ## Registered S3 methods overwritten by 'car':
+    ##   method                          from
+    ##   influence.merMod                lme4
+    ##   cooks.distance.influence.merMod lme4
+    ##   dfbeta.influence.merMod         lme4
+    ##   dfbetas.influence.merMod        lme4
+
     ## VIM is ready to use. 
     ##  Since version 4.0.0 the GUI is in its own package VIMGUI.
     ## 
@@ -1028,7 +1012,7 @@ The missing values appears to be at random and there are max two missing values 
 +                     gap=1, ylab=c("Missing data","Pattern"),cex.numbers=0.5)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
     ## 
     ##  Variables sorted by number of missings: 
@@ -1067,6 +1051,8 @@ The missing values appears to be at random and there are max two missing values 
 > # Imputing using median
 > library(Hmisc)
 ```
+
+    ## Loading required package: lattice
 
     ## Loading required package: survival
 
@@ -1282,7 +1268,10 @@ The missing values appears to be at random and there are max two missing values 
     ##   2   3   4   5 
     ##   1  19 140 162
 
--   Substitute imputed data for the common variables to be used in the Factor Analysis
+  - Substitute imputed data for the common variables to be used in the
+    Factor Analysis
+
+<!-- end list -->
 
 ``` r
 > all <- all[,!(colnames(all) %in% usable_items)]
@@ -1296,7 +1285,8 @@ The missing values appears to be at random and there are max two missing values 
 > all <- cbind(all,imputedMedian[match(rownames(imputedMedian),all$Resp.ID),])
 ```
 
-**Add some updates that Richi did in Date 7th June 2018**
+**Add some updates that Richi did in Date 7th June
+2018**
 
 ``` r
 > Other_ways_and_degree_role_with_respondent_IDs <- read_excel("Other-ways-and-degree-role-with-respondent-IDs.xlsx")
@@ -1313,23 +1303,29 @@ The missing values appears to be at random and there are max two missing values 
 > all$degree.role[match_updates] <- Other_ways_and_degree_role_with_respondent_IDs$degree.role
 ```
 
-Save imputed data
------------------
+## Save imputed data
 
 ``` r
 > write.csv(all,"02-descriptive_data/merged_filtered_imputedMedian_likertNumber.csv",row.names = FALSE)
 ```
 
-Barplot of likert variables
-===========================
+# Barplot of likert variables
 
 ``` r
 > all_melt <- melt(all,id.vars = c("Resp.ID","Gender","Age","prof","Context","study.year"),
 +                         measure.vars = likert_variables1)
 ```
 
-    ## Warning: attributes are not identical across measure variables; they will
-    ## be dropped
+    ## Warning in melt(all, id.vars = c("Resp.ID", "Gender", "Age", "prof",
+    ## "Context", : The melt generic in data.table has been passed a data.frame and
+    ## will attempt to redirect to the relevant reshape2 method; please note that
+    ## reshape2 is deprecated, and this redirection is now deprecated as well. To
+    ## continue using melt methods from reshape2 while both libraries are attached,
+    ## e.g. melt.list, you can prepend the namespace like reshape2::melt(all). In the
+    ## next version, this warning will become an error.
+
+    ## Warning: attributes are not identical across measure variables; they will be
+    ## dropped
 
 ``` r
 > all_melt$value <- factor(all_melt$value,levels=c(1,2,3,4,5),labels=c("Strongly disagree","Disagree","Not sure","Agree","Strongly agree"))
@@ -1339,28 +1335,35 @@ Barplot of likert variables
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
 ```
 
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows
-    ## [9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379,
-    ## 9380, 9381, 9382, 9383, 9384, 9385, 9386, 9387, ...].
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows [9368,
+    ## 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379, 9380, 9381,
+    ## 9382, 9383, 9384, 9385, 9386, 9387, ...].
 
 ``` r
 > ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack",colour="black") + 
 +   facet_grid(Context~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1),axis.text=element_text(size=8)) + ggtitle("Filtered dataset") + scale_fill_manual(values=c("#ca0020","#f4a582","#ffffbf","#abd9e9","#2c7bb6","grey"))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
 > filt_sum <- all_melt %>% group_by(Context,variable,type,value) %>% dplyr::summarise(Ngroup=length(value))
+```
+
+    ## Warning: Factor `value` contains implicit NA, consider using
+    ## `forcats::fct_explicit_na`
+
+``` r
 > ggplot(filt_sum,aes(x=value,y=Ngroup,colour=Context,group=interaction(variable, Context))) + geom_line() + geom_point() + facet_wrap(~type,scales = "free")+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-26-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-26-2.png)<!-- -->
 
-Barplot of Educated and Necessity in the Australian and European Contexts
--------------------------------------------------------------------------
+## Barplot of Educated and Necessity in the Australian and European Contexts
 
--   **Educated**
+  - **Educated**
+
+<!-- end list -->
 
 ``` r
 > # add numbers on the bar
@@ -1389,15 +1392,17 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Educated,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Educated)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Educated by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-27-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-27-2.png)<!-- -->
 
--   **Necessity**
+  - **Necessity**
+
+<!-- end list -->
 
 ``` r
 > # add numbers on the bar
@@ -1426,7 +1431,7 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 > ggplot(ggdf,aes(x=Necessity,y=N.Participants,fill=Context)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,40,10),limits=c(0,40)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 ``` r
 > ggplot(ggdf,aes(x=Context,y=N.Participants,fill=Necessity)) + geom_bar(position="dodge",colour="white",stat="identity")  + labs(y="N participants") + scale_y_continuous(breaks=seq(0,35,10),limits=c(0,35)) + theme_bw() + ggtitle("Necessity by Context")+  geom_text(aes(label = N.Participants), hjust=0.5, vjust=-0.25, size = 2.5,position=position_dodge(width=0.9)) 
@@ -1436,13 +1441,11 @@ Barplot of Educated and Necessity in the Australian and European Contexts
 
     ## Warning: Removed 1 rows containing missing values (geom_text).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-28-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-28-2.png)<!-- -->
 
-Correlation plot of items by context
-====================================
+# Correlation plot of items by context
 
-Italian in Australia
---------------------
+## Italian in Australia
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "Italian in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
@@ -1467,14 +1470,13 @@ Italian in Australia
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github/cor_italian_in_australia-1.png)
+![](02-descriptive_files/figure-gfm/cor_italian_in_australia-1.png)<!-- -->
 
 ``` r
 > cov_ItaAus <- cov
 ```
 
-German in Australia
--------------------
+## German in Australia
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "German in Australia",likert_variables1[!(likert_variables1 %in% "necessity1")]],method = "pearson",use="pairwise.complete.obs")
@@ -1498,15 +1500,14 @@ German in Australia
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github/cor_german_in_australia-1.png)
+![](02-descriptive_files/figure-gfm/cor_german_in_australia-1.png)<!-- -->
 
 ``` r
 > # 
 > cov_GermAus <- cov
 ```
 
-English in Germany
-------------------
+## English in Germany
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "English in Germany",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1",    "speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
@@ -1529,14 +1530,13 @@ English in Germany
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github/cor_english_in_germany-1.png)
+![](02-descriptive_files/figure-gfm/cor_english_in_germany-1.png)<!-- -->
 
 ``` r
 > cov_EngGerm <- cov
 ```
 
-English in Italy
-----------------
+## English in Italy
 
 ``` r
 > cov <- cor(filtered_conv[filtered_conv$Context == "English in Italy",likert_variables1[!(likert_variables1 %in% c("reconnect.comm1","speakersmelb.comm1","comecloser.comm1","educated1"))]],method = "pearson",use="pairwise.complete.obs")
@@ -1559,17 +1559,20 @@ English in Italy
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github/cor_english_in_italy-1.png)
+![](02-descriptive_files/figure-gfm/cor_english_in_italy-1.png)<!-- -->
 
 ``` r
 > # 
 > cov_EngIta <- cov
 ```
 
-Correlation between correlation in the different contexts
----------------------------------------------------------
+## Correlation between correlation in the different contexts
 
-We will perform an exploratory FA combining all the contexts together. This means that we are assuming that the correlation between items across context has the same direction (does not happen that cor(item1,item2)\_context1 &gt; 0 and cor(item1,item2)\_context2 &lt; 0).
+We will perform an exploratory FA combining all the contexts together.
+This means that we are assuming that the correlation between items
+across context has the same direction (does not happen that
+cor(item1,item2)\_context1 \> 0 and cor(item1,item2)\_context2 \<
+0).
 
 ``` r
 > common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
@@ -1582,8 +1585,8 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > sum(rownames(cov_EngIta) != rownames(cov_GermAus))
 ```
 
-    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object
-    ## length is not a multiple of shorter object length
+    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object length
+    ## is not a multiple of shorter object length
 
     ## [1] 4
 
@@ -1591,8 +1594,8 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
 ```
 
-    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object
-    ## length is not a multiple of shorter object length
+    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object length is
+    ## not a multiple of shorter object length
 
     ## [1] 4
 
@@ -1655,7 +1658,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > abline(a=0,b=1,lty=2,col = "dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ``` r
 > # Largest differences
@@ -1681,7 +1684,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-29-2.png)<!-- -->
 
 ``` r
 > ggplot(mat,aes(x=common_EngGerm,y=common_ItaAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
@@ -1689,7 +1692,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-3.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-29-3.png)<!-- -->
 
 ``` r
 > ggplot(mat,aes(x=common_EngGerm,y=common_EngIta,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
@@ -1697,32 +1700,30 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-29-4.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-29-4.png)<!-- -->
 
-Different correlation plot and Pearson's correlation
-----------------------------------------------------
+## Different correlation plot and Pearson’s correlation
 
 ``` r
 > cowplot::plot_grid(p1,p2,p3,p4,p5,p6,nrow=3)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-31-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 ``` r
 > knitr::kable(cor_data)
 ```
 
-| comparison                      |  r\_squared|
-|:--------------------------------|-----------:|
-| common\_EngGerm-common\_ItaAus  |   0.4538018|
-| common\_EngGerm-common\_GermAus |   0.4757044|
-| common\_EngIta-common\_GermAus  |   0.5091050|
-| common\_EngIta-common\_ItaAus   |   0.5384113|
-| common\_EngIta-common\_EngGerm  |   0.5957948|
-| common\_GermAus-common\_ItaAus  |   0.5999612|
+| comparison                      | r\_squared |
+| :------------------------------ | ---------: |
+| common\_EngGerm-common\_ItaAus  |  0.4538018 |
+| common\_EngGerm-common\_GermAus |  0.4757044 |
+| common\_EngIta-common\_GermAus  |  0.5091050 |
+| common\_EngIta-common\_ItaAus   |  0.5384113 |
+| common\_EngIta-common\_EngGerm  |  0.5957948 |
+| common\_GermAus-common\_ItaAus  |  0.5999612 |
 
-All context together
---------------------
+## All context together
 
 ``` r
 > cov <- cor(filtered_conv[,likert_variables1],method = "pearson",use="pairwise.complete.obs")
@@ -1741,13 +1742,26 @@ All context together
 + ,  annotation_colors = ann_colors_wide,show_colnames = FALSE,breaks = seq(-0.6,0.7,length.out = 50),width = 7,height = 7,color=colorRampPalette(brewer.pal(n = 7, name = "RdBu"))(50))
 ```
 
-![](02-descriptive_files/figure-markdown_github/cor_all_contexts-1.png)
+![](02-descriptive_files/figure-gfm/cor_all_contexts-1.png)<!-- -->
 
-Compare correlations
---------------------
+## Compare correlations
 
 ``` r
 > library(GGally)
+```
+
+    ## Registered S3 method overwritten by 'GGally':
+    ##   method from   
+    ##   +.gg   ggplot2
+
+    ## 
+    ## Attaching package: 'GGally'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     nasa
+
+``` r
 > combine_cor <- merge(data_cor_eng_in_ita,data_cor_eng_in_germ,all = TRUE)
 > combine_cor1 <- merge(combine_cor,data_cor_germ_in_au,all = TRUE)
 > combine_cor2 <- merge(combine_cor1,data_cor_ita_in_au,all = TRUE)
@@ -1756,18 +1770,18 @@ Compare correlations
 +   unite(group,variable1,variable2,sep=".")
 ```
 
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 60 rows
-    ## [309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
-    ## 324, 325, 326, 327, 328, ...].
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 60 rows [309,
+    ## 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325,
+    ## 326, 327, 328, ...].
 
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 5 rows [330,
-    ## 496, 528, 558, 589].
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 5 rows [330, 496,
+    ## 528, 558, 589].
 
 ``` r
 > pairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-33-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 ``` r
 > ggpairs(combine_cor2[,c("cor_eng_in_ita","cor_eng_in_germ","cor_germ_in_au","cor_ita_in_au")])
@@ -1775,48 +1789,51 @@ Compare correlations
 
     ## Warning: Removed 126 rows containing non-finite values (stat_density).
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 126 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 126 rows containing missing values
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 156 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 156 rows containing missing values
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 156 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 156 rows containing missing values
 
     ## Warning: Removed 126 rows containing missing values (geom_point).
 
     ## Warning: Removed 126 rows containing non-finite values (stat_density).
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 156 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 156 rows containing missing values
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 156 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 156 rows containing missing values
 
     ## Warning: Removed 156 rows containing missing values (geom_point).
-
+    
     ## Warning: Removed 156 rows containing missing values (geom_point).
 
     ## Warning: Removed 30 rows containing non-finite values (stat_density).
 
-    ## Warning in (function (data, mapping, alignPercent = 0.6, method =
-    ## "pearson", : Removed 30 rows containing missing values
+    ## Warning in (function (data, mapping, alignPercent = 0.6, method = "pearson", :
+    ## Removed 30 rows containing missing values
 
     ## Warning: Removed 156 rows containing missing values (geom_point).
-
+    
     ## Warning: Removed 156 rows containing missing values (geom_point).
 
     ## Warning: Removed 30 rows containing missing values (geom_point).
 
     ## Warning: Removed 30 rows containing non-finite values (stat_density).
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-33-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-33-2.png)<!-- -->
 
-Correlation between correlation in the different contexts
----------------------------------------------------------
+## Correlation between correlation in the different contexts
 
-We will perform an exploratory FA combining all the contexts together. This means that we are assuming that the correlation between items across context has the same direction (does not happen that cor(item1,item2)\_context1 &gt; 0 and cor(item1,item2)\_context2 &lt; 0).
+We will perform an exploratory FA combining all the contexts together.
+This means that we are assuming that the correlation between items
+across context has the same direction (does not happen that
+cor(item1,item2)\_context1 \> 0 and cor(item1,item2)\_context2 \<
+0).
 
 ``` r
 > common <- rownames(cov_EngIta)[rownames(cov_EngIta) %in% rownames(cov_ItaAus)]
@@ -1829,8 +1846,8 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > sum(rownames(cov_EngIta) != rownames(cov_GermAus))
 ```
 
-    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object
-    ## length is not a multiple of shorter object length
+    ## Warning in rownames(cov_EngIta) != rownames(cov_GermAus): longer object length
+    ## is not a multiple of shorter object length
 
     ## [1] 4
 
@@ -1838,8 +1855,8 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > sum(rownames(cov_EngIta) != rownames(cov_ItaAus))
 ```
 
-    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object
-    ## length is not a multiple of shorter object length
+    ## Warning in rownames(cov_EngIta) != rownames(cov_ItaAus): longer object length is
+    ## not a multiple of shorter object length
 
     ## [1] 4
 
@@ -1902,7 +1919,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 > abline(a=0,b=1,lty=2,col = "dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 ``` r
 > # Largest differences
@@ -1928,7 +1945,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-2.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-34-2.png)<!-- -->
 
 ``` r
 > ggplot(mat,aes(x=common_EngGerm,y=common_ItaAus,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
@@ -1936,7 +1953,7 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-3.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-34-3.png)<!-- -->
 
 ``` r
 > ggplot(mat,aes(x=common_EngGerm,y=common_EngIta,label=compare,colour=group)) + geom_point(alpha=0.5,size=0.8) + geom_text(size=2) +
@@ -1944,10 +1961,9 @@ We will perform an exploratory FA combining all the contexts together. This mean
 + geom_vline(xintercept=c(0,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-34-4.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-34-4.png)<!-- -->
 
-Evaluate internal consistency of known constructs with alpha
-============================================================
+# Evaluate internal consistency of known constructs with alpha
 
 ``` r
 > sets <- list(id.var=likert_variables1[grep("\\.id1$",likert_variables1)],
@@ -2026,31 +2042,26 @@ Evaluate internal consistency of known constructs with alpha
     ## probably should be reversed.  
     ## To do this, run the function again with the 'check.keys=TRUE' option
 
-    ##                 alpha.raw_alpha alpha.std.alpha alpha.G6.smc.
-    ## consider.ought1       0.3833548       0.4871755     0.5210789
-    ## people.ought1         0.3833548       0.4871755     0.5210789
-    ## expect.ought1         0.3833548       0.4871755     0.5210789
-    ## fail.ought1           0.3833548       0.4871755     0.5210789
-    ##                 alpha.average_r alpha.S.N alpha.ase alpha.mean  alpha.sd
-    ## consider.ought1       0.1919167 0.9499849 0.1246586   2.192857 0.5301959
-    ## people.ought1         0.1919167 0.9499849 0.1246586   2.192857 0.5301959
-    ## expect.ought1         0.1919167 0.9499849 0.1246586   2.192857 0.5301959
-    ## fail.ought1           0.1919167 0.9499849 0.1246586   2.192857 0.5301959
-    ##                 alpha.median_r drop.raw_alpha drop.std.alpha drop.G6.smc.
-    ## consider.ought1      0.1756317     0.10658734      0.2603802    0.3349500
-    ## people.ought1        0.1756317     0.66770987      0.6922109    0.6147672
-    ## expect.ought1        0.1756317     0.07902542      0.1229898    0.1717773
-    ## fail.ought1          0.1756317     0.32828494      0.4122936    0.3966550
-    ##                 drop.average_r  drop.S.N drop.alpha.se drop.var.r
-    ## consider.ought1     0.10502423 0.3520461    0.19135896 0.11759748
-    ## people.ought1       0.42846015 2.2489778    0.06738635 0.01076474
-    ## expect.ought1       0.04465828 0.1402376    0.19008086 0.06563350
-    ## fail.ought1         0.18952428 0.7015298    0.14252260 0.07264751
-    ##                 drop.med.r
-    ## consider.ought1 0.04170429
-    ## people.ought1   0.47519627
-    ## expect.ought1   0.02624354
-    ## fail.ought1     0.04170429
+    ##                 alpha.raw_alpha alpha.std.alpha alpha.G6.smc. alpha.average_r
+    ## consider.ought1       0.3833548       0.4871755     0.5210789       0.1919167
+    ## people.ought1         0.3833548       0.4871755     0.5210789       0.1919167
+    ## expect.ought1         0.3833548       0.4871755     0.5210789       0.1919167
+    ## fail.ought1           0.3833548       0.4871755     0.5210789       0.1919167
+    ##                 alpha.S.N alpha.ase alpha.mean  alpha.sd alpha.median_r
+    ## consider.ought1 0.9499849 0.1246586   2.192857 0.5301959      0.1756317
+    ## people.ought1   0.9499849 0.1246586   2.192857 0.5301959      0.1756317
+    ## expect.ought1   0.9499849 0.1246586   2.192857 0.5301959      0.1756317
+    ## fail.ought1     0.9499849 0.1246586   2.192857 0.5301959      0.1756317
+    ##                 drop.raw_alpha drop.std.alpha drop.G6.smc. drop.average_r
+    ## consider.ought1     0.10658734      0.2603802    0.3349500     0.10502423
+    ## people.ought1       0.66770987      0.6922109    0.6147672     0.42846015
+    ## expect.ought1       0.07902542      0.1229898    0.1717773     0.04465828
+    ## fail.ought1         0.32828494      0.4122936    0.3966550     0.18952428
+    ##                  drop.S.N drop.alpha.se drop.var.r drop.med.r
+    ## consider.ought1 0.3520461    0.19135896 0.11759748 0.04170429
+    ## people.ought1   2.2489778    0.06738635 0.01076474 0.47519627
+    ## expect.ought1   0.1402376    0.19008086 0.06563350 0.02624354
+    ## fail.ought1     0.7015298    0.14252260 0.07264751 0.04170429
 
 ``` r
 > eng_in_germ$var <- sapply(strsplit(rownames(eng_in_germ),split="\\."),function(x) x[1]) 
@@ -2072,7 +2083,9 @@ Evaluate internal consistency of known constructs with alpha
 > full_alpha <- rbind(eng_in_ita,eng_in_germ,germ_in_au,ita_in_au)
 ```
 
--   Plot alpha by variable
+  - Plot alpha by variable
+
+<!-- end list -->
 
 ``` r
 > full_alpha %>% group_by(Context,var) %>% 
@@ -2081,15 +2094,15 @@ Evaluate internal consistency of known constructs with alpha
 +   ggplot(.,aes(x=var,y=st.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme_bw()
 ```
 
-![](02-descriptive_files/figure-markdown_github/alpha_chronbach_by_context-1.png)
+![](02-descriptive_files/figure-gfm/alpha_chronbach_by_context-1.png)<!-- -->
 
 ``` r
 > all_melt <- all_melt %>% separate(variable,into=c("item","type"),sep="\\.",remove=FALSE)
 ```
 
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows
-    ## [9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379,
-    ## 9380, 9381, 9382, 9383, 9384, 9385, 9386, 9387, ...].
+    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 646 rows [9368,
+    ## 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376, 9377, 9378, 9379, 9380, 9381,
+    ## 9382, 9383, 9384, 9385, 9386, 9387, ...].
 
 ``` r
 > p1=ggplot(all_melt,aes(x=variable,fill=value)) + geom_bar(position = "stack") + 
@@ -2108,4 +2121,4 @@ Evaluate internal consistency of known constructs with alpha
 > cowplot::plot_grid(p2,p3,nrow=2)
 ```
 
-![](02-descriptive_files/figure-markdown_github/unnamed-chunk-36-1.png)
+![](02-descriptive_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
