@@ -76,8 +76,39 @@ When correcting for context what we are doing is that we are removing the contex
 ```{r}
 # items to be used for the FA
 usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-
 usable_data <- all[,c(usable_items,"Context","degree")]
+```
+
+
+* Mean of all items by context 
+
+```{r}
+mean_by_context <- usable_data %>%
+  gather(key = Item, value = value,all_of(usable_items)) %>%
+  group_by(Context,Item) %>%
+  summarise(mean_item = round(mean(value),2)) %>%
+  spread(key = Context, value = mean_item)
+
+knitr::kable(mean_by_context)
+```
+
+
+```{r}
+mean_by_context2 <- usable_data %>%
+  mutate(Context2 = case_when(Context %in% c("German in Australia", "Italian in Australia") ~ "GA+IA", 
+                              Context %in% c("English in Germany", "English in Italy") ~ "EG+EI")) %>%
+  gather(key = Item, value = value,all_of(usable_items)) %>%
+  group_by(Context2,Item) %>%
+  summarise(mean_item = round(mean(value),2)) %>%
+  spread(key = Context2, value = mean_item)
+
+knitr::kable(mean_by_context2)
+```
+
+
+
+```{r}
+
 usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
                                     ifelse(usable_data$degree %in% "LA","LA","HUM"))
 dat_onlyItems <- usable_data[,usable_items]
