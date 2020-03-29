@@ -26,8 +26,100 @@ the context mean from every context
 ``` r
 > # items to be used for the FA
 > usable_items <- likert_variables1[!(likert_variables1 %in% c("necessity1","educated1","reconnect.comm1", "speakersmelb.comm1", "comecloser.comm1"))]
-> 
 > usable_data <- all[,c(usable_items,"Context","degree")]
+```
+
+  - Mean of all items by context
+
+<!-- end list -->
+
+``` r
+> mean_by_context <- usable_data %>%
++   gather(key = Item, value = value,all_of(usable_items)) %>%
++   group_by(Context,Item) %>%
++   summarise(mean_item = round(mean(value),2)) %>%
++   spread(key = Context, value = mean_item)
+> 
+> knitr::kable(mean_by_context)
+```
+
+| Item               | English in Germany | English in Italy | German in Australia | Italian in Australia |
+| :----------------- | -----------------: | ---------------: | ------------------: | -------------------: |
+| affinity.integr1   |               3.93 |             3.48 |                3.49 |                 3.74 |
+| becomelike.integr1 |               3.16 |             3.01 |                2.99 |                 3.19 |
+| career.instru1     |               4.30 |             4.54 |                4.06 |                 3.78 |
+| challenge.intr1    |               4.00 |             4.20 |                4.17 |                 4.26 |
+| citizen.post1      |               3.60 |             4.32 |                3.62 |                 3.72 |
+| consider.ought1    |               2.41 |             2.33 |                2.75 |                 3.14 |
+| converse.id1       |               4.23 |             4.57 |                4.07 |                 4.39 |
+| dream.id1          |               4.49 |             4.63 |                4.39 |                 4.41 |
+| enjoy.intr1        |               4.56 |             4.58 |                4.32 |                 4.42 |
+| exciting.intr1     |               4.46 |             4.62 |                4.62 |                 4.62 |
+| expect.ought1      |               1.49 |             1.87 |                1.95 |                 2.14 |
+| fail.ought1        |               1.70 |             2.38 |                2.10 |                 2.22 |
+| globalaccess.post1 |               4.40 |             4.55 |                4.26 |                 4.14 |
+| improve.prof1      |               3.97 |             4.55 |                4.68 |                 4.69 |
+| interact.post1     |               4.54 |             4.82 |                4.26 |                 4.08 |
+| job.instru1        |               4.01 |             4.05 |                3.81 |                 3.41 |
+| knowledge.instru1  |               3.89 |             4.25 |                4.32 |                 4.31 |
+| life.intr1         |               3.36 |             3.74 |                2.94 |                 3.15 |
+| listening.prof1    |               4.01 |             4.62 |                4.66 |                 4.69 |
+| meeting.integr1    |               4.73 |             4.60 |                4.39 |                 4.53 |
+| money.instru1      |               3.29 |             3.34 |                3.32 |                 2.99 |
+| overseas.post1     |               4.56 |             4.73 |                4.59 |                 4.46 |
+| people.ought1      |               3.17 |             3.21 |                2.76 |                 3.11 |
+| reading.prof1      |               4.19 |             4.66 |                4.62 |                 4.62 |
+| speaking.prof1     |               4.33 |             4.76 |                4.80 |                 4.80 |
+| time.integr1       |               4.67 |             4.51 |                4.49 |                 4.55 |
+| usewell.id1        |               4.61 |             4.37 |                4.06 |                 4.09 |
+| whenever.id1       |               4.36 |             4.65 |                4.09 |                 3.97 |
+| written.prof1      |               4.36 |             4.64 |                4.64 |                 4.65 |
+
+``` r
+> mean_by_context2 <- usable_data %>%
++   mutate(Context2 = case_when(Context %in% c("German in Australia", "Italian in Australia") ~ "GA+IA", 
++                               Context %in% c("English in Germany", "English in Italy") ~ "EG+EI")) %>%
++   gather(key = Item, value = value,all_of(usable_items)) %>%
++   group_by(Context2,Item) %>%
++   summarise(mean_item = round(mean(value),2)) %>%
++   spread(key = Context2, value = mean_item)
+> 
+> knitr::kable(mean_by_context2)
+```
+
+| Item               | EG+EI | GA+IA |
+| :----------------- | ----: | ----: |
+| affinity.integr1   |  3.68 |  3.60 |
+| becomelike.integr1 |  3.07 |  3.08 |
+| career.instru1     |  4.43 |  3.93 |
+| challenge.intr1    |  4.11 |  4.21 |
+| citizen.post1      |  4.01 |  3.67 |
+| consider.ought1    |  2.37 |  2.93 |
+| converse.id1       |  4.42 |  4.22 |
+| dream.id1          |  4.57 |  4.40 |
+| enjoy.intr1        |  4.57 |  4.36 |
+| exciting.intr1     |  4.55 |  4.62 |
+| expect.ought1      |  1.70 |  2.04 |
+| fail.ought1        |  2.09 |  2.15 |
+| globalaccess.post1 |  4.48 |  4.20 |
+| improve.prof1      |  4.30 |  4.69 |
+| interact.post1     |  4.70 |  4.18 |
+| job.instru1        |  4.04 |  3.62 |
+| knowledge.instru1  |  4.09 |  4.31 |
+| life.intr1         |  3.57 |  3.04 |
+| listening.prof1    |  4.35 |  4.67 |
+| meeting.integr1    |  4.66 |  4.45 |
+| money.instru1      |  3.32 |  3.17 |
+| overseas.post1     |  4.65 |  4.53 |
+| people.ought1      |  3.19 |  2.92 |
+| reading.prof1      |  4.45 |  4.62 |
+| speaking.prof1     |  4.57 |  4.80 |
+| time.integr1       |  4.58 |  4.52 |
+| usewell.id1        |  4.48 |  4.07 |
+| whenever.id1       |  4.52 |  4.04 |
+| written.prof1      |  4.52 |  4.64 |
+
+``` r
 > usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
 +                                     ifelse(usable_data$degree %in% "LA","LA","HUM"))
 > dat_onlyItems <- usable_data[,usable_items]
@@ -52,7 +144,7 @@ the context mean from every context
 > hist(dif)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 > # Factanal 
@@ -60,9 +152,9 @@ the context mean from every context
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
 ``` r
 > fact <- 6
@@ -171,44 +263,44 @@ the context mean from every context
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 > # Factors one by one
 > ggplot(subset(a2,variable %in% "F1"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F1")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
 
 ``` r
 > ggplot(subset(a2,variable %in% "F2"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F2") + labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->
 
 ``` r
 > ggplot(subset(a2,variable %in% "F3"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F3")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-4.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-4.png)<!-- -->
 
 ``` r
 > ggplot(subset(a2,variable %in% "F4"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F4")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-5.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-5.png)<!-- -->
 
 ``` r
 > ggplot(subset(a2,variable %in% "F5"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F5")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-6.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-6.png)<!-- -->
 
 ``` r
 > ggplot(subset(a2,variable %in% "F6"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F6")+ labs(y="Items")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-7-7.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-7.png)<!-- -->
 
 ## Chronbach alpha
 
@@ -464,7 +556,7 @@ the context mean from every context
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 > # Plot loadings by context
@@ -473,7 +565,7 @@ the context mean from every context
 > ggplot(all_complete_melt) + geom_boxplot(aes(x=Context,y=value,color=Context)) + facet_wrap(~variable) + coord_flip() + guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
 
 ``` r
 > # error bar 
@@ -492,7 +584,7 @@ the context mean from every context
 + geom_errorbar(aes(ymin=LowerBoundCI, ymax=UpperBoundCI),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI") 
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-9-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-12-3.png)<!-- -->
 
 ``` r
 > kable(sum_stat)
@@ -1499,7 +1591,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor1: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1508,7 +1600,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor2: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-2.png)<!-- -->
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1517,7 +1609,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor3: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-3.png)<!-- -->
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1526,7 +1618,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor4: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-4.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-4.png)<!-- -->
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1535,7 +1627,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor5: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-5.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-5.png)<!-- -->
 
 ``` r
 > pos <- position_dodge(width=0.4)
@@ -1544,7 +1636,7 @@ models.
 +   geom_point(position=pos) + ggtitle("Factor6: Mean +- 95% CI") + theme_bw()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-22-6.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-6.png)<!-- -->
 
 # Other tentatives
 
@@ -1805,7 +1897,7 @@ models.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
 > # Table of the factors
@@ -1860,7 +1952,7 @@ models.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-23-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-26-2.png)<!-- -->
 
 ``` r
 > # Plot loadings by context
@@ -1870,7 +1962,7 @@ models.
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-23-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-26-3.png)<!-- -->
 
 ``` r
 > # 7 * 12 rows removed
@@ -1891,7 +1983,7 @@ in each factor.
 > fap <- fa.parallel(usable_data)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -1994,7 +2086,7 @@ in each factor.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-2.png)<!-- -->
 
 ``` r
 > # Table of the factors
@@ -2049,7 +2141,7 @@ in each factor.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-3.png)<!-- -->
 
 ``` r
 > # Plot loadings by context
@@ -2059,7 +2151,7 @@ in each factor.
 > ggplot(all_complete_basic)+geom_boxplot(aes(x=Context,y=value,color=Context))+facet_wrap(~variable)+coord_flip()+guides(color=F)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-4.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-4.png)<!-- -->
 
 ``` r
 > # 7 * 12 rows removed
@@ -2076,7 +2168,7 @@ in each factor.
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-5.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-5.png)<!-- -->
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2084,7 +2176,7 @@ in each factor.
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-24-6.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-6.png)<!-- -->
 
 ``` r
 > kable(sum_stat)
@@ -2166,7 +2258,7 @@ bordeline for dream.
 + geom_errorbar(aes(ymin=low95CI, ymax=high95CI),width=0.2,position=pos) +  geom_point(position=pos) + ggtitle("0 years of L2 vs >0 years L2 Effect") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))+ geom_hline(yintercept = 0,linetype="dotted",colour="dark red",size=1)+ ylab("Effect +- 95% CI\nOrdered by p-value") + coord_flip()
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
   - Effect and 95%CI for
     `dream`
@@ -2207,7 +2299,7 @@ bordeline for dream.
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -2310,7 +2402,7 @@ bordeline for dream.
 > ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-27-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-30-2.png)<!-- -->
 
 ## Factor analysis correcting for context and degree and removing 0 years for year.studyL2
 
@@ -2338,7 +2430,7 @@ bordeline for dream.
 > fap <- fa.parallel(applygetRes)
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
     ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
 
@@ -2446,7 +2538,7 @@ bordeline for dream.
 > ggplot(a1)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-2.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-2.png)<!-- -->
 
 ``` r
 > # Table of the factors
@@ -2501,7 +2593,7 @@ bordeline for dream.
 > corrplot(cor(all_complete_basic[,usable_items],all_complete_basic[,factors],use = "pair"))
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-3.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-3.png)<!-- -->
 
 ``` r
 > # Plot loadings by context
@@ -2513,7 +2605,7 @@ bordeline for dream.
 
     ## Warning: Removed 252 rows containing non-finite values (stat_boxplot).
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-4.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-4.png)<!-- -->
 
 ``` r
 > # error bar 
@@ -2528,7 +2620,7 @@ bordeline for dream.
 + geom_errorbar(aes(ymin=meanFac-CI95, ymax=meanFac+CI95),width=0.2) + facet_wrap(~variable,scales="free_y") + geom_point() +theme(axis.text.x = element_text(angle = 45, hjust = 1))+ ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-5.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-5.png)<!-- -->
 
 ``` r
 > ggplot(sum_stat,aes(x=variable,y=meanFac,colour=variable)) + 
@@ -2536,7 +2628,7 @@ bordeline for dream.
 +   geom_point() + ggtitle("Mean +- 95% CI")
 ```
 
-![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-28-6.png)<!-- -->
+![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-31-6.png)<!-- -->
 
 ``` r
 > kable(sum_stat)
