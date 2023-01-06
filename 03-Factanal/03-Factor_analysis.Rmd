@@ -106,13 +106,19 @@ knitr::kable(mean_by_context2)
 ```
 
 
+### Factor Analysis 
 
 ```{r}
-
 usable_data$degree_binary <- ifelse(usable_data$degree %in% c("HUM.SCI","SCI"), "SCI",
                                     ifelse(usable_data$degree %in% "LA","LA","HUM"))
-dat_onlyItems <- usable_data[,usable_items]
 
+dat_onlyItems <- usable_data[,usable_items]
+```
+
+
+### Get residuals
+
+```{r}
 # get residuals after regressing for context
 get_residuals <- function(item,pred1,pred2){
   mod <- lm(item ~ pred1 + pred2)
@@ -123,6 +129,7 @@ applygetRes <- apply(as.matrix(dat_onlyItems),2,get_residuals,
                      pred1=usable_data$Context,pred2=usable_data$degree_binary)
 
 ```
+
 
 **Compare correlation matrix before and after correcting**
 
@@ -212,7 +219,7 @@ loading_fact_reduced <- loadings_basic
 kable(loading_fact_reduced)
 
 # predict values per samples from initial likert scale
-pred_basic <- as.data.frame(predict(fa_basic,dat_onlyItems,applygetRes))
+pred_basic <- as.data.frame(predict(fa_basic,data = dat_onlyItems,old.data = applygetRes))
 #pred_basic <- as.data.frame(predict(fa_basic,applygetRes))
 #https://stackoverflow.com/questions/4145400/how-to-create-factors-from-factanal
 #pred_basic <- data.frame(as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff=0))
@@ -305,93 +312,6 @@ summary(aov(Factor6 ~ Context,data=fact_data))
 Independent t-test are performed between every pair of contexts within every factor. The Bonferroni correction is used to adjust the p-values for multiple testing.
 
 ```{r}
-pairwise.t.test.with.t.and.df <- function (x, g, p.adjust.method = p.adjust.methods, pool.sd = !paired, 
-                                           paired = FALSE, alternative = c("two.sided", "less", "greater"), 
-                                           ...) 
-{
-    if (paired & pool.sd) 
-        stop("pooling of SD is incompatible with paired tests")
-    DNAME <- paste(deparse(substitute(x)), "and", deparse(substitute(g)))
-    g <- factor(g)
-    p.adjust.method <- match.arg(p.adjust.method)
-    alternative <- match.arg(alternative)
-    if (pool.sd) {
-        METHOD <- "t tests with pooled SD"
-        xbar <- tapply(x, g, mean, na.rm = TRUE)
-        s <- tapply(x, g, sd, na.rm = TRUE)
-        n <- tapply(!is.na(x), g, sum)
-        degf <- n - 1
-        total.degf <- sum(degf)
-        pooled.sd <- sqrt(sum(s^2 * degf)/total.degf)
-        compare.levels <- function(i, j) {
-            dif <- xbar[i] - xbar[j]
-            se.dif <- pooled.sd * sqrt(1/n[i] + 1/n[j])
-            t.val <- dif/se.dif
-            if (alternative == "two.sided") 
-                2 * pt(-abs(t.val), total.degf)
-            else pt(t.val, total.degf, lower.tail = (alternative == 
-                                                         "less"))
-        }
-        compare.levels.t <- function(i, j) {
-            dif <- xbar[i] - xbar[j]
-            se.dif <- pooled.sd * sqrt(1/n[i] + 1/n[j])
-            t.val = dif/se.dif 
-            t.val
-        }       
-    }
-    else {
-        METHOD <- if (paired) 
-            "paired t tests"
-        else "t tests with non-pooled SD"
-        compare.levels <- function(i, j) {
-            xi <- x[as.integer(g) == i]
-            xj <- x[as.integer(g) == j]
-            t.test(xi, xj, paired = paired, alternative = alternative, 
-                   ...)$p.value
-        }
-        compare.levels.t <- function(i, j) {
-            xi <- x[as.integer(g) == i]
-            xj <- x[as.integer(g) == j]
-            t.test(xi, xj, paired = paired, alternative = alternative, 
-                   ...)$statistic
-        }
-        compare.levels.df <- function(i, j) {
-            xi <- x[as.integer(g) == i]
-            xj <- x[as.integer(g) == j]
-            t.test(xi, xj, paired = paired, alternative = alternative, 
-                   ...)$parameter
-        }
-    }
-    PVAL <- pairwise.table(compare.levels, levels(g), p.adjust.method)
-    TVAL <- pairwise.table.t(compare.levels.t, levels(g), p.adjust.method)
-    if (pool.sd) 
-        DF <- total.degf
-    else
-        DF <- pairwise.table.t(compare.levels.df, levels(g), p.adjust.method)           
-    ans <- list(method = METHOD, data.name = DNAME, p.value = PVAL, 
-                p.adjust.method = p.adjust.method, t.value = TVAL, dfs = DF)
-    class(ans) <- "pairwise.htest"
-    ans
-}
-pairwise.table.t <- function (compare.levels.t, level.names, p.adjust.method) 
-{
-    ix <- setNames(seq_along(level.names), level.names)
-    pp <- outer(ix[-1L], ix[-length(ix)], function(ivec, jvec) sapply(seq_along(ivec), 
-        function(k) {
-            i <- ivec[k]
-            j <- jvec[k]
-            if (i > j)
-                compare.levels.t(i, j)               
-            else NA
-        }))
-    pp[lower.tri(pp, TRUE)] <- pp[lower.tri(pp, TRUE)]
-    pp
-}
-```
-
-https://stackoverflow.com/questions/27544438/how-to-get-df-and-t-values-from-pairwise-t-test
-
-```{r}
 #f1 <- pairwise.t.test(x = fact_data$Factor1, g = fact_data$Context,p.adjust.method = "none",pool.sd = TRUE)
 #kable(f1$p.value,digits = 20)
 
@@ -440,6 +360,76 @@ kable(tott)
 
 ```{r}
 fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
+```
+
+## Test differences Instrumental Variable on original likert scale
+
+```{r}
+instru_variables <- colnames(usable_data)[grep("instru1", colnames(usable_data))]
+dat_instru <- usable_data %>%
+  mutate(Context2 = case_when(Context %in% c("German in Australia", "Italian in Australia") ~ "GA+IA", 
+                              Context %in% c("English in Germany", "English in Italy") ~ "EG+EI")) %>%
+  dplyr::select(Context, Context2,all_of(instru_variables))
+
+dat_instru$mean_instru <- rowMeans(dat_instru[,c("job.instru1", "knowledge.instru1", "career.instru1", "money.instru1")])
+dat_instru$mean_instru_drop_know <- rowMeans(dat_instru[,c("job.instru1", "career.instru1", "money.instru1")])
+```
+
+### All separate contexts
+
+**Complete instrumental variable**
+
+```{r}
+test_context <- pair.t.test(x = dat_instru$mean_instru, context = dat_instru$Context, fname = "Mean Instrumental Complete")
+test_context$p.adjusted <- p.adjust(test_context$p.value,method = "fdr")
+kable(test_context)
+```
+
+**Incomplete instrumental variable: remove knowledge**
+
+```{r}
+test_context <- pair.t.test(x = dat_instru$mean_instru_drop_know, context = dat_instru$Context, fname = "Mean Instrumental Incomplete")
+test_context$p.adjusted <- p.adjust(test_context$p.value,method = "fdr")
+kable(test_context)
+```
+
+### By context2 for instrumental variable (original likert scale)
+
+```{r}
+pair.t.test.context2 <- function(x, context,fname = "Mean Instrumental Complete"){
+  # context2
+  a <- x[context %in% "EG+EI"]
+  b <- x[context %in% "GA+IA"]
+  
+  ab <- t.test(a,b,var.equal = TRUE)
+
+  test_out <- data.frame(Factor = fname,
+                         Context1 = "EG+EI",
+                         Context2 = "GA+IA",
+                         t.value = ab$statistic,
+                         p.value = ab$p.value,
+                         estimate1 = ab$estimate[1],
+                         estimate2 = ab$estimate[2],
+                         confint1 = ab$conf.int[1],
+                         confint2 = ab$conf.int[2],
+                         df = ab$parameter)
+  
+  return(test_out)
+}
+
+```
+
+
+**Complete variable**
+
+```{r}
+kable(pair.t.test.context2(x = dat_instru$mean_instru, context = dat_instru$Context2, fname = "MeanInstrumentalComplete"))
+```
+
+**Exclude knowledge**
+
+```{r}
+kable(pair.t.test.context2(x = dat_instru$mean_instru_drop_know, context = dat_instru$Context2, fname = "MeanInstrumental: Remove knowledge"))
 ```
 
 # Demographics
