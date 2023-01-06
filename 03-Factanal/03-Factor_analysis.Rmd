@@ -362,7 +362,7 @@ kable(tott)
 fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
 ```
 
-## Test differences Instrumental Variable on original likert scale
+# Test differences Instrumental Variable on original likert scale
 
 - Intrumental variable had a good Cronbach alpha (https://github.com/annaquaglieri16/Motivational-Study#evaluate-internal-consistency-of-known-constructs-with-alpha) - in almost every context > 0.5 and it raises to ~ 0.7 for almost all context when the `knowledge` item is dropped
 - The analysis below combined the items of the instrumental variable by taking the average of the original likert values both including and excluding the `knowledge` item to compare differences.  
@@ -380,7 +380,7 @@ dat_instru$mean_instru <- rowMeans(dat_instru[,c("job.instru1", "knowledge.instr
 dat_instru$mean_instru_drop_know <- rowMeans(dat_instru[,c("job.instru1", "career.instru1", "money.instru1")])
 ```
 
-### All separate contexts
+## All separate contexts
 
 **Complete instrumental variable**
 
@@ -398,7 +398,7 @@ test_context$p.adjusted <- p.adjust(test_context$p.value,method = "fdr")
 kable(test_context)
 ```
 
-### By context2 for instrumental variable (original likert scale)
+## By context2 for instrumental variable (original likert scale)
 
 ```{r}
 pair.t.test.context2 <- function(x, context,fname = "Mean Instrumental Complete"){

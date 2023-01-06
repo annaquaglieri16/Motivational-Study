@@ -23,15 +23,15 @@ Anna Quaglieri & Riccardo Amorati
     testing the effect of context</a>
   - <a href="#all-pairwise-comparisons"
     id="toc-all-pairwise-comparisons">All pairwise comparisons</a>
-  - <a
-    href="#test-differences-instrumental-variable-on-original-likert-scale"
-    id="toc-test-differences-instrumental-variable-on-original-likert-scale">Test
-    differences Instrumental Variable on original likert scale</a>
-    - <a href="#all-separate-contexts" id="toc-all-separate-contexts">All
-      separate contexts</a>
-    - <a href="#by-context2-for-instrumental-variable-original-likert-scale"
-      id="toc-by-context2-for-instrumental-variable-original-likert-scale">By
-      context2 for instrumental variable (original likert scale)</a>
+- <a
+  href="#test-differences-instrumental-variable-on-original-likert-scale"
+  id="toc-test-differences-instrumental-variable-on-original-likert-scale">Test
+  differences Instrumental Variable on original likert scale</a>
+  - <a href="#all-separate-contexts" id="toc-all-separate-contexts">All
+    separate contexts</a>
+  - <a href="#by-context2-for-instrumental-variable-original-likert-scale"
+    id="toc-by-context2-for-instrumental-variable-original-likert-scale">By
+    context2 for instrumental variable (original likert scale)</a>
 - <a href="#demographics" id="toc-demographics">Demographics</a>
   - <a href="#tables" id="toc-tables">Tables</a>
   - <a href="#factor-means-with-confidence-intervals"
@@ -1135,7 +1135,7 @@ for multiple testing.
 > fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
 ```
 
-## Test differences Instrumental Variable on original likert scale
+# Test differences Instrumental Variable on original likert scale
 
 - Intrumental variable had a good Cronbach alpha
   (<https://github.com/annaquaglieri16/Motivational-Study#evaluate-internal-consistency-of-known-constructs-with-alpha>) -
@@ -1162,7 +1162,7 @@ for multiple testing.
 > dat_instru$mean_instru_drop_know <- rowMeans(dat_instru[,c("job.instru1", "career.instru1", "money.instru1")])
 ```
 
-### All separate contexts
+## All separate contexts
 
 **Complete instrumental variable**
 
@@ -1198,7 +1198,7 @@ for multiple testing.
 | Mean Instrumental Incomplete | English in Italy    | Italian in Australia |  6.571340 | 0.0000000 |  3.978022 |  3.391892 |  0.4100036 | 0.7622565 | 163 |  0.0000000 |
 | Mean Instrumental Incomplete | German in Australia | Italian in Australia |  3.210162 | 0.0016034 |  3.727273 |  3.391892 |  0.1290535 | 0.5417082 | 160 |  0.0032067 |
 
-### By context2 for instrumental variable (original likert scale)
+## By context2 for instrumental variable (original likert scale)
 
 ``` r
 > pair.t.test.context2 <- function(x, context,fname = "Mean Instrumental Complete"){
