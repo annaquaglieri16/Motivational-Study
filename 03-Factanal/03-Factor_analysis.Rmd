@@ -364,6 +364,11 @@ fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Cont
 
 ## Test differences Instrumental Variable on original likert scale
 
+- Intrumental variable had a good Cronbach alpha (https://github.com/annaquaglieri16/Motivational-Study#evaluate-internal-consistency-of-known-constructs-with-alpha) - in almost every context > 0.5 and it raises to ~ 0.7 for almost all context when the `knowledge` item is dropped
+- The analysis below combined the items of the instrumental variable by taking the average of the original likert values both including and excluding the `knowledge` item to compare differences.  
+- T-tests are then performed for the combined variable by context and combining GA+IA and EG+EI
+- When multiple t-tests are performed, i.e. when performing comparison between every context, then the p-value adjusted for multiple testing is provided in the table as `p.adjusted` (Bonferroni correction was used).
+
 ```{r}
 instru_variables <- colnames(usable_data)[grep("instru1", colnames(usable_data))]
 dat_instru <- usable_data %>%
