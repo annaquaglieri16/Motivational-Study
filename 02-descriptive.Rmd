@@ -979,7 +979,7 @@ sets <- list(id.var=likert_variables1[grep("\\.id1$",likert_variables1)],
 
 get_alpha <- function(dataMot,
                       var=sets$id.var){
-  var_alpha <- alpha(dataMot[,var])
+  var_alpha <- psych::alpha(dataMot[,var])
   dataf <- data.frame(alpha=var_alpha$total,
                     drop = var_alpha$alpha.drop)
   rownames(dataf) <- rownames(var_alpha$alpha.drop)
@@ -987,9 +987,10 @@ get_alpha <- function(dataMot,
 }
 
 # "Italian in Australia"
-ita_in_au <- do.call(rbind,lapply(sets,function(x) {
-  get_alpha(data=filtered_conv[filtered_conv$Context == "Italian in Australia",],
-                      var=x)}))
+ita_in_au_df <- filtered_conv[filtered_conv$Context == "Italian in Australia",]
+list_of_ita_in_au <- lapply(sets,function(x) {
+  get_alpha(dataMot=ita_in_au_df,var=x)})
+ita_in_au <- do.call(rbind,list_of_ita_in_au)
 ita_in_au$var <- sapply(strsplit(rownames(ita_in_au),split="\\."),function(x) x[1]) 
 ita_in_au$var.full <- sapply(strsplit(rownames(ita_in_au),split="\\."),function(x) x[3]) 
 ita_in_au$Context <- "Italian in Australia"
@@ -997,7 +998,7 @@ rownames(ita_in_au) <- NULL
 
 # "German in Australia"
 germ_in_au <- do.call(rbind,lapply(sets,function(x) {
-  get_alpha(data=filtered_conv[filtered_conv$Context == "German in Australia",],
+  get_alpha(dataMot =filtered_conv[filtered_conv$Context == "German in Australia",],
                       var=x)}))
 germ_in_au$var <- sapply(strsplit(rownames(germ_in_au),split="\\."),function(x) x[1]) 
 germ_in_au$var.full <- sapply(strsplit(rownames(germ_in_au),split="\\."),function(x) x[3]) 
@@ -1006,11 +1007,11 @@ rownames(germ_in_au) <- NULL
 
 # "English in Germany"
 eng_in_germ <- do.call(rbind,lapply(sets[!(names(sets) %in% "comm.var")],function(x) {
-  get_alpha(data=filtered_conv[filtered_conv$Context == "English in Germany",],
+  get_alpha(dataMot=filtered_conv[filtered_conv$Context == "English in Germany",],
                       var=x)}))
 
 # the ones that makes issues
-get_alpha(data=filtered_conv[filtered_conv$Context == "English in Germany",],
+get_alpha(dataMot=filtered_conv[filtered_conv$Context == "English in Germany",],
                       var=sets$ought.var)
 
 eng_in_germ$var <- sapply(strsplit(rownames(eng_in_germ),split="\\."),function(x) x[1]) 
@@ -1020,7 +1021,7 @@ rownames(eng_in_germ) <- NULL
 
 # "English in Italy"
 eng_in_ita <- do.call(rbind,lapply(sets[!(names(sets) %in% "comm.var")],function(x) {
-  get_alpha(data=filtered_conv[filtered_conv$Context == "English in Italy",],
+  get_alpha(dataMot=filtered_conv[filtered_conv$Context == "English in Italy",],
                       var=x)}))
 eng_in_ita$var <- sapply(strsplit(rownames(eng_in_ita),split="\\."),function(x) x[1]) 
 eng_in_ita$var.full <- sapply(strsplit(rownames(eng_in_ita),split="\\."),function(x) x[3]) 
@@ -1061,6 +1062,12 @@ p3=full_alpha %>% group_by(Context,var) %>%
 
 
 cowplot::plot_grid(p2,p3,nrow=2)
+
+```
+
+
+```{r}
+ggplot(full_alpha[full_alpha$var == "instru",],aes(x=var.full,y=drop.std.alpha,colour=Context)) + geom_point() + geom_line(aes(group=Context)) + theme_bw() + labs(y = "Drop Item - Chronbach's Alpha", x = "Items") + ggtitle("Variable: Instrumental Orientation")
 
 ```
 

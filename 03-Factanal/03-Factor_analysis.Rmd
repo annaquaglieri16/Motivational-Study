@@ -38,7 +38,7 @@ data(efc)
 theme_set(theme_sjplot())
 
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig.height = 8)
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = FALSE,fig.width = 10,fig.height = 8)
 
 ```
 
@@ -147,7 +147,7 @@ hist(dif)
 # From a statisticak point of view 
 fap <- fa.parallel(applygetRes)
 fact <- 6
-loading_cutoff <- 0.3
+loading_cutoff <- 0.5
 fa_basic <- fa(applygetRes,fact)
 
 fa_basic
@@ -170,24 +170,24 @@ a1 <- loadings_basic
 
 a2 <- melt(a1,id.vars=c("D"))
 a2$inv <- ifelse(a2$value < 0 ,"neg","pos")
-a2$value[abs(a2$value) < loading_cutoff] <- 0
+a2$value[abs(a2$value) <= loading_cutoff] <- 0
 a2 <- a2[a2$value!=0,]
 a2 <- a2 %>% separate(D,into = c("Variable","Item"),remove=FALSE,sep="[.]")
 
-ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red")
+ggplot(a2)+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+facet_wrap(~variable,ncol = 2,scales = "free_y")+coord_flip() + geom_hline(yintercept = c(-0.5,0.5),linetype="dotted",colour="dark red")
 
 # Factors one by one
-ggplot(subset(a2,variable %in% "F1"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F1")+ labs(y="Items")
+ggplot(subset(a2,variable %in% "F1"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F1")+ labs(y="Items")
 
-ggplot(subset(a2,variable %in% "F2"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F2") + labs(y="Items")
+ggplot(subset(a2,variable %in% "F2"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F2") + labs(y="Items")
 
-ggplot(subset(a2,variable %in% "F3"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F3")+ labs(y="Items")
+ggplot(subset(a2,variable %in% "F3"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F3")+ labs(y="Items")
 
-ggplot(subset(a2,variable %in% "F4"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F4")+ labs(y="Items")
+ggplot(subset(a2,variable %in% "F4"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F4")+ labs(y="Items")
 
-ggplot(subset(a2,variable %in% "F5"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F5")+ labs(y="Items")
+ggplot(subset(a2,variable %in% "F5"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F5")+ labs(y="Items")
 
-ggplot(subset(a2,variable %in% "F6"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-0.3,0.3),linetype="dotted",colour="dark red") + ggtitle("F6")+ labs(y="Items")
+ggplot(subset(a2,variable %in% "F6"))+geom_bar(aes(x=reorder(D, value) ,y=value,fill=Item),stat="identity")+coord_flip() + geom_hline(yintercept = c(-loading_cutoff,loading_cutoff),linetype="dotted",colour="dark red") + ggtitle("F6")+ labs(y="Items")
 ```
 
 ## Chronbach alpha
@@ -205,7 +205,7 @@ psych::alpha(applygetRes[,colnames(applygetRes) %in% f2])
 psych::alpha(applygetRes[,colnames(applygetRes) %in% f3])
 psych::alpha(applygetRes[,colnames(applygetRes) %in% f4])
 psych::alpha(applygetRes[,colnames(applygetRes) %in% f5])
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f6])
+#psych::alpha(applygetRes[,colnames(applygetRes) %in% f6])
 ```
 
 ```{r}
@@ -387,8 +387,23 @@ dat_instru$mean_instru_drop_know <- rowMeans(dat_instru[,c("job.instru1", "caree
 ```{r}
 test_context <- pair.t.test(x = dat_instru$mean_instru, context = dat_instru$Context, fname = "Mean Instrumental Complete")
 test_context$p.adjusted <- p.adjust(test_context$p.value,method = "fdr")
+test_context$difference <- test_context$estimate1 - test_context$estimate2
 kable(test_context)
 ```
+
+```{r}
+test_context <- test_context %>% mutate(Context1_short = case_when(Context1 == "English in Germany" ~ "EG",
+                                                                   Context1 == "English in Italy" ~ "EI",
+                                                                   Context1 == "German in Australia" ~ "GA",
+                                                                   Context1 == "Italian in Australia" ~ "IA"),
+                                        Context2_short = case_when(Context2 == "English in Germany" ~ "EG",
+                                                                   Context2 == "English in Italy" ~ "EI",
+                                                                   Context2 == "German in Australia" ~ "GA",
+                                                                   Context2 == "Italian in Australia" ~ "IA"))
+test_context$Label <- paste(test_context$Context1_short, test_context$Context2_short, sep="-")
+ggplot(test_context, aes(x = Label, y = difference)) + geom_errorbar(aes(ymin = confint1, ymax = confint2)) + geom_point()
+```
+
 
 **Incomplete instrumental variable: remove knowledge**
 
@@ -396,6 +411,23 @@ kable(test_context)
 test_context <- pair.t.test(x = dat_instru$mean_instru_drop_know, context = dat_instru$Context, fname = "Mean Instrumental Incomplete")
 test_context$p.adjusted <- p.adjust(test_context$p.value,method = "fdr")
 kable(test_context)
+```
+
+
+```{r}
+test_context <- test_context %>% mutate(Context1_short = case_when(Context1 == "English in Germany" ~ "EG",
+                                                                   Context1 == "English in Italy" ~ "EI",
+                                                                   Context1 == "German in Australia" ~ "GA",
+                                                                   Context1 == "Italian in Australia" ~ "IA"),
+                                        Context2_short = case_when(Context2 == "English in Germany" ~ "EG",
+                                                                   Context2 == "English in Italy" ~ "EI",
+                                                                   Context2 == "German in Australia" ~ "GA",
+                                                                   Context2 == "Italian in Australia" ~ "IA"))
+test_context$Label <- paste(test_context$Context1_short, test_context$Context2_short, sep="-")
+test_context$difference <- test_context$estimate1 - test_context$estimate2
+ggplot(test_context, aes(x = Label, y = difference)) + geom_errorbar(aes(ymin = confint1, ymax = confint2)) + geom_point() +
+  labs(y = "Difference in means", x = "Comparisons") + ggtitle("Mean differences with 95% CI") +
+  geom_hline(yintercept = 0, linetype="dotted", colour = "dark red")
 ```
 
 ## By context2 for instrumental variable (original likert scale)
