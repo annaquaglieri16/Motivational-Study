@@ -38,7 +38,7 @@ data(efc)
 theme_set(theme_sjplot())
 
 # Chunk options
-knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = FALSE,fig.width = 10,fig.height = 8)
+knitr::opts_chunk$set(echo = TRUE, prompt = TRUE,cache = TRUE,fig.width = 10,fig.height = 8)
 
 ```
 
