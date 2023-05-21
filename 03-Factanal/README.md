@@ -226,7 +226,9 @@ the context mean from every context
 ``` r
 > # Factanal 
 > # From a statisticak point of view 
-> fap <- fa.parallel(applygetRes)
+> # use_data_fac <- applygetRes
+> use_data_fac <- dat_onlyItems
+> fap <- fa.parallel(use_data_fac)
 ```
 
 ![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
@@ -236,7 +238,7 @@ the context mean from every context
 ``` r
 > fact <- 6
 > loading_cutoff <- 0.5
-> fa_basic <- fa(applygetRes,fact)
+> fa_basic <- fa(use_data_fac,fact)
 ```
 
     ## Loading required namespace: GPArotation
@@ -246,76 +248,76 @@ the context mean from every context
 ```
 
     ## Factor Analysis using method =  minres
-    ## Call: fa(r = applygetRes, nfactors = fact)
+    ## Call: fa(r = use_data_fac, nfactors = fact)
     ## Standardized loadings (pattern matrix) based upon correlation matrix
-    ##                      MR2   MR1   MR4   MR5   MR3   MR6   h2   u2 com
-    ## converse.id1        0.06  0.44  0.13  0.13  0.04  0.10 0.39 0.61 1.5
-    ## dream.id1           0.15  0.29  0.21  0.21  0.04 -0.27 0.34 0.66 4.3
-    ## usewell.id1         0.09  0.15  0.22  0.24  0.05 -0.12 0.23 0.77 3.6
-    ## whenever.id1        0.01  0.23  0.20  0.34  0.09 -0.02 0.35 0.65 2.6
-    ## consider.ought1     0.08  0.02  0.04 -0.09  0.56  0.09 0.36 0.64 1.2
-    ## people.ought1       0.01  0.04  0.17 -0.01  0.53 -0.10 0.32 0.68 1.3
-    ## expect.ought1       0.00  0.01 -0.02 -0.01  0.82  0.00 0.67 0.33 1.0
-    ## fail.ought1        -0.01 -0.03 -0.05  0.06  0.62  0.01 0.38 0.62 1.0
-    ## enjoy.intr1         0.02  0.00 -0.01  0.74 -0.11 -0.03 0.56 0.44 1.1
-    ## life.intr1         -0.09  0.18  0.06  0.55  0.17  0.14 0.51 0.49 1.7
-    ## exciting.intr1      0.17  0.21  0.10  0.38 -0.02 -0.07 0.37 0.63 2.3
-    ## challenge.intr1     0.17 -0.07 -0.04  0.46 -0.01  0.14 0.29 0.71 1.6
-    ## job.instru1        -0.01 -0.04  0.78 -0.05  0.07  0.05 0.60 0.40 1.0
-    ## knowledge.instru1   0.03 -0.02  0.06  0.22  0.05  0.37 0.24 0.76 1.8
-    ## career.instru1     -0.01  0.03  0.71  0.03 -0.07 -0.04 0.51 0.49 1.0
-    ## money.instru1      -0.01 -0.14  0.53  0.08  0.07  0.12 0.32 0.68 1.3
-    ## time.integr1        0.04  0.64 -0.01  0.09 -0.05 -0.03 0.47 0.53 1.1
-    ## becomelike.integr1  0.00  0.37 -0.06  0.04  0.10  0.27 0.27 0.73 2.1
-    ## meeting.integr1     0.08  0.56  0.01  0.10 -0.08 -0.08 0.39 0.61 1.2
-    ## affinity.integr1   -0.10  0.68 -0.07 -0.07  0.10  0.09 0.44 0.56 1.2
-    ## improve.prof1       0.64  0.14 -0.05 -0.06 -0.06  0.06 0.44 0.56 1.2
-    ## speaking.prof1      0.74  0.12  0.13 -0.15 -0.07 -0.02 0.61 0.39 1.2
-    ## reading.prof1       0.68 -0.13 -0.10  0.12  0.01 -0.01 0.48 0.52 1.2
-    ## written.prof1       0.78 -0.05  0.03  0.06  0.07 -0.04 0.61 0.39 1.0
-    ## listening.prof1     0.83 -0.04 -0.05  0.04  0.04  0.05 0.69 0.31 1.0
-    ## citizen.post1       0.06  0.04  0.13  0.01  0.06  0.56 0.41 0.59 1.2
-    ## interact.post1      0.09  0.21  0.14  0.14 -0.17  0.18 0.25 0.75 4.9
-    ## overseas.post1      0.29  0.19  0.18 -0.02 -0.07  0.26 0.34 0.66 3.6
-    ## globalaccess.post1  0.05  0.15  0.30  0.16 -0.19  0.33 0.45 0.55 3.7
+    ##                      MR2   MR4   MR1   MR5   MR3   MR6   h2   u2 com
+    ## converse.id1        0.10  0.12  0.20  0.38  0.06  0.13 0.40 0.60 2.3
+    ## dream.id1           0.18  0.27  0.25  0.22  0.04 -0.27 0.37 0.63 4.7
+    ## usewell.id1        -0.01  0.29  0.25  0.16 -0.01 -0.15 0.27 0.73 3.2
+    ## whenever.id1       -0.01  0.31  0.39  0.14  0.06 -0.01 0.43 0.57 2.3
+    ## consider.ought1     0.08 -0.04 -0.13  0.10  0.57  0.05 0.37 0.63 1.3
+    ## people.ought1      -0.05  0.22  0.02  0.06  0.51 -0.12 0.31 0.69 1.6
+    ## expect.ought1       0.03 -0.03 -0.01  0.01  0.83  0.01 0.70 0.30 1.0
+    ## fail.ought1         0.01  0.01  0.10 -0.09  0.62  0.05 0.39 0.61 1.1
+    ## enjoy.intr1         0.02 -0.05  0.73  0.01 -0.12 -0.02 0.55 0.45 1.1
+    ## life.intr1         -0.11  0.10  0.61  0.13  0.18  0.15 0.56 0.44 1.5
+    ## exciting.intr1      0.25  0.02  0.38  0.18 -0.01 -0.03 0.35 0.65 2.3
+    ## challenge.intr1     0.21 -0.10  0.43 -0.05  0.00  0.14 0.26 0.74 1.9
+    ## job.instru1        -0.01  0.78 -0.07 -0.01  0.06  0.05 0.58 0.42 1.0
+    ## knowledge.instru1   0.13 -0.02  0.17 -0.02  0.11  0.38 0.24 0.76 1.9
+    ## career.instru1      0.00  0.76  0.04 -0.01 -0.06 -0.02 0.59 0.41 1.0
+    ## money.instru1       0.01  0.52  0.02 -0.10  0.07  0.11 0.30 0.70 1.2
+    ## time.integr1        0.07  0.00  0.10  0.63 -0.08 -0.03 0.47 0.53 1.1
+    ## becomelike.integr1 -0.01 -0.08  0.04  0.43  0.11  0.22 0.27 0.73 1.7
+    ## meeting.integr1     0.05  0.03  0.13  0.56 -0.12 -0.08 0.41 0.59 1.3
+    ## affinity.integr1   -0.11 -0.05 -0.07  0.72  0.09  0.03 0.49 0.51 1.1
+    ## improve.prof1       0.70 -0.08 -0.06  0.09 -0.03  0.09 0.51 0.49 1.1
+    ## speaking.prof1      0.80  0.08 -0.12  0.10 -0.04 -0.01 0.65 0.35 1.1
+    ## reading.prof1       0.70 -0.04  0.11 -0.14  0.01 -0.04 0.51 0.49 1.1
+    ## written.prof1       0.76  0.09  0.05 -0.03  0.05 -0.10 0.61 0.39 1.1
+    ## listening.prof1     0.86 -0.07  0.03 -0.05  0.05  0.07 0.76 0.24 1.0
+    ## citizen.post1       0.05  0.21  0.05  0.03  0.09  0.52 0.43 0.57 1.4
+    ## interact.post1      0.01  0.32  0.19  0.10 -0.19  0.17 0.34 0.66 3.2
+    ## overseas.post1      0.29  0.27 -0.02  0.17 -0.08  0.25 0.36 0.64 3.8
+    ## globalaccess.post1  0.05  0.36  0.16  0.11 -0.19  0.34 0.50 0.50 3.2
     ## 
-    ##                        MR2  MR1  MR4  MR5  MR3  MR6
-    ## SS loadings           3.08 2.27 2.03 1.98 1.86 1.07
-    ## Proportion Var        0.11 0.08 0.07 0.07 0.06 0.04
-    ## Cumulative Var        0.11 0.18 0.25 0.32 0.39 0.42
-    ## Proportion Explained  0.25 0.18 0.17 0.16 0.15 0.09
-    ## Cumulative Proportion 0.25 0.44 0.60 0.76 0.91 1.00
+    ##                        MR2  MR4  MR1  MR5  MR3  MR6
+    ## SS loadings           3.35 2.47 2.15 2.11 1.88 1.03
+    ## Proportion Var        0.12 0.09 0.07 0.07 0.06 0.04
+    ## Cumulative Var        0.12 0.20 0.27 0.35 0.41 0.45
+    ## Proportion Explained  0.26 0.19 0.17 0.16 0.14 0.08
+    ## Cumulative Proportion 0.26 0.45 0.61 0.78 0.92 1.00
     ## 
     ##  With factor correlations of 
-    ##       MR2  MR1  MR4   MR5   MR3  MR6
-    ## MR2  1.00 0.20 0.22  0.27 -0.05 0.10
-    ## MR1  0.20 1.00 0.35  0.39  0.03 0.21
-    ## MR4  0.22 0.35 1.00  0.30  0.06 0.27
-    ## MR5  0.27 0.39 0.30  1.00 -0.04 0.15
-    ## MR3 -0.05 0.03 0.06 -0.04  1.00 0.14
-    ## MR6  0.10 0.21 0.27  0.15  0.14 1.00
+    ##      MR2  MR4   MR1  MR5   MR3  MR6
+    ## MR2 1.00 0.13  0.22 0.11  0.05 0.16
+    ## MR4 0.13 1.00  0.37 0.33  0.00 0.24
+    ## MR1 0.22 0.37  1.00 0.39 -0.05 0.16
+    ## MR5 0.11 0.33  0.39 1.00  0.03 0.16
+    ## MR3 0.05 0.00 -0.05 0.03  1.00 0.11
+    ## MR6 0.16 0.24  0.16 0.16  0.11 1.00
     ## 
     ## Mean item complexity =  1.8
     ## Test of the hypothesis that 6 factors are sufficient.
     ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  9.54 with Chi Square of  2973.11
-    ## The degrees of freedom for the model are 247  and the objective function was  1.4 
+    ## df null model =  406  with the objective function =  10.52 with Chi Square =  3278.37
+    ## df of  the model are 247  and the objective function was  1.46 
     ## 
     ## The root mean square of the residuals (RMSR) is  0.03 
     ## The df corrected root mean square of the residuals is  0.04 
     ## 
-    ## The harmonic number of observations is  323 with the empirical chi square  305.61  with prob <  0.0065 
-    ## The total number of observations was  323  with Likelihood Chi Square =  429.33  with prob <  5.4e-12 
+    ## The harmonic n.obs is  323 with the empirical chi square  293.67  with prob <  0.022 
+    ## The total n.obs was  323  with Likelihood Chi Square =  448.4  with prob <  7.6e-14 
     ## 
-    ## Tucker Lewis Index of factoring reliability =  0.881
-    ## RMSEA index =  0.048  and the 90 % confidence intervals are  0.04 0.055
-    ## BIC =  -997.75
+    ## Tucker Lewis Index of factoring reliability =  0.883
+    ## RMSEA index =  0.05  and the 90 % confidence intervals are  0.043 0.058
+    ## BIC =  -978.68
     ## Fit based upon off diagonal values = 0.98
     ## Measures of factor score adequacy             
-    ##                                                    MR2  MR1  MR4  MR5  MR3  MR6
-    ## Correlation of (regression) scores with factors   0.94 0.88 0.89 0.88 0.89 0.78
-    ## Multiple R square of scores with factors          0.88 0.78 0.79 0.77 0.80 0.61
-    ## Minimum correlation of possible factor scores     0.76 0.56 0.58 0.54 0.60 0.23
+    ##                                                    MR2  MR4  MR1  MR5  MR3  MR6
+    ## Correlation of (regression) scores with factors   0.95 0.91 0.89 0.88 0.90 0.78
+    ## Multiple R square of scores with factors          0.90 0.82 0.79 0.78 0.81 0.61
+    ## Minimum correlation of possible factor scores     0.80 0.65 0.57 0.55 0.63 0.22
 
 ``` r
 > # analyse residuals vs initial
@@ -389,161 +391,188 @@ the context mean from every context
 > f5 <- unique(a2$D[a2$variable %in% "F5"])
 > f6 <- unique(a2$D[a2$variable %in% "F6"])
 > 
-> psych::alpha(applygetRes[,colnames(applygetRes) %in% f1])
+> psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f1])
 ```
-
-    ## Number of categories should be increased  in order to count frequencies.
 
     ## 
     ## Reliability analysis   
-    ## Call: psych::alpha(x = applygetRes[, colnames(applygetRes) %in% f1])
+    ## Call: psych::alpha(x = use_data_fac[, colnames(use_data_fac) %in% f1])
     ## 
-    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase    mean   sd median_r
-    ##       0.85      0.85    0.84      0.54 5.8 0.014 2.8e-17 0.46     0.58
+    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+    ##       0.87      0.87    0.86      0.58 6.9 0.012  4.6 0.51     0.62
     ## 
     ##     95% confidence boundaries 
     ##          lower alpha upper
-    ## Feldt     0.82  0.85  0.87
-    ## Duhachek  0.82  0.85  0.87
+    ## Feldt     0.84  0.87  0.89
+    ## Duhachek  0.85  0.87  0.89
     ## 
     ##  Reliability if an item is dropped:
     ##                 raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
-    ## improve.prof1        0.84      0.84    0.82      0.57 5.3    0.015 0.0082  0.60
-    ## speaking.prof1       0.81      0.82    0.78      0.53 4.5    0.017 0.0076  0.56
-    ## reading.prof1        0.83      0.84    0.80      0.56 5.2    0.016 0.0035  0.58
-    ## written.prof1        0.80      0.81    0.78      0.52 4.3    0.018 0.0108  0.55
-    ## listening.prof1      0.79      0.80    0.77      0.50 4.0    0.019 0.0102  0.51
+    ## improve.prof1        0.86      0.86    0.84      0.61 6.1    0.013 0.0066  0.63
+    ## speaking.prof1       0.84      0.84    0.81      0.57 5.4    0.015 0.0058  0.61
+    ## reading.prof1        0.85      0.86    0.83      0.61 6.1    0.013 0.0035  0.62
+    ## written.prof1        0.84      0.84    0.82      0.57 5.4    0.015 0.0094  0.61
+    ## listening.prof1      0.82      0.83    0.80      0.55 4.8    0.016 0.0074  0.56
     ## 
     ##  Item statistics 
-    ##                   n raw.r std.r r.cor r.drop     mean   sd
-    ## improve.prof1   323  0.77  0.74  0.64   0.59 -8.0e-17 0.69
-    ## speaking.prof1  323  0.78  0.80  0.74   0.68  8.9e-17 0.49
-    ## reading.prof1   323  0.75  0.75  0.67   0.60  2.7e-17 0.58
-    ## written.prof1   323  0.82  0.82  0.77   0.70  3.3e-17 0.56
-    ## listening.prof1 323  0.84  0.85  0.80   0.74  2.4e-17 0.57
+    ##                   n raw.r std.r r.cor r.drop mean   sd
+    ## improve.prof1   323  0.80  0.78  0.69   0.65  4.5 0.75
+    ## speaking.prof1  323  0.81  0.82  0.78   0.72  4.7 0.53
+    ## reading.prof1   323  0.78  0.78  0.71   0.65  4.5 0.62
+    ## written.prof1   323  0.81  0.83  0.77   0.71  4.6 0.58
+    ## listening.prof1 323  0.87  0.87  0.84   0.78  4.5 0.63
+    ## 
+    ## Non missing response frequency for each item
+    ##                    1    2    3    4    5 miss
+    ## improve.prof1   0.01 0.02 0.03 0.34 0.59    0
+    ## speaking.prof1  0.00 0.01 0.00 0.28 0.71    0
+    ## reading.prof1   0.00 0.02 0.02 0.38 0.59    0
+    ## written.prof1   0.00 0.01 0.02 0.36 0.62    0
+    ## listening.prof1 0.00 0.01 0.04 0.38 0.57    0
 
 ``` r
-> psych::alpha(applygetRes[,colnames(applygetRes) %in% f2])
+> psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f2])
 ```
-
-    ## Number of categories should be increased  in order to count frequencies.
 
     ## 
     ## Reliability analysis   
-    ## Call: psych::alpha(x = applygetRes[, colnames(applygetRes) %in% f2])
+    ## Call: psych::alpha(x = use_data_fac[, colnames(use_data_fac) %in% f2])
     ## 
-    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase    mean   sd median_r
-    ##       0.65      0.67    0.58      0.41 2.1 0.033 3.8e-18 0.53     0.39
-    ## 
-    ##     95% confidence boundaries 
-    ##          lower alpha upper
-    ## Feldt     0.58  0.65  0.71
-    ## Duhachek  0.58  0.65  0.71
-    ## 
-    ##  Reliability if an item is dropped:
-    ##                  raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
-    ## time.integr1          0.49      0.52    0.35      0.35 1.1    0.052    NA  0.35
-    ## meeting.integr1       0.54      0.56    0.39      0.39 1.3    0.049    NA  0.39
-    ## affinity.integr1      0.64      0.65    0.48      0.48 1.9    0.039    NA  0.48
-    ## 
-    ##  Item statistics 
-    ##                    n raw.r std.r r.cor r.drop     mean   sd
-    ## time.integr1     323  0.78  0.80  0.65   0.51 -1.4e-17 0.66
-    ## meeting.integr1  323  0.73  0.79  0.62   0.49  2.3e-17 0.56
-    ## affinity.integr1 323  0.81  0.74  0.52   0.43 -1.4e-17 0.85
-
-``` r
-> psych::alpha(applygetRes[,colnames(applygetRes) %in% f3])
-```
-
-    ## Number of categories should be increased  in order to count frequencies.
-
-    ## 
-    ## Reliability analysis   
-    ## Call: psych::alpha(x = applygetRes[, colnames(applygetRes) %in% f3])
-    ## 
-    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase     mean  sd median_r
-    ##       0.72      0.72    0.64      0.46 2.5 0.027 -3.6e-18 0.6     0.49
+    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+    ##       0.75      0.75    0.68       0.5   3 0.024  3.8 0.64     0.52
     ## 
     ##     95% confidence boundaries 
     ##          lower alpha upper
-    ## Feldt     0.66  0.72  0.77
-    ## Duhachek  0.66  0.72  0.77
+    ## Feldt      0.7  0.75  0.79
+    ## Duhachek   0.7  0.75  0.80
     ## 
     ##  Reliability if an item is dropped:
     ##                raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
-    ## job.instru1         0.51      0.51    0.34      0.34 1.0    0.054    NA  0.34
-    ## career.instru1      0.66      0.66    0.49      0.49 1.9    0.038    NA  0.49
-    ## money.instru1       0.70      0.70    0.54      0.54 2.4    0.033    NA  0.54
+    ## job.instru1         0.55      0.55    0.38      0.38 1.2    0.050    NA  0.38
+    ## career.instru1      0.68      0.68    0.52      0.52 2.2    0.035    NA  0.52
+    ## money.instru1       0.74      0.75    0.59      0.59 2.9    0.028    NA  0.59
     ## 
     ##  Item statistics 
-    ##                  n raw.r std.r r.cor r.drop     mean   sd
-    ## job.instru1    323  0.85  0.85  0.74   0.63 -2.9e-17 0.78
-    ## career.instru1 323  0.77  0.79  0.62   0.51 -1.5e-18 0.71
-    ## money.instru1  323  0.77  0.76  0.56   0.48  9.0e-18 0.75
+    ##                  n raw.r std.r r.cor r.drop mean   sd
+    ## job.instru1    323  0.87  0.86  0.78   0.67  3.8 0.83
+    ## career.instru1 323  0.80  0.81  0.66   0.56  4.2 0.77
+    ## money.instru1  323  0.77  0.78  0.58   0.51  3.2 0.77
+    ## 
+    ## Non missing response frequency for each item
+    ##                   1    2    3    4    5 miss
+    ## job.instru1    0.00 0.04 0.32 0.41 0.23    0
+    ## career.instru1 0.00 0.00 0.20 0.41 0.39    0
+    ## money.instru1  0.01 0.12 0.55 0.26 0.06    0
 
 ``` r
-> psych::alpha(applygetRes[,colnames(applygetRes) %in% f4])
+> psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f3])
 ```
-
-    ## Number of categories should be increased  in order to count frequencies.
 
     ## 
     ## Reliability analysis   
-    ## Call: psych::alpha(x = applygetRes[, colnames(applygetRes) %in% f4])
+    ## Call: psych::alpha(x = use_data_fac[, colnames(use_data_fac) %in% f3])
     ## 
-    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase    mean   sd median_r
-    ##       0.58      0.63    0.46      0.46 1.7 0.041 3.9e-17 0.69     0.46
+    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+    ##        0.6      0.65    0.48      0.48 1.9 0.038  3.9 0.73     0.48
     ## 
     ##     95% confidence boundaries 
     ##          lower alpha upper
-    ## Feldt     0.48  0.58  0.67
-    ## Duhachek  0.50  0.58  0.66
+    ## Feldt     0.50   0.6  0.68
+    ## Duhachek  0.53   0.6  0.68
     ## 
     ##  Reliability if an item is dropped:
     ##             raw_alpha std.alpha G6(smc) average_r  S/N alpha se var.r med.r
-    ## enjoy.intr1      0.29      0.46    0.21      0.46 0.84       NA     0  0.46
-    ## life.intr1       0.73      0.46    0.21      0.46 0.84       NA     0  0.46
+    ## enjoy.intr1      0.29      0.48    0.23      0.48 0.93       NA     0  0.48
+    ## life.intr1       0.79      0.48    0.23      0.48 0.93       NA     0  0.48
     ## 
     ##  Item statistics 
-    ##               n raw.r std.r r.cor r.drop     mean   sd
-    ## enjoy.intr1 323  0.77  0.85  0.58   0.46  8.4e-17 0.62
-    ## life.intr1  323  0.92  0.85  0.58   0.46 -1.1e-17 0.99
+    ##               n raw.r std.r r.cor r.drop mean   sd
+    ## enjoy.intr1 323  0.78  0.86   0.6   0.48  4.5 0.64
+    ## life.intr1  323  0.92  0.86   0.6   0.48  3.3 1.04
+    ## 
+    ## Non missing response frequency for each item
+    ##                1    2    3    4    5 miss
+    ## enjoy.intr1 0.00 0.01 0.06 0.40 0.54    0
+    ## life.intr1  0.02 0.24 0.25 0.36 0.12    0
 
 ``` r
-> psych::alpha(applygetRes[,colnames(applygetRes) %in% f5])
+> psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f4])
 ```
-
-    ## Number of categories should be increased  in order to count frequencies.
 
     ## 
     ## Reliability analysis   
-    ## Call: psych::alpha(x = applygetRes[, colnames(applygetRes) %in% f5])
+    ## Call: psych::alpha(x = use_data_fac[, colnames(use_data_fac) %in% f4])
     ## 
-    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase     mean   sd median_r
-    ##       0.72      0.73    0.69       0.4 2.7 0.026 -6.4e-17 0.75     0.37
+    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+    ##       0.66      0.68    0.59      0.41 2.1 0.032  4.2 0.55      0.4
     ## 
     ##     95% confidence boundaries 
     ##          lower alpha upper
-    ## Feldt     0.66  0.72  0.76
-    ## Duhachek  0.67  0.72  0.77
+    ## Feldt     0.59  0.66  0.72
+    ## Duhachek  0.59  0.66  0.72
     ## 
     ##  Reliability if an item is dropped:
-    ##                 raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
-    ## consider.ought1      0.68      0.70    0.62      0.43 2.3    0.031 0.0133  0.42
-    ## people.ought1        0.71      0.72    0.65      0.46 2.6    0.028 0.0132  0.49
-    ## expect.ought1        0.58      0.58    0.48      0.32 1.4    0.040 0.0004  0.33
-    ## fail.ought1          0.65      0.67    0.59      0.40 2.0    0.034 0.0099  0.42
+    ##                  raw_alpha std.alpha G6(smc) average_r S/N alpha se var.r med.r
+    ## time.integr1          0.50      0.53    0.36      0.36 1.1    0.051    NA  0.36
+    ## meeting.integr1       0.55      0.57    0.40      0.40 1.3    0.047    NA  0.40
+    ## affinity.integr1      0.65      0.65    0.48      0.48 1.9    0.039    NA  0.48
     ## 
     ##  Item statistics 
-    ##                   n raw.r std.r r.cor r.drop     mean   sd
-    ## consider.ought1 323  0.73  0.71  0.56   0.47 -1.5e-16 1.08
-    ## people.ought1   323  0.72  0.69  0.50   0.43  2.4e-17 1.14
-    ## expect.ought1   323  0.81  0.83  0.78   0.65 -1.5e-17 0.89
-    ## fail.ought1     323  0.72  0.75  0.63   0.51 -1.0e-16 0.93
+    ##                    n raw.r std.r r.cor r.drop mean   sd
+    ## time.integr1     323  0.78  0.80  0.65   0.52  4.5 0.66
+    ## meeting.integr1  323  0.73  0.79  0.62   0.49  4.6 0.57
+    ## affinity.integr1 323  0.82  0.75  0.53   0.44  3.6 0.87
+    ## 
+    ## Non missing response frequency for each item
+    ##                     1    2    3    4    5 miss
+    ## time.integr1     0.00 0.01 0.07 0.29 0.63    0
+    ## meeting.integr1  0.00 0.00 0.03 0.37 0.59    0
+    ## affinity.integr1 0.01 0.07 0.36 0.39 0.17    0
 
 ``` r
-> #psych::alpha(applygetRes[,colnames(applygetRes) %in% f6])
+> psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f5])
+```
+
+    ## 
+    ## Reliability analysis   
+    ## Call: psych::alpha(x = use_data_fac[, colnames(use_data_fac) %in% f5])
+    ## 
+    ##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+    ##       0.71      0.72    0.68       0.4 2.6 0.027  2.4 0.76     0.35
+    ## 
+    ##     95% confidence boundaries 
+    ##          lower alpha upper
+    ## Feldt     0.65  0.71  0.76
+    ## Duhachek  0.66  0.71  0.76
+    ## 
+    ##  Reliability if an item is dropped:
+    ##                 raw_alpha std.alpha G6(smc) average_r S/N alpha se   var.r
+    ## consider.ought1      0.67      0.69    0.62      0.43 2.2    0.032 0.01689
+    ## people.ought1        0.71      0.72    0.66      0.47 2.6    0.028 0.01735
+    ## expect.ought1        0.56      0.56    0.46      0.30 1.3    0.042 0.00095
+    ## fail.ought1          0.64      0.66    0.58      0.39 1.9    0.035 0.01500
+    ##                 med.r
+    ## consider.ought1  0.39
+    ## people.ought1    0.51
+    ## expect.ought1    0.32
+    ## fail.ought1      0.39
+    ## 
+    ##  Item statistics 
+    ##                   n raw.r std.r r.cor r.drop mean   sd
+    ## consider.ought1 323  0.72  0.71  0.56   0.46  2.6 1.12
+    ## people.ought1   323  0.69  0.67  0.47   0.40  3.1 1.16
+    ## expect.ought1   323  0.81  0.83  0.79   0.66  1.9 0.92
+    ## fail.ought1     323  0.72  0.75  0.63   0.51  2.1 0.96
+    ## 
+    ## Non missing response frequency for each item
+    ##                    1    2    3    4    5 miss
+    ## consider.ought1 0.14 0.40 0.21 0.19 0.06    0
+    ## people.ought1   0.09 0.27 0.25 0.28 0.11    0
+    ## expect.ought1   0.39 0.44 0.09 0.07 0.01    0
+    ## fail.ought1     0.27 0.46 0.16 0.10 0.01    0
+
+``` r
+> #psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f6])
 ```
 
 ``` r
@@ -563,35 +592,35 @@ the context mean from every context
 | dream.id1          |      |      |      |      |      |      |
 | usewell.id1        |      |      |      |      |      |      |
 | whenever.id1       |      |      |      |      |      |      |
-| consider.ought1    |      |      |      |      | 0.56 |      |
-| people.ought1      |      |      |      |      | 0.53 |      |
-| expect.ought1      |      |      |      |      | 0.82 |      |
+| consider.ought1    |      |      |      |      | 0.57 |      |
+| people.ought1      |      |      |      |      | 0.51 |      |
+| expect.ought1      |      |      |      |      | 0.83 |      |
 | fail.ought1        |      |      |      |      | 0.62 |      |
-| enjoy.intr1        |      |      |      | 0.74 |      |      |
-| life.intr1         |      |      |      | 0.55 |      |      |
+| enjoy.intr1        |      |      | 0.73 |      |      |      |
+| life.intr1         |      |      | 0.61 |      |      |      |
 | exciting.intr1     |      |      |      |      |      |      |
 | challenge.intr1    |      |      |      |      |      |      |
-| job.instru1        |      |      | 0.78 |      |      |      |
+| job.instru1        |      | 0.78 |      |      |      |      |
 | knowledge.instru1  |      |      |      |      |      |      |
-| career.instru1     |      |      | 0.71 |      |      |      |
-| money.instru1      |      |      | 0.53 |      |      |      |
-| time.integr1       |      | 0.64 |      |      |      |      |
+| career.instru1     |      | 0.76 |      |      |      |      |
+| money.instru1      |      | 0.52 |      |      |      |      |
+| time.integr1       |      |      |      | 0.63 |      |      |
 | becomelike.integr1 |      |      |      |      |      |      |
-| meeting.integr1    |      | 0.56 |      |      |      |      |
-| affinity.integr1   |      | 0.68 |      |      |      |      |
-| improve.prof1      | 0.64 |      |      |      |      |      |
-| speaking.prof1     | 0.74 |      |      |      |      |      |
-| reading.prof1      | 0.68 |      |      |      |      |      |
-| written.prof1      | 0.78 |      |      |      |      |      |
-| listening.prof1    | 0.83 |      |      |      |      |      |
-| citizen.post1      |      |      |      |      |      | 0.56 |
+| meeting.integr1    |      |      |      | 0.56 |      |      |
+| affinity.integr1   |      |      |      | 0.72 |      |      |
+| improve.prof1      | 0.7  |      |      |      |      |      |
+| speaking.prof1     | 0.8  |      |      |      |      |      |
+| reading.prof1      | 0.7  |      |      |      |      |      |
+| written.prof1      | 0.76 |      |      |      |      |      |
+| listening.prof1    | 0.86 |      |      |      |      |      |
+| citizen.post1      |      |      |      |      |      | 0.52 |
 | interact.post1     |      |      |      |      |      |      |
 | overseas.post1     |      |      |      |      |      |      |
 | globalaccess.post1 |      |      |      |      |      |      |
 
 ``` r
 > # predict values per samples from initial likert scale
-> pred_basic <- as.data.frame(predict(fa_basic,data = dat_onlyItems,old.data = applygetRes))
+> pred_basic <- as.data.frame(predict(fa_basic,data = dat_onlyItems,old.data = use_data_fac))
 > #pred_basic <- as.data.frame(predict(fa_basic,applygetRes))
 > #https://stackoverflow.com/questions/4145400/how-to-create-factors-from-factanal
 > #pred_basic <- data.frame(as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff=0))
@@ -615,6 +644,9 @@ the context mean from every context
 
     ## Warning: The `<scale>` argument of `guides()` cannot be `FALSE`. Use "none" instead as
     ## of ggplot2 3.3.4.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
 
@@ -646,32 +678,32 @@ the context mean from every context
 > kable(sum_stat)
 ```
 
-| Context              | variable |   meanFac |    stdFac | nObs |   stdMean |  CIspread | LowerBoundCI | UpperBoundCI |
-|:---------------------|:---------|----------:|----------:|-----:|----------:|----------:|-------------:|-------------:|
-| English in Germany   | Factor1  |  9.180216 | 1.3385318 |   70 | 0.1599852 | 0.3135709 |     8.866645 |     9.493787 |
-| English in Germany   | Factor2  |  8.322364 | 0.8798173 |   70 | 0.1051583 | 0.2061102 |     8.116254 |     8.528474 |
-| English in Germany   | Factor3  |  7.508108 | 0.9099322 |   70 | 0.1087577 | 0.2131651 |     7.294943 |     7.721273 |
-| English in Germany   | Factor4  |  7.780045 | 0.8026101 |   70 | 0.0959303 | 0.1880233 |     7.592022 |     7.968069 |
-| English in Germany   | Factor5  |  1.179170 | 0.6342022 |   70 | 0.0758017 | 0.1485712 |     1.030599 |     1.327741 |
-| English in Germany   | Factor6  |  3.694089 | 0.8195410 |   70 | 0.0979539 | 0.1919896 |     3.502099 |     3.886079 |
-| English in Italy     | Factor1  | 10.123788 | 0.8109915 |   91 | 0.0850150 | 0.1666294 |     9.957159 |    10.290418 |
-| English in Italy     | Factor2  |  8.211752 | 0.8294970 |   91 | 0.0869549 | 0.1704316 |     8.041320 |     8.382183 |
-| English in Italy     | Factor3  |  7.762009 | 0.7910125 |   91 | 0.0829206 | 0.1625245 |     7.599485 |     7.924534 |
-| English in Italy     | Factor4  |  8.061022 | 0.8048481 |   91 | 0.0843710 | 0.1653672 |     7.895655 |     8.226390 |
-| English in Italy     | Factor5  |  1.515703 | 0.8570981 |   91 | 0.0898483 | 0.1761027 |     1.339600 |     1.691805 |
-| English in Italy     | Factor6  |  4.233386 | 0.6562653 |   91 | 0.0687953 | 0.1348388 |     4.098547 |     4.368225 |
-| German in Australia  | Factor1  | 10.151486 | 0.8241152 |   88 | 0.0878510 | 0.1721879 |     9.979299 |    10.323674 |
-| German in Australia  | Factor2  |  7.813928 | 1.0284663 |   88 | 0.1096349 | 0.2148844 |     7.599044 |     8.028813 |
-| German in Australia  | Factor3  |  7.170152 | 1.0085632 |   88 | 0.1075132 | 0.2107259 |     6.959427 |     7.380878 |
-| German in Australia  | Factor4  |  7.452820 | 0.9443138 |   88 | 0.1006642 | 0.1973018 |     7.255519 |     7.650122 |
-| German in Australia  | Factor5  |  1.516524 | 1.0230719 |   88 | 0.1090598 | 0.2137573 |     1.302767 |     1.730281 |
-| German in Australia  | Factor6  |  3.873541 | 0.8184000 |   88 | 0.0872417 | 0.1709938 |     3.702548 |     4.044535 |
-| Italian in Australia | Factor1  | 10.160109 | 0.7966791 |   74 | 0.0926121 | 0.1815197 |     9.978589 |    10.341629 |
-| Italian in Australia | Factor2  |  8.050933 | 0.8039070 |   74 | 0.0934523 | 0.1831665 |     7.867767 |     8.234099 |
-| Italian in Australia | Factor3  |  6.738630 | 0.9220862 |   74 | 0.1071903 | 0.2100931 |     6.528537 |     6.948723 |
-| Italian in Australia | Factor4  |  7.572769 | 0.9760002 |   74 | 0.1134577 | 0.2223771 |     7.350392 |     7.795146 |
-| Italian in Australia | Factor5  |  1.801576 | 1.0142178 |   74 | 0.1179004 | 0.2310848 |     1.570491 |     2.032661 |
-| Italian in Australia | Factor6  |  3.867960 | 0.8624561 |   74 | 0.1002585 | 0.1965066 |     3.671454 |     4.064467 |
+| Context              | variable |    meanFac |    stdFac | nObs |   stdMean |  CIspread | LowerBoundCI | UpperBoundCI |
+|:---------------------|:---------|-----------:|----------:|-----:|----------:|----------:|-------------:|-------------:|
+| English in Germany   | Factor1  | -0.7280987 | 1.2305120 |   70 | 0.1470743 | 0.2882657 |   -1.0163644 |   -0.4398331 |
+| English in Germany   | Factor2  |  0.2237996 | 0.8001164 |   70 | 0.0956322 | 0.1874391 |    0.0363605 |    0.4112387 |
+| English in Germany   | Factor3  |  0.0596123 | 0.7807305 |   70 | 0.0933151 | 0.1828977 |   -0.1232854 |    0.2425099 |
+| English in Germany   | Factor4  |  0.2706140 | 0.8380226 |   70 | 0.1001629 | 0.1963192 |    0.0742948 |    0.4669332 |
+| English in Germany   | Factor5  | -0.3628889 | 0.6196670 |   70 | 0.0740644 | 0.1451662 |   -0.5080551 |   -0.2177227 |
+| English in Germany   | Factor6  | -0.3058727 | 0.8000008 |   70 | 0.0956184 | 0.1874120 |   -0.4932847 |   -0.1184606 |
+| English in Italy     | Factor1  |  0.1588723 | 0.7425107 |   91 | 0.0778363 | 0.1525591 |    0.0063132 |    0.3114314 |
+| English in Italy     | Factor2  |  0.4717176 | 0.6968509 |   91 | 0.0730498 | 0.1431777 |    0.3285400 |    0.6148953 |
+| English in Italy     | Factor3  |  0.3621526 | 0.7773154 |   91 | 0.0814848 | 0.1597102 |    0.2024424 |    0.5218628 |
+| English in Italy     | Factor4  |  0.0274695 | 0.8311767 |   91 | 0.0871310 | 0.1707767 |   -0.1433072 |    0.1982463 |
+| English in Italy     | Factor5  |  0.0049068 | 0.8327447 |   91 | 0.0872954 | 0.1710989 |   -0.1661922 |    0.1760057 |
+| English in Italy     | Factor6  |  0.2942670 | 0.6262220 |   91 | 0.0656459 | 0.1286660 |    0.1656011 |    0.4229330 |
+| German in Australia  | Factor1  |  0.2185080 | 0.7537203 |   88 | 0.0803469 | 0.1574798 |    0.0610282 |    0.3759878 |
+| German in Australia  | Factor2  | -0.1819916 | 0.9240257 |   88 | 0.0985015 | 0.1930629 |   -0.3750544 |    0.0110713 |
+| German in Australia  | Factor3  | -0.2877867 | 0.9047479 |   88 | 0.0964464 | 0.1890350 |   -0.4768217 |   -0.0987516 |
+| German in Australia  | Factor4  | -0.2553241 | 0.9935039 |   88 | 0.1059079 | 0.2075794 |   -0.4629035 |   -0.0477447 |
+| German in Australia  | Factor5  |  0.0271149 | 0.9924822 |   88 | 0.1057990 | 0.2073660 |   -0.1802511 |    0.2344808 |
+| German in Australia  | Factor6  | -0.0225862 | 0.7909068 |   88 | 0.0843109 | 0.1652495 |   -0.1878356 |    0.1426633 |
+| Italian in Australia | Factor1  |  0.2335248 | 0.7283503 |   74 | 0.0846690 | 0.1659513 |    0.0675735 |    0.3994760 |
+| Italian in Australia | Factor2  | -0.5753651 | 0.8453908 |   74 | 0.0982747 | 0.1926184 |   -0.7679835 |   -0.3827467 |
+| Italian in Australia | Factor3  | -0.1595069 | 0.9374452 |   74 | 0.1089758 | 0.2135925 |   -0.3730995 |    0.0540856 |
+| Italian in Australia | Factor4  |  0.0138623 | 0.7641136 |   74 | 0.0888264 | 0.1740998 |   -0.1602374 |    0.1879621 |
+| Italian in Australia | Factor5  |  0.3049946 | 0.9852896 |   74 | 0.1145376 | 0.2244937 |    0.0805009 |    0.5294883 |
+| Italian in Australia | Factor6  | -0.0456707 | 0.8097656 |   74 | 0.0941333 | 0.1845013 |   -0.2301720 |    0.1388307 |
 
 ``` r
 > factors <- as.character(unique(sum_stat$variable))
@@ -721,20 +753,20 @@ the context mean from every context
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -5.3077 -0.5891  0.3183  0.6631  1.7297 
+    ## -4.8866 -0.5461  0.3046  0.6055  1.5934 
     ## 
     ## Coefficients:
     ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                   9.1802     0.1136  80.802  < 2e-16 ***
-    ## ContextEnglish in Italy       0.9436     0.1511   6.244 1.36e-09 ***
-    ## ContextGerman in Australia    0.9713     0.1522   6.380 6.22e-10 ***
-    ## ContextItalian in Australia   0.9799     0.1585   6.183 1.93e-09 ***
+    ## (Intercept)                  -0.7281     0.1042  -6.990 1.61e-11 ***
+    ## ContextEnglish in Italy       0.8870     0.1385   6.402 5.47e-10 ***
+    ## ContextGerman in Australia    0.9466     0.1396   6.783 5.74e-11 ***
+    ## ContextItalian in Australia   0.9616     0.1453   6.618 1.54e-10 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.9506 on 319 degrees of freedom
-    ## Multiple R-squared:  0.1503, Adjusted R-squared:  0.1423 
-    ## F-statistic: 18.81 on 3 and 319 DF,  p-value: 2.927e-11
+    ## Residual standard error: 0.8714 on 319 degrees of freedom
+    ## Multiple R-squared:  0.1643, Adjusted R-squared:  0.1565 
+    ## F-statistic: 20.91 on 3 and 319 DF,  p-value: 2.15e-12
 
 ``` r
 > summary(lm(Factor2 ~ Context,data=fact_data))
@@ -745,21 +777,21 @@ the context mean from every context
     ## lm(formula = Factor2 ~ Context, data = fact_data)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.4043 -0.6275  0.1344  0.6506  1.6875 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.97865 -0.56689 -0.03554  0.61828  2.17611 
     ## 
     ## Coefficients:
     ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                   8.3224     0.1068  77.950  < 2e-16 ***
-    ## ContextEnglish in Italy      -0.1106     0.1420  -0.779 0.436619    
-    ## ContextGerman in Australia   -0.5084     0.1431  -3.554 0.000437 ***
-    ## ContextItalian in Australia  -0.2714     0.1489  -1.822 0.069319 .  
+    ## (Intercept)                  0.22380    0.09797   2.284  0.02301 *  
+    ## ContextEnglish in Italy      0.24792    0.13031   1.902  0.05801 .  
+    ## ContextGerman in Australia  -0.40579    0.13128  -3.091  0.00217 ** 
+    ## ContextItalian in Australia -0.79916    0.13667  -5.848 1.23e-08 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.8933 on 319 degrees of freedom
-    ## Multiple R-squared:  0.04484,    Adjusted R-squared:  0.03585 
-    ## F-statistic: 4.991 on 3 and 319 DF,  p-value: 0.002135
+    ## Residual standard error: 0.8197 on 319 degrees of freedom
+    ## Multiple R-squared:  0.1927, Adjusted R-squared:  0.1851 
+    ## F-statistic: 25.38 on 3 and 319 DF,  p-value: 9.401e-15
 
 ``` r
 > summary(lm(Factor3 ~ Context,data=fact_data))
@@ -770,21 +802,21 @@ the context mean from every context
     ## lm(formula = Factor3 ~ Context, data = fact_data)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.1050 -0.6237  0.0094  0.7025  2.3751 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.65448 -0.55702  0.07413  0.70656  1.58363 
     ## 
     ## Coefficients:
-    ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                   7.5081     0.1087  69.050  < 2e-16 ***
-    ## ContextEnglish in Italy       0.2539     0.1446   1.756   0.0801 .  
-    ## ContextGerman in Australia   -0.3380     0.1457  -2.320   0.0210 *  
-    ## ContextItalian in Australia  -0.7695     0.1517  -5.073 6.66e-07 ***
+    ##                             Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                  0.05961    0.10189   0.585   0.5589  
+    ## ContextEnglish in Italy      0.30254    0.13552   2.232   0.0263 *
+    ## ContextGerman in Australia  -0.34740    0.13652  -2.545   0.0114 *
+    ## ContextItalian in Australia -0.21912    0.14213  -1.542   0.1241  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.9097 on 319 degrees of freedom
-    ## Multiple R-squared:  0.1517, Adjusted R-squared:  0.1437 
-    ## F-statistic: 19.02 on 3 and 319 DF,  p-value: 2.264e-11
+    ## Residual standard error: 0.8524 on 319 degrees of freedom
+    ## Multiple R-squared:  0.08435,    Adjusted R-squared:  0.07574 
+    ## F-statistic: 9.796 on 3 and 319 DF,  p-value: 3.369e-06
 
 ``` r
 > summary(lm(Factor4 ~ Context,data=fact_data))
@@ -796,20 +828,20 @@ the context mean from every context
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -2.8463 -0.6276  0.1281  0.7365  1.5365 
+    ## -2.9933 -0.6199  0.1435  0.6114  1.8350 
     ## 
     ## Coefficients:
     ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                   7.7800     0.1058  73.548   <2e-16 ***
-    ## ContextEnglish in Italy       0.2810     0.1407   1.997   0.0467 *  
-    ## ContextGerman in Australia   -0.3272     0.1417  -2.309   0.0216 *  
-    ## ContextItalian in Australia  -0.2073     0.1476  -1.405   0.1611    
+    ## (Intercept)                   0.2706     0.1035   2.615 0.009346 ** 
+    ## ContextEnglish in Italy      -0.2431     0.1376  -1.766 0.078278 .  
+    ## ContextGerman in Australia   -0.5259     0.1387  -3.793 0.000178 ***
+    ## ContextItalian in Australia  -0.2568     0.1444  -1.779 0.076260 .  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.885 on 319 degrees of freedom
-    ## Multiple R-squared:  0.0697, Adjusted R-squared:  0.06095 
-    ## F-statistic: 7.966 on 3 and 319 DF,  p-value: 3.884e-05
+    ## Residual standard error: 0.8658 on 319 degrees of freedom
+    ## Multiple R-squared:  0.04377,    Adjusted R-squared:  0.03478 
+    ## F-statistic: 4.867 on 3 and 319 DF,  p-value: 0.002524
 
 ``` r
 > summary(lm(Factor5 ~ Context,data=fact_data))
@@ -821,20 +853,20 @@ the context mean from every context
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.9422 -0.6078 -0.1135  0.4796  3.2376 
+    ## -1.8921 -0.5595 -0.1170  0.4671  3.1315 
     ## 
     ## Coefficients:
     ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                   1.1792     0.1079  10.927  < 2e-16 ***
-    ## ContextEnglish in Italy       0.3365     0.1435   2.345   0.0197 *  
-    ## ContextGerman in Australia    0.3374     0.1446   2.333   0.0203 *  
-    ## ContextItalian in Australia   0.6224     0.1505   4.135 4.55e-05 ***
+    ## (Intercept)                  -0.3629     0.1048  -3.461 0.000611 ***
+    ## ContextEnglish in Italy       0.3678     0.1395   2.637 0.008766 ** 
+    ## ContextGerman in Australia    0.3900     0.1405   2.776 0.005828 ** 
+    ## ContextItalian in Australia   0.6679     0.1463   4.566 7.09e-06 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.9028 on 319 degrees of freedom
-    ## Multiple R-squared:  0.05095,    Adjusted R-squared:  0.04202 
-    ## F-statistic: 5.708 on 3 and 319 DF,  p-value: 0.0008119
+    ## Residual standard error: 0.8772 on 319 degrees of freedom
+    ## Multiple R-squared:  0.0618, Adjusted R-squared:  0.05297 
+    ## F-statistic: 7.004 on 3 and 319 DF,  p-value: 0.0001415
 
 ``` r
 > summary(lm(Factor6 ~ Context,data=fact_data))
@@ -846,28 +878,28 @@ the context mean from every context
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.58075 -0.47141  0.05374  0.53462  1.76449 
+    ## -2.59355 -0.47052  0.05766  0.49386  1.81490 
     ## 
     ## Coefficients:
     ##                             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                  3.69409    0.09409  39.262  < 2e-16 ***
-    ## ContextEnglish in Italy      0.53930    0.12515   4.309 2.18e-05 ***
-    ## ContextGerman in Australia   0.17945    0.12607   1.423    0.156    
-    ## ContextItalian in Australia  0.17387    0.13125   1.325    0.186    
+    ## (Intercept)                 -0.30587    0.09022  -3.390 0.000785 ***
+    ## ContextEnglish in Italy      0.60014    0.12000   5.001 9.42e-07 ***
+    ## ContextGerman in Australia   0.28329    0.12088   2.343 0.019720 *  
+    ## ContextItalian in Australia  0.26020    0.12585   2.068 0.039486 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.7872 on 319 degrees of freedom
-    ## Multiple R-squared:  0.06095,    Adjusted R-squared:  0.05212 
-    ## F-statistic: 6.901 on 3 and 319 DF,  p-value: 0.0001625
+    ## Residual standard error: 0.7548 on 319 degrees of freedom
+    ## Multiple R-squared:  0.07449,    Adjusted R-squared:  0.06579 
+    ## F-statistic: 8.559 on 3 and 319 DF,  p-value: 1.756e-05
 
 ``` r
 > summary(aov(Factor1 ~ Context,data=fact_data))
 ```
 
     ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Context       3   51.0  16.999   18.81 2.93e-11 ***
-    ## Residuals   319  288.2   0.904                     
+    ## Context       3  47.64  15.881   20.91 2.15e-12 ***
+    ## Residuals   319 242.25   0.759                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -875,9 +907,9 @@ the context mean from every context
 > summary(aov(Factor2 ~ Context,data=fact_data))
 ```
 
-    ##              Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## Context       3  11.95   3.983   4.991 0.00214 **
-    ## Residuals   319 254.54   0.798                   
+    ##              Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## Context       3  51.17  17.056   25.39 9.4e-15 ***
+    ## Residuals   319 214.33   0.672                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -886,8 +918,8 @@ the context mean from every context
 ```
 
     ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Context       3  47.22  15.740   19.02 2.26e-11 ***
-    ## Residuals   319 264.01   0.828                     
+    ## Context       3  21.35   7.118   9.796 3.37e-06 ***
+    ## Residuals   319 231.81   0.727                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -895,9 +927,9 @@ the context mean from every context
 > summary(aov(Factor4 ~ Context,data=fact_data))
 ```
 
-    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Context       3  18.72   6.240   7.966 3.88e-05 ***
-    ## Residuals   319 249.87   0.783                     
+    ##              Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## Context       3  10.95   3.649   4.867 0.00252 **
+    ## Residuals   319 239.13   0.750                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -906,8 +938,8 @@ the context mean from every context
 ```
 
     ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Context       3  13.96   4.653   5.708 0.000812 ***
-    ## Residuals   319 260.02   0.815                     
+    ## Context       3  16.17    5.39   7.004 0.000142 ***
+    ## Residuals   319 245.47    0.77                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -916,8 +948,8 @@ the context mean from every context
 ```
 
     ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Context       3  12.83   4.277   6.901 0.000163 ***
-    ## Residuals   319 197.68   0.620                     
+    ## Context       3  14.63   4.876   8.559 1.76e-05 ***
+    ## Residuals   319 181.74   0.570                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -973,44 +1005,44 @@ for multiple testing.
 > kable(tott)
 ```
 
-| Factor | Context1            | Context2             |    t.value |   p.value | estimate1 | estimate2 |   confint1 |   confint2 |  df | p.adjusted |
-|:-------|:--------------------|:---------------------|-----------:|----------:|----------:|----------:|-----------:|-----------:|----:|-----------:|
-| F1     | English in Germany  | English in Italy     | -5.5350351 | 0.0000001 |  9.180216 | 10.123788 | -1.2802557 | -0.6068896 | 159 |  0.0000015 |
-| F1     | English in Germany  | German in Australia  | -5.6037708 | 0.0000001 |  9.180216 | 10.151486 | -1.3136366 | -0.6289051 | 156 |  0.0000015 |
-| F1     | English in Germany  | Italian in Australia | -5.3719985 | 0.0000003 |  9.180216 | 10.160109 | -1.3404789 | -0.6193081 | 142 |  0.0000028 |
-| F1     | English in Italy    | German in Australia  | -0.2266294 | 0.8209735 | 10.123788 | 10.151486 | -0.2688904 |  0.2134940 | 177 |  0.8956074 |
-| F1     | English in Italy    | Italian in Australia | -0.2883786 | 0.7734234 | 10.123788 | 10.160109 | -0.2850215 |  0.2123799 | 163 |  0.8701013 |
-| F1     | German in Australia | Italian in Australia | -0.0673497 | 0.9463874 | 10.151486 | 10.160109 | -0.2614639 |  0.2442187 | 160 |  0.9940132 |
-| F2     | English in Germany  | English in Italy     |  0.8169086 | 0.4152030 |  8.322364 |  8.211752 | -0.1568090 |  0.3780334 | 159 |  0.4980776 |
-| F2     | English in Germany  | German in Australia  |  3.2879532 | 0.0012471 |  8.322364 |  7.813928 |  0.2029853 |  0.8138862 | 156 |  0.0040814 |
-| F2     | English in Germany  | Italian in Australia |  1.9342479 | 0.0550713 |  8.322364 |  8.050933 | -0.0059728 |  0.5488347 | 142 |  0.0901167 |
-| F2     | English in Italy    | German in Australia  |  2.8531425 | 0.0048450 |  8.211752 |  7.813928 |  0.1226576 |  0.6729895 | 177 |  0.0124585 |
-| F2     | English in Italy    | Italian in Australia |  1.2557581 | 0.2110008 |  8.211752 |  8.050933 | -0.0920617 |  0.4136991 | 163 |  0.2700050 |
-| F2     | German in Australia | Italian in Australia | -1.6110000 | 0.1091507 |  7.813928 |  8.050933 | -0.5275456 |  0.0535360 | 160 |  0.1571770 |
-| F3     | English in Germany  | English in Italy     | -1.8907362 | 0.0604787 |  7.508108 |  7.762009 | -0.5191181 |  0.0113150 | 159 |  0.0946623 |
-| F3     | English in Germany  | German in Australia  |  2.1840519 | 0.0304517 |  7.508108 |  7.170152 |  0.0323038 |  0.6436071 | 156 |  0.0548130 |
-| F3     | English in Germany  | Italian in Australia |  5.0372008 | 0.0000014 |  7.508108 |  6.738630 |  0.4675022 |  1.0714537 | 142 |  0.0000102 |
-| F3     | English in Italy    | German in Australia  |  4.3766364 | 0.0000206 |  7.762009 |  7.170152 |  0.3249844 |  0.8587296 | 177 |  0.0000892 |
-| F3     | English in Italy    | Italian in Australia |  7.6715730 | 0.0000000 |  7.762009 |  6.738630 |  0.7599667 |  1.2867922 | 163 |  0.0000000 |
-| F3     | German in Australia | Italian in Australia |  2.8203459 | 0.0054046 |  7.170152 |  6.738630 |  0.1293558 |  0.7336891 | 160 |  0.0129711 |
-| F4     | English in Germany  | English in Italy     | -2.1985578 | 0.0293541 |  7.780045 |  8.061022 | -0.5333831 | -0.0285713 | 159 |  0.0548130 |
-| F4     | English in Germany  | German in Australia  |  2.3101435 | 0.0221908 |  7.780045 |  7.452820 |  0.0474314 |  0.6070185 | 156 |  0.0443816 |
-| F4     | English in Germany  | Italian in Australia |  1.3875540 | 0.1674465 |  7.780045 |  7.572769 | -0.0880246 |  0.5025768 | 142 |  0.2309192 |
-| F4     | English in Italy    | German in Australia  |  4.6429211 | 0.0000067 |  8.061022 |  7.452820 |  0.3496880 |  0.8667163 | 177 |  0.0000378 |
-| F4     | English in Italy    | Italian in Australia |  3.5221107 | 0.0005555 |  8.061022 |  7.572769 |  0.2145206 |  0.7619860 | 163 |  0.0019998 |
-| F4     | German in Australia | Italian in Australia | -0.7930895 | 0.4289002 |  7.452820 |  7.572769 | -0.4186380 |  0.1787402 | 160 |  0.4980776 |
-| F5     | English in Germany  | English in Italy     | -2.7550121 | 0.0065540 |  1.179170 |  1.515703 | -0.5777844 | -0.0952812 | 159 |  0.0147465 |
-| F5     | English in Germany  | German in Australia  | -2.4136673 | 0.0169514 |  1.179170 |  1.516524 | -0.6134368 | -0.0612716 | 156 |  0.0358971 |
-| F5     | English in Germany  | Italian in Australia | -4.3864589 | 0.0000223 |  1.179170 |  1.801576 | -0.9029014 | -0.3419114 | 142 |  0.0000892 |
-| F5     | English in Italy    | German in Australia  | -0.0058302 | 0.9953548 |  1.515703 |  1.516524 | -0.2788562 |  0.2772134 | 177 |  0.9953548 |
-| F5     | English in Italy    | Italian in Australia | -1.9621658 | 0.0514459 |  1.515703 |  1.801576 | -0.5735623 |  0.0018152 | 163 |  0.0881930 |
-| F5     | German in Australia | Italian in Australia | -1.7735037 | 0.0780476 |  1.516524 |  1.801576 | -0.6024747 |  0.0323703 | 160 |  0.1170714 |
-| F6     | English in Germany  | English in Italy     | -4.6366600 | 0.0000073 |  3.694089 |  4.233386 | -0.7690120 | -0.3095822 | 159 |  0.0000378 |
-| F6     | English in Germany  | German in Australia  | -1.3682880 | 0.1731894 |  3.694089 |  3.873541 | -0.4385133 |  0.0796086 | 156 |  0.2309192 |
-| F6     | English in Germany  | Italian in Australia | -1.2386899 | 0.2175041 |  3.694089 |  3.867960 | -0.4513498 |  0.1036077 | 142 |  0.2700050 |
-| F6     | English in Italy    | German in Australia  |  3.2507169 | 0.0013781 |  4.233386 |  3.873541 |  0.1413889 |  0.5783006 | 177 |  0.0041342 |
-| F6     | English in Italy    | Italian in Australia |  3.0896095 | 0.0023571 |  4.233386 |  3.867960 |  0.1318757 |  0.5989764 | 163 |  0.0065273 |
-| F6     | German in Australia | Italian in Australia |  0.0421876 | 0.9664018 |  3.873541 |  3.867960 | -0.2556936 |  0.2668563 | 160 |  0.9940132 |
+| Factor | Context1            | Context2             |    t.value |   p.value |  estimate1 |  estimate2 |   confint1 |   confint2 |  df | p.adjusted |
+|:-------|:--------------------|:---------------------|-----------:|----------:|-----------:|-----------:|-----------:|-----------:|----:|-----------:|
+| F1     | English in Germany  | English in Italy     | -5.6672065 | 0.0000001 | -0.7280987 |  0.1588723 | -1.1960764 | -0.5778656 | 159 |  0.0000005 |
+| F1     | English in Germany  | German in Australia  | -5.9507630 | 0.0000000 | -0.7280987 |  0.2185080 | -1.2608220 | -0.6323915 | 156 |  0.0000003 |
+| F1     | English in Germany  | Italian in Australia | -5.7432358 | 0.0000001 | -0.7280987 |  0.2335248 | -1.2926125 | -0.6306345 | 142 |  0.0000005 |
+| F1     | English in Italy    | German in Australia  | -0.5332324 | 0.5945416 |  0.1588723 |  0.2185080 | -0.2803437 |  0.1610722 | 177 |  0.6688593 |
+| F1     | English in Italy    | Italian in Australia | -0.6478009 | 0.5180251 |  0.1588723 |  0.2335248 | -0.3022080 |  0.1529030 | 163 |  0.6015775 |
+| F1     | German in Australia | Italian in Australia | -0.1282696 | 0.8980967 |  0.2185080 |  0.2335248 | -0.2462220 |  0.2161885 | 160 |  0.9138021 |
+| F2     | English in Germany  | English in Italy     | -2.0976158 | 0.0375208 |  0.2237996 |  0.4717176 | -0.4813436 | -0.0144925 | 159 |  0.0613976 |
+| F2     | English in Germany  | German in Australia  |  2.9076965 | 0.0041722 |  0.2237996 | -0.1819916 |  0.1301248 |  0.6814575 | 156 |  0.0100132 |
+| F2     | English in Germany  | Italian in Australia |  5.8190179 | 0.0000000 |  0.2237996 | -0.5753651 |  0.5276760 |  1.0706533 | 142 |  0.0000005 |
+| F2     | English in Italy    | German in Australia  |  5.3553778 | 0.0000003 |  0.4717176 | -0.1819916 |  0.4128173 |  0.8946011 | 177 |  0.0000016 |
+| F2     | English in Italy    | Italian in Australia |  8.7219591 | 0.0000000 |  0.4717176 | -0.5753651 |  0.8100264 |  1.2841390 | 163 |  0.0000000 |
+| F2     | German in Australia | Italian in Australia |  2.8054163 | 0.0056489 | -0.1819916 | -0.5753651 |  0.1164542 |  0.6702928 | 160 |  0.0119623 |
+| F3     | English in Germany  | English in Italy     | -2.4435120 | 0.0156389 |  0.0596123 |  0.3621526 | -0.5470719 | -0.0580087 | 159 |  0.0296316 |
+| F3     | English in Germany  | German in Australia  |  2.5455871 | 0.0118793 |  0.0596123 | -0.2877867 |  0.0778294 |  0.6169685 | 156 |  0.0237586 |
+| F3     | English in Germany  | Italian in Australia |  1.5195802 | 0.1308400 |  0.0596123 | -0.1595069 | -0.0659314 |  0.5041698 | 142 |  0.1624220 |
+| F3     | English in Italy    | German in Australia  |  5.1606971 | 0.0000007 |  0.3621526 | -0.2877867 |  0.4014016 |  0.8984769 | 177 |  0.0000030 |
+| F3     | English in Italy    | Italian in Australia |  3.9080219 | 0.0001362 |  0.3621526 | -0.1595069 |  0.2580781 |  0.7852408 | 163 |  0.0004902 |
+| F3     | German in Australia | Italian in Australia | -0.8842185 | 0.3779050 | -0.2877867 | -0.1595069 | -0.4147925 |  0.1582330 | 160 |  0.4534861 |
+| F4     | English in Germany  | English in Italy     |  1.8334741 | 0.0686020 |  0.2706140 |  0.0274695 | -0.0187678 |  0.5050569 | 159 |  0.0914693 |
+| F4     | English in Germany  | German in Australia  |  3.5389218 | 0.0005296 |  0.2706140 | -0.2553241 |  0.2323801 |  0.8194962 | 156 |  0.0017333 |
+| F4     | English in Germany  | Italian in Australia |  1.9227810 | 0.0565095 |  0.2706140 |  0.0138623 | -0.0072147 |  0.5207182 | 142 |  0.0812034 |
+| F4     | English in Italy    | German in Australia  |  2.0681743 | 0.0400780 |  0.0274695 | -0.2553241 |  0.0129512 |  0.5526360 | 177 |  0.0627307 |
+| F4     | English in Italy    | Italian in Australia |  0.1084121 | 0.9138021 |  0.0274695 |  0.0138623 | -0.2342352 |  0.2614496 | 163 |  0.9138021 |
+| F4     | German in Australia | Italian in Australia | -1.9044443 | 0.0586469 | -0.2553241 |  0.0138623 | -0.5483317 |  0.0099589 | 160 |  0.0812034 |
+| F5     | English in Germany  | English in Italy     | -3.0938149 | 0.0023350 | -0.3628889 |  0.0049068 | -0.6025851 | -0.1330062 | 159 |  0.0070049 |
+| F5     | English in Germany  | German in Australia  | -2.8715216 | 0.0046532 | -0.3628889 |  0.0271149 | -0.6582830 | -0.1217246 | 156 |  0.0104698 |
+| F5     | English in Germany  | Italian in Australia | -4.8376129 | 0.0000034 | -0.3628889 |  0.3049946 | -0.9408032 | -0.3949639 | 142 |  0.0000135 |
+| F5     | English in Italy    | German in Australia  | -0.1623841 | 0.8711886 |  0.0049068 |  0.0271149 | -0.2921036 |  0.2476874 | 177 |  0.9138021 |
+| F5     | English in Italy    | Italian in Australia | -2.1200914 | 0.0355121 |  0.0049068 |  0.3049946 | -0.5795856 | -0.0205901 | 163 |  0.0608779 |
+| F5     | German in Australia | Italian in Australia | -1.7810223 | 0.0768061 |  0.0271149 |  0.3049946 | -0.5860090 |  0.0302496 | 160 |  0.0987507 |
+| F6     | English in Germany  | English in Italy     | -5.3401069 | 0.0000003 | -0.3058727 |  0.2942670 | -0.8220966 | -0.3781828 | 159 |  0.0000016 |
+| F6     | English in Germany  | German in Australia  | -2.2251140 | 0.0275082 | -0.3058727 | -0.0225862 | -0.5347668 | -0.0318062 | 156 |  0.0495147 |
+| F6     | English in Germany  | Italian in Australia | -1.9385597 | 0.0545386 | -0.3058727 | -0.0456707 | -0.5255382 |  0.0051343 | 142 |  0.0812034 |
+| F6     | English in Italy    | German in Australia  |  2.9767820 | 0.0033208 |  0.2942670 | -0.0225862 |  0.1067954 |  0.5269110 | 177 |  0.0085392 |
+| F6     | English in Italy    | Italian in Australia |  3.0403720 | 0.0027537 |  0.2942670 | -0.0456707 |  0.1191590 |  0.5607164 | 163 |  0.0076258 |
+| F6     | German in Australia | Italian in Australia |  0.1830485 | 0.8549917 | -0.0225862 | -0.0456707 | -0.2259733 |  0.2721424 | 160 |  0.9138021 |
 
 ``` r
 > fact_data1 <- fact_data[,c("Factor1","Context","Resp.ID")] %>% spread(key = Context, value = Factor1,drop=TRUE)
@@ -1335,50 +1367,50 @@ Variables have been recoded and we need to do the models.
 > kable(ageStat)
 ```
 
-| Context              | levels | variable |   meanFac |    stdFac | nObs |    seMean |      CI95 | Demo |
-|:---------------------|:-------|:---------|----------:|----------:|-----:|----------:|----------:|:-----|
-| English in Germany   | 18-25  | Factor1  |  9.180216 | 1.3385318 |   70 | 0.1599852 | 0.3135709 | Age  |
-| English in Germany   | 18-25  | Factor2  |  8.322364 | 0.8798173 |   70 | 0.1051583 | 0.2061102 | Age  |
-| English in Germany   | 18-25  | Factor3  |  7.508108 | 0.9099322 |   70 | 0.1087577 | 0.2131651 | Age  |
-| English in Germany   | 18-25  | Factor4  |  7.780045 | 0.8026101 |   70 | 0.0959303 | 0.1880233 | Age  |
-| English in Germany   | 18-25  | Factor5  |  1.179170 | 0.6342022 |   70 | 0.0758017 | 0.1485712 | Age  |
-| English in Germany   | 18-25  | Factor6  |  3.694089 | 0.8195410 |   70 | 0.0979539 | 0.1919896 | Age  |
-| English in Italy     | 18-25  | Factor1  | 10.141992 | 0.8087193 |   88 | 0.0862098 | 0.1689712 | Age  |
-| English in Italy     | 18-25  | Factor2  |  8.250595 | 0.8114771 |   88 | 0.0865037 | 0.1695473 | Age  |
-| English in Italy     | 18-25  | Factor3  |  7.766802 | 0.7884956 |   88 | 0.0840539 | 0.1647457 | Age  |
-| English in Italy     | 18-25  | Factor4  |  8.068912 | 0.8094252 |   88 | 0.0862850 | 0.1691186 | Age  |
-| English in Italy     | 18-25  | Factor5  |  1.486580 | 0.8511478 |   88 | 0.0907327 | 0.1778360 | Age  |
-| English in Italy     | 18-25  | Factor6  |  4.246956 | 0.6412113 |   88 | 0.0683533 | 0.1339726 | Age  |
-| English in Italy     | 26-30  | Factor1  |  9.589809 | 0.8392664 |    3 | 0.4845507 | 0.9497193 | Age  |
-| English in Italy     | 26-30  | Factor2  |  7.072339 | 0.5519274 |    3 | 0.3186555 | 0.6245647 | Age  |
-| English in Italy     | 26-30  | Factor3  |  7.621437 | 1.0396314 |    3 | 0.6002315 | 1.1764537 | Age  |
-| English in Italy     | 26-30  | Factor4  |  7.829605 | 0.7531231 |    3 | 0.4348158 | 0.8522390 | Age  |
-| English in Italy     | 26-30  | Factor5  |  2.369975 | 0.6419463 |    3 | 0.3706279 | 0.7264306 | Age  |
-| English in Italy     | 26-30  | Factor6  |  3.835341 | 1.1179977 |    3 | 0.6454763 | 1.2651335 | Age  |
-| German in Australia  | 18-25  | Factor1  | 10.146344 | 0.8317562 |   86 | 0.0896906 | 0.1757935 | Age  |
-| German in Australia  | 18-25  | Factor2  |  7.797093 | 1.0343513 |   86 | 0.1115370 | 0.2186125 | Age  |
-| German in Australia  | 18-25  | Factor3  |  7.172292 | 1.0040893 |   86 | 0.1082737 | 0.2122165 | Age  |
-| German in Australia  | 18-25  | Factor4  |  7.457453 | 0.9514763 |   86 | 0.1026003 | 0.2010967 | Age  |
-| German in Australia  | 18-25  | Factor5  |  1.475515 | 0.9722664 |   86 | 0.1048422 | 0.2054907 | Age  |
-| German in Australia  | 18-25  | Factor6  |  3.872224 | 0.8274412 |   86 | 0.0892253 | 0.1748816 | Age  |
-| German in Australia  | 26-30  | Factor1  | 10.674935 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 26-30  | Factor2  |  8.463005 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 26-30  | Factor3  |  5.898631 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 26-30  | Factor4  |  7.777126 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 26-30  | Factor5  |  1.805787 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 26-30  | Factor6  |  4.114784 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor1  | 10.070293 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor2  |  8.612649 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor3  |  8.257635 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor4  |  6.730146 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor5  |  4.754093 |        NA |    1 |        NA |        NA | Age  |
-| German in Australia  | 31-35  | Factor6  |  3.745585 |        NA |    1 |        NA |        NA | Age  |
-| Italian in Australia | 18-25  | Factor1  | 10.160109 | 0.7966791 |   74 | 0.0926121 | 0.1815197 | Age  |
-| Italian in Australia | 18-25  | Factor2  |  8.050933 | 0.8039070 |   74 | 0.0934523 | 0.1831665 | Age  |
-| Italian in Australia | 18-25  | Factor3  |  6.738630 | 0.9220862 |   74 | 0.1071903 | 0.2100931 | Age  |
-| Italian in Australia | 18-25  | Factor4  |  7.572769 | 0.9760002 |   74 | 0.1134577 | 0.2223771 | Age  |
-| Italian in Australia | 18-25  | Factor5  |  1.801576 | 1.0142178 |   74 | 0.1179004 | 0.2310848 | Age  |
-| Italian in Australia | 18-25  | Factor6  |  3.867960 | 0.8624561 |   74 | 0.1002585 | 0.1965066 | Age  |
+| Context              | levels | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo |
+|:---------------------|:-------|:---------|-----------:|----------:|-----:|----------:|----------:|:-----|
+| English in Germany   | 18-25  | Factor1  | -0.7280987 | 1.2305120 |   70 | 0.1470743 | 0.2882657 | Age  |
+| English in Germany   | 18-25  | Factor2  |  0.2237996 | 0.8001164 |   70 | 0.0956322 | 0.1874391 | Age  |
+| English in Germany   | 18-25  | Factor3  |  0.0596123 | 0.7807305 |   70 | 0.0933151 | 0.1828977 | Age  |
+| English in Germany   | 18-25  | Factor4  |  0.2706140 | 0.8380226 |   70 | 0.1001629 | 0.1963192 | Age  |
+| English in Germany   | 18-25  | Factor5  | -0.3628889 | 0.6196670 |   70 | 0.0740644 | 0.1451662 | Age  |
+| English in Germany   | 18-25  | Factor6  | -0.3058727 | 0.8000008 |   70 | 0.0956184 | 0.1874120 | Age  |
+| English in Italy     | 18-25  | Factor1  |  0.1760095 | 0.7400872 |   88 | 0.0788936 | 0.1546314 | Age  |
+| English in Italy     | 18-25  | Factor2  |  0.4769983 | 0.6954088 |   88 | 0.0741308 | 0.1452964 | Age  |
+| English in Italy     | 18-25  | Factor3  |  0.3703719 | 0.7830153 |   88 | 0.0834697 | 0.1636006 | Age  |
+| English in Italy     | 18-25  | Factor4  |  0.0663487 | 0.8133286 |   88 | 0.0867011 | 0.1699342 | Age  |
+| English in Italy     | 18-25  | Factor5  | -0.0241372 | 0.8257029 |   88 | 0.0880202 | 0.1725196 | Age  |
+| English in Italy     | 18-25  | Factor6  |  0.3068785 | 0.6109076 |   88 | 0.0651230 | 0.1276410 | Age  |
+| English in Italy     | 26-30  | Factor1  | -0.3438208 | 0.7689695 |    3 | 0.4439647 | 0.8701709 | Age  |
+| English in Italy     | 26-30  | Factor2  |  0.3168161 | 0.8823387 |    3 | 0.5094185 | 0.9984602 | Age  |
+| English in Italy     | 26-30  | Factor3  |  0.1210522 | 0.6551984 |    3 | 0.3782790 | 0.7414268 | Age  |
+| English in Italy     | 26-30  | Factor4  | -1.1129877 | 0.5436774 |    3 | 0.3138923 | 0.6152289 | Age  |
+| English in Italy     | 26-30  | Factor5  |  0.8568619 | 0.6498896 |    3 | 0.3752139 | 0.7354193 | Age  |
+| English in Italy     | 26-30  | Factor6  | -0.0756680 | 1.0954912 |    3 | 0.6324821 | 1.2396650 | Age  |
+| German in Australia  | 18-25  | Factor1  |  0.2142366 | 0.7605817 |   86 | 0.0820156 | 0.1607506 | Age  |
+| German in Australia  | 18-25  | Factor2  | -0.1832555 | 0.9163572 |   86 | 0.0988133 | 0.1936741 | Age  |
+| German in Australia  | 18-25  | Factor3  | -0.2871754 | 0.9132900 |   86 | 0.0984826 | 0.1930259 | Age  |
+| German in Australia  | 18-25  | Factor4  | -0.2707836 | 0.9997814 |   86 | 0.1078092 | 0.2113060 | Age  |
+| German in Australia  | 18-25  | Factor5  | -0.0127409 | 0.9434980 |   86 | 0.1017400 | 0.1994104 | Age  |
+| German in Australia  | 18-25  | Factor6  | -0.0215857 | 0.7992045 |   86 | 0.0861804 | 0.1689137 | Age  |
+| German in Australia  | 26-30  | Factor1  |  0.7054775 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 26-30  | Factor2  | -1.3320527 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 26-30  | Factor3  |  0.0832176 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 26-30  | Factor4  |  0.4648358 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 26-30  | Factor5  |  0.3231710 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 26-30  | Factor6  |  0.1851584 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor1  |  0.0988826 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor2  |  1.0767673 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor3  | -0.7113627 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor4  |  0.3540364 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor5  |  3.1586562 |        NA |    1 |        NA |        NA | Age  |
+| German in Australia  | 31-35  | Factor6  | -0.3163713 |        NA |    1 |        NA |        NA | Age  |
+| Italian in Australia | 18-25  | Factor1  |  0.2335248 | 0.7283503 |   74 | 0.0846690 | 0.1659513 | Age  |
+| Italian in Australia | 18-25  | Factor2  | -0.5753651 | 0.8453908 |   74 | 0.0982747 | 0.1926184 | Age  |
+| Italian in Australia | 18-25  | Factor3  | -0.1595069 | 0.9374452 |   74 | 0.1089758 | 0.2135925 | Age  |
+| Italian in Australia | 18-25  | Factor4  |  0.0138623 | 0.7641136 |   74 | 0.0888264 | 0.1740998 | Age  |
+| Italian in Australia | 18-25  | Factor5  |  0.3049946 | 0.9852896 |   74 | 0.1145376 | 0.2244937 | Age  |
+| Italian in Australia | 18-25  | Factor6  | -0.0456707 | 0.8097656 |   74 | 0.0941333 | 0.1845013 | Age  |
 
 - **Gender**
 
@@ -1386,80 +1418,80 @@ Variables have been recoded and we need to do the models.
 > kable(GenderStat)
 ```
 
-| Context              | levels | variable |   meanFac |    stdFac | nObs |    seMean |      CI95 | Demo   |
-|:---------------------|:-------|:---------|----------:|----------:|-----:|----------:|----------:|:-------|
-| English in Germany   | Female | Factor1  |  9.375934 | 0.9765822 |   52 | 0.1354276 | 0.2654381 | Gender |
-| English in Germany   | Female | Factor2  |  8.447988 | 0.8599845 |   52 | 0.1192584 | 0.2337465 | Gender |
-| English in Germany   | Female | Factor3  |  7.505623 | 0.9642943 |   52 | 0.1337236 | 0.2620982 | Gender |
-| English in Germany   | Female | Factor4  |  7.799138 | 0.8308182 |   52 | 0.1152137 | 0.2258189 | Gender |
-| English in Germany   | Female | Factor5  |  1.206849 | 0.6015639 |   52 | 0.0834219 | 0.1635069 | Gender |
-| English in Germany   | Female | Factor6  |  3.692953 | 0.8296887 |   52 | 0.1150571 | 0.2255120 | Gender |
-| English in Germany   | Male   | Factor1  |  8.497724 | 1.9850155 |   17 | 0.4814370 | 0.9436164 | Gender |
-| English in Germany   | Male   | Factor2  |  7.971708 | 0.8823214 |   17 | 0.2139944 | 0.4194290 | Gender |
-| English in Germany   | Male   | Factor3  |  7.452684 | 0.7291647 |   17 | 0.1768484 | 0.3466229 | Gender |
-| English in Germany   | Male   | Factor4  |  7.743595 | 0.7526882 |   17 | 0.1825537 | 0.3578053 | Gender |
-| English in Germany   | Male   | Factor5  |  1.088385 | 0.7544056 |   17 | 0.1829702 | 0.3586217 | Gender |
-| English in Germany   | Male   | Factor6  |  3.725440 | 0.8289583 |   17 | 0.2010519 | 0.3940618 | Gender |
-| English in Germany   | Other  | Factor1  | 10.605248 |        NA |    1 |        NA |        NA | Gender |
-| English in Germany   | Other  | Factor2  |  7.751078 |        NA |    1 |        NA |        NA | Gender |
-| English in Germany   | Other  | Factor3  |  8.579509 |        NA |    1 |        NA |        NA | Gender |
-| English in Germany   | Other  | Factor4  |  7.406884 |        NA |    1 |        NA |        NA | Gender |
-| English in Germany   | Other  | Factor5  |  1.283201 |        NA |    1 |        NA |        NA | Gender |
-| English in Germany   | Other  | Factor6  |  3.220171 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Female | Factor1  | 10.186269 | 0.8044744 |   76 | 0.0922795 | 0.1808679 | Gender |
-| English in Italy     | Female | Factor2  |  8.334574 | 0.7981082 |   76 | 0.0915493 | 0.1794366 | Gender |
-| English in Italy     | Female | Factor3  |  7.791795 | 0.7532383 |   76 | 0.0864024 | 0.1693486 | Gender |
-| English in Italy     | Female | Factor4  |  8.173769 | 0.7650786 |   76 | 0.0877605 | 0.1720106 | Gender |
-| English in Italy     | Female | Factor5  |  1.468399 | 0.8543417 |   76 | 0.0979997 | 0.1920794 | Gender |
-| English in Italy     | Female | Factor6  |  4.285421 | 0.6212523 |   76 | 0.0712625 | 0.1396745 | Gender |
-| English in Italy     | Male   | Factor1  |  9.751409 | 0.7942668 |   14 | 0.2122767 | 0.4160624 | Gender |
-| English in Italy     | Male   | Factor2  |  7.542614 | 0.7198600 |   14 | 0.1923907 | 0.3770857 | Gender |
-| English in Italy     | Male   | Factor3  |  7.572245 | 1.0013242 |   14 | 0.2676151 | 0.5245257 | Gender |
-| English in Italy     | Male   | Factor4  |  7.413260 | 0.7498194 |   14 | 0.2003977 | 0.3927794 | Gender |
-| English in Italy     | Male   | Factor5  |  1.796286 | 0.8766142 |   14 | 0.2342850 | 0.4591986 | Gender |
-| English in Italy     | Male   | Factor6  |  3.963581 | 0.8113917 |   14 | 0.2168535 | 0.4250329 | Gender |
-| English in Italy     | Other  | Factor1  | 10.588553 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Other  | Factor2  |  8.245202 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Other  | Factor3  |  8.155013 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Other  | Factor4  |  8.560954 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Other  | Factor5  |  1.182602 |        NA |    1 |        NA |        NA | Gender |
-| English in Italy     | Other  | Factor6  |  4.056026 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Female | Factor1  | 10.168562 | 0.8395033 |   62 | 0.1066170 | 0.2089694 | Gender |
-| German in Australia  | Female | Factor2  |  7.866677 | 1.0376375 |   62 | 0.1317801 | 0.2582890 | Gender |
-| German in Australia  | Female | Factor3  |  7.165064 | 0.9795896 |   62 | 0.1244080 | 0.2438397 | Gender |
-| German in Australia  | Female | Factor4  |  7.476764 | 0.8955129 |   62 | 0.1137303 | 0.2229113 | Gender |
-| German in Australia  | Female | Factor5  |  1.608489 | 1.0137556 |   62 | 0.1287471 | 0.2523443 | Gender |
-| German in Australia  | Female | Factor6  |  3.894508 | 0.8770328 |   62 | 0.1113833 | 0.2183112 | Gender |
-| German in Australia  | Male   | Factor1  | 10.084504 | 0.8058951 |   25 | 0.1611790 | 0.3159109 | Gender |
-| German in Australia  | Male   | Factor2  |  7.692401 | 1.0358125 |   25 | 0.2071625 | 0.4060385 | Gender |
-| German in Australia  | Male   | Factor3  |  7.206900 | 1.1098389 |   25 | 0.2219678 | 0.4350569 | Gender |
-| German in Australia  | Male   | Factor4  |  7.338295 | 1.0487657 |   25 | 0.2097531 | 0.4111161 | Gender |
-| German in Australia  | Male   | Factor5  |  1.286442 | 1.0512047 |   25 | 0.2102409 | 0.4120723 | Gender |
-| German in Australia  | Male   | Factor6  |  3.809513 | 0.6809965 |   25 | 0.1361993 | 0.2669506 | Gender |
-| German in Australia  | Other  | Factor1  | 10.767338 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Other  | Factor2  |  7.581668 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Other  | Factor3  |  6.566955 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Other  | Factor4  |  8.831433 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Other  | Factor5  |  1.566750 |        NA |    1 |        NA |        NA | Gender |
-| German in Australia  | Other  | Factor6  |  4.174308 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Female | Factor1  | 10.297225 | 0.7153860 |   58 | 0.0939348 | 0.1841122 | Gender |
-| Italian in Australia | Female | Factor2  |  8.100776 | 0.8162308 |   58 | 0.1071764 | 0.2100657 | Gender |
-| Italian in Australia | Female | Factor3  |  6.760356 | 0.9430673 |   58 | 0.1238308 | 0.2427084 | Gender |
-| Italian in Australia | Female | Factor4  |  7.589786 | 0.9483878 |   58 | 0.1245294 | 0.2440777 | Gender |
-| Italian in Australia | Female | Factor5  |  1.744322 | 1.0319832 |   58 | 0.1355060 | 0.2655918 | Gender |
-| Italian in Australia | Female | Factor6  |  3.912879 | 0.9089066 |   58 | 0.1193453 | 0.2339168 | Gender |
-| Italian in Australia | Male   | Factor1  |  9.593882 | 0.8851820 |   15 | 0.2285530 | 0.4479639 | Gender |
-| Italian in Australia | Male   | Factor2  |  7.839940 | 0.7706787 |   15 | 0.1989884 | 0.3900172 | Gender |
-| Italian in Australia | Male   | Factor3  |  6.598503 | 0.8595188 |   15 | 0.2219268 | 0.4349765 | Gender |
-| Italian in Australia | Male   | Factor4  |  7.432109 | 1.0920342 |   15 | 0.2819620 | 0.5526455 | Gender |
-| Italian in Australia | Male   | Factor5  |  2.051057 | 0.9667621 |   15 | 0.2496169 | 0.4892491 | Gender |
-| Italian in Australia | Male   | Factor6  |  3.694445 | 0.6888211 |   15 | 0.1778528 | 0.3485916 | Gender |
-| Italian in Australia | Other  | Factor1  | 10.700782 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Other  | Factor2  |  8.324951 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Other  | Factor3  |  7.580407 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Other  | Factor4  |  8.695675 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Other  | Factor5  |  1.380134 |        NA |    1 |        NA |        NA | Gender |
-| Italian in Australia | Other  | Factor6  |  3.865389 |        NA |    1 |        NA |        NA | Gender |
+| Context              | levels | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo   |
+|:---------------------|:-------|:---------|-----------:|----------:|-----:|----------:|----------:|:-------|
+| English in Germany   | Female | Factor1  | -0.5463948 | 0.9013182 |   52 | 0.1249903 | 0.2449811 | Gender |
+| English in Germany   | Female | Factor2  |  0.2264129 | 0.8540310 |   52 | 0.1184328 | 0.2321283 | Gender |
+| English in Germany   | Female | Factor3  |  0.0904824 | 0.8007264 |   52 | 0.1110408 | 0.2176399 | Gender |
+| English in Germany   | Female | Factor4  |  0.3917630 | 0.8161317 |   52 | 0.1131771 | 0.2218271 | Gender |
+| English in Germany   | Female | Factor5  | -0.3327175 | 0.5822029 |   52 | 0.0807370 | 0.1582445 | Gender |
+| English in Germany   | Female | Factor6  | -0.3089216 | 0.8002356 |   52 | 0.1109727 | 0.2175065 | Gender |
+| English in Germany   | Male   | Factor1  | -1.3596561 | 1.8181340 |   17 | 0.4409623 | 0.8642861 | Gender |
+| English in Germany   | Male   | Factor2  |  0.1617053 | 0.6155926 |   17 | 0.1493031 | 0.2926342 | Gender |
+| English in Germany   | Male   | Factor3  | -0.0132714 | 0.7535330 |   17 | 0.1827586 | 0.3582069 | Gender |
+| English in Germany   | Male   | Factor4  | -0.0607572 | 0.8446069 |   17 | 0.2048473 | 0.4015006 | Gender |
+| English in Germany   | Male   | Factor5  | -0.4647130 | 0.7482596 |   17 | 0.1814796 | 0.3557000 | Gender |
+| English in Germany   | Male   | Factor6  | -0.2674305 | 0.8377892 |   17 | 0.2031937 | 0.3982597 | Gender |
+| English in Germany   | Other  | Factor1  |  0.5597704 |        NA |    1 |        NA |        NA | Gender |
+| English in Germany   | Other  | Factor2  |  1.1435112 |        NA |    1 |        NA |        NA | Gender |
+| English in Germany   | Other  | Factor3  | -0.3066108 |        NA |    1 |        NA |        NA | Gender |
+| English in Germany   | Other  | Factor4  | -0.3958215 |        NA |    1 |        NA |        NA | Gender |
+| English in Germany   | Other  | Factor5  | -0.2007950 |        NA |    1 |        NA |        NA | Gender |
+| English in Germany   | Other  | Factor6  | -0.8008457 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Female | Factor1  |  0.2183815 | 0.7354969 |   76 | 0.0843673 | 0.1653599 | Gender |
+| English in Italy     | Female | Factor2  |  0.4965627 | 0.6677045 |   76 | 0.0765910 | 0.1501183 | Gender |
+| English in Italy     | Female | Factor3  |  0.4717102 | 0.7384028 |   76 | 0.0847006 | 0.1660132 | Gender |
+| English in Italy     | Female | Factor4  |  0.1475489 | 0.7966211 |   76 | 0.0913787 | 0.1791023 | Gender |
+| English in Italy     | Female | Factor5  | -0.0427324 | 0.8289326 |   76 | 0.0950851 | 0.1863668 | Gender |
+| English in Italy     | Female | Factor6  |  0.3448045 | 0.5945580 |   76 | 0.0682005 | 0.1336730 | Gender |
+| English in Italy     | Male   | Factor1  | -0.1926476 | 0.7279789 |   14 | 0.1945606 | 0.3813387 | Gender |
+| English in Italy     | Male   | Factor2  |  0.3070919 | 0.8623347 |   14 | 0.2304686 | 0.4517185 | Gender |
+| English in Italy     | Male   | Factor3  | -0.2649379 | 0.7266423 |   14 | 0.1942033 | 0.3806385 | Gender |
+| English in Italy     | Male   | Factor4  | -0.6278481 | 0.7580929 |   14 | 0.2026089 | 0.3971133 | Gender |
+| English in Italy     | Male   | Factor5  |  0.2862258 | 0.8546498 |   14 | 0.2284148 | 0.4476930 | Gender |
+| English in Italy     | Male   | Factor6  |  0.0348661 | 0.7646763 |   14 | 0.2043683 | 0.4005619 | Gender |
+| English in Italy     | Other  | Factor1  |  0.5574465 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Other  | Factor2  |  0.8882539 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Other  | Factor3  |  0.8150345 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Other  | Factor4  |  0.0758829 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Other  | Factor5  | -0.3129874 |        NA |    1 |        NA |        NA | Gender |
+| English in Italy     | Other  | Factor6  |  0.0850353 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Female | Factor1  |  0.2341708 | 0.7661038 |   62 | 0.0972953 | 0.1906987 | Gender |
+| German in Australia  | Female | Factor2  | -0.1840069 | 0.8972818 |   62 | 0.1139549 | 0.2233516 | Gender |
+| German in Australia  | Female | Factor3  | -0.2628442 | 0.8555292 |   62 | 0.1086523 | 0.2129585 | Gender |
+| German in Australia  | Female | Factor4  | -0.1988546 | 1.0003009 |   62 | 0.1270383 | 0.2489951 | Gender |
+| German in Australia  | Female | Factor5  |  0.1168435 | 0.9905652 |   62 | 0.1258019 | 0.2465717 | Gender |
+| German in Australia  | Female | Factor6  | -0.0071269 | 0.8600524 |   62 | 0.1092268 | 0.2140845 | Gender |
+| German in Australia  | Male   | Factor1  |  0.1590573 | 0.7431187 |   25 | 0.1486237 | 0.2913025 | Gender |
+| German in Australia  | Male   | Factor2  | -0.1663906 | 1.0225386 |   25 | 0.2045077 | 0.4008351 | Gender |
+| German in Australia  | Male   | Factor3  | -0.4087662 | 0.9995547 |   25 | 0.1999109 | 0.3918255 | Gender |
+| German in Australia  | Male   | Factor4  | -0.3706041 | 0.9984027 |   25 | 0.1996805 | 0.3913739 | Gender |
+| German in Australia  | Male   | Factor5  | -0.1923861 | 1.0027676 |   25 | 0.2005535 | 0.3930849 | Gender |
+| German in Australia  | Male   | Factor6  | -0.0789400 | 0.6124839 |   25 | 0.1224968 | 0.2400937 | Gender |
+| German in Australia  | Other  | Factor1  |  0.7336842 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Other  | Factor2  | -0.4470628 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Other  | Factor3  |  1.1902657 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Other  | Factor4  | -0.8744352 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Other  | Factor5  | -0.0485384 |        NA |    1 |        NA |        NA | Gender |
+| German in Australia  | Other  | Factor6  |  0.4277828 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Female | Factor1  |  0.3602150 | 0.6505402 |   58 | 0.0854201 | 0.1674234 | Gender |
+| Italian in Australia | Female | Factor2  | -0.5542341 | 0.8693309 |   58 | 0.1141487 | 0.2237315 | Gender |
+| Italian in Australia | Female | Factor3  | -0.1381426 | 0.9119520 |   58 | 0.1197452 | 0.2347005 | Gender |
+| Italian in Australia | Female | Factor4  |  0.0527686 | 0.7766237 |   58 | 0.1019757 | 0.1998724 | Gender |
+| Italian in Australia | Female | Factor5  |  0.2507841 | 1.0049322 |   58 | 0.1319541 | 0.2586300 | Gender |
+| Italian in Australia | Female | Factor6  |  0.0063620 | 0.8540170 |   58 | 0.1121379 | 0.2197903 | Gender |
+| Italian in Australia | Male   | Factor1  | -0.2888326 | 0.8168871 |   15 | 0.2109193 | 0.4134019 | Gender |
+| Italian in Australia | Male   | Factor2  | -0.7009704 | 0.7745479 |   15 | 0.1999874 | 0.3919753 | Gender |
+| Italian in Australia | Male   | Factor3  | -0.3094950 | 1.0475421 |   15 | 0.2704742 | 0.5301294 | Gender |
+| Italian in Australia | Male   | Factor4  | -0.1556902 | 0.7388228 |   15 | 0.1907632 | 0.3738959 | Gender |
+| Italian in Australia | Male   | Factor5  |  0.5428952 | 0.9298615 |   15 | 0.2400892 | 0.4705748 | Gender |
+| Italian in Australia | Male   | Factor6  | -0.2400946 | 0.6302251 |   15 | 0.1627234 | 0.3189379 | Gender |
+| Italian in Australia | Other  | Factor1  |  0.7208521 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Other  | Factor2  |  0.0831161 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Other  | Factor3  |  0.8511825 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Other  | Factor4  |  0.3005836 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Other  | Factor5  | -0.1193032 |        NA |    1 |        NA |        NA | Gender |
+| Italian in Australia | Other  | Factor6  | -0.1472082 |        NA |    1 |        NA |        NA | Gender |
 
 - **origins**
 
@@ -1467,56 +1499,56 @@ Variables have been recoded and we need to do the models.
 > kable(originsStat)
 ```
 
-| Context              | levels | variable |   meanFac |    stdFac | nObs |    seMean |      CI95 | Demo    |
-|:---------------------|:-------|:---------|----------:|----------:|-----:|----------:|----------:|:--------|
-| English in Germany   | No     | Factor1  |  9.142259 | 1.3714988 |   65 | 0.1701135 | 0.3334224 | origins |
-| English in Germany   | No     | Factor2  |  8.281116 | 0.8704514 |   65 | 0.1079662 | 0.2116138 | origins |
-| English in Germany   | No     | Factor3  |  7.494999 | 0.9291426 |   65 | 0.1152460 | 0.2258821 | origins |
-| English in Germany   | No     | Factor4  |  7.771619 | 0.8256632 |   65 | 0.1024109 | 0.2007254 | origins |
-| English in Germany   | No     | Factor5  |  1.181588 | 0.6255740 |   65 | 0.0775929 | 0.1520821 | origins |
-| English in Germany   | No     | Factor6  |  3.709887 | 0.8005854 |   65 | 0.0993004 | 0.1946288 | origins |
-| English in Germany   | Yes    | Factor1  |  9.673656 | 0.6945173 |    5 | 0.3105976 | 0.6087713 | origins |
-| English in Germany   | Yes    | Factor2  |  8.858589 | 0.9180493 |    5 | 0.4105641 | 0.8047057 | origins |
-| English in Germany   | Yes    | Factor3  |  7.678528 | 0.6562043 |    5 | 0.2934635 | 0.5751884 | origins |
-| English in Germany   | Yes    | Factor4  |  7.889584 | 0.4341531 |    5 | 0.1941592 | 0.3805519 | origins |
-| English in Germany   | Yes    | Factor5  |  1.147741 | 0.8217959 |    5 | 0.3675183 | 0.7203359 | origins |
-| English in Germany   | Yes    | Factor6  |  3.488721 | 1.1287833 |    5 | 0.5048072 | 0.9894221 | origins |
-| English in Italy     | No     | Factor1  | 10.114543 | 0.8106982 |   90 | 0.0854551 | 0.1674920 | origins |
-| English in Italy     | No     | Factor2  |  8.206219 | 0.8324542 |   90 | 0.0877484 | 0.1719868 | origins |
-| English in Italy     | No     | Factor3  |  7.758974 | 0.7949109 |   90 | 0.0837910 | 0.1642303 | origins |
-| English in Italy     | No     | Factor4  |  8.052053 | 0.8047709 |   90 | 0.0848303 | 0.1662674 | origins |
-| English in Italy     | No     | Factor5  |  1.496846 | 0.8427046 |   90 | 0.0888289 | 0.1741046 | origins |
-| English in Italy     | No     | Factor6  |  4.240191 | 0.6567059 |   90 | 0.0692229 | 0.1356768 | origins |
-| English in Italy     | Yes    | Factor1  | 10.955859 |        NA |    1 |        NA |        NA | origins |
-| English in Italy     | Yes    | Factor2  |  8.709651 |        NA |    1 |        NA |        NA | origins |
-| English in Italy     | Yes    | Factor3  |  8.035203 |        NA |    1 |        NA |        NA | origins |
-| English in Italy     | Yes    | Factor4  |  8.868245 |        NA |    1 |        NA |        NA | origins |
-| English in Italy     | Yes    | Factor5  |  3.212791 |        NA |    1 |        NA |        NA | origins |
-| English in Italy     | Yes    | Factor6  |  3.620988 |        NA |    1 |        NA |        NA | origins |
-| German in Australia  | No     | Factor1  | 10.231949 | 0.7717087 |   63 | 0.0972262 | 0.1905633 | origins |
-| German in Australia  | No     | Factor2  |  7.618197 | 1.0552275 |   63 | 0.1329462 | 0.2605745 | origins |
-| German in Australia  | No     | Factor3  |  7.053960 | 1.0218361 |   63 | 0.1287392 | 0.2523289 | origins |
-| German in Australia  | No     | Factor4  |  7.500587 | 0.8429098 |   63 | 0.1061966 | 0.2081454 | origins |
-| German in Australia  | No     | Factor5  |  1.370109 | 0.9086951 |   63 | 0.1144848 | 0.2243903 | origins |
-| German in Australia  | No     | Factor6  |  3.738314 | 0.7921048 |   63 | 0.0997958 | 0.1955998 | origins |
-| German in Australia  | Yes    | Factor1  |  9.948720 | 0.9293495 |   25 | 0.1858699 | 0.3643050 | origins |
-| German in Australia  | Yes    | Factor2  |  8.307170 | 0.7770288 |   25 | 0.1554058 | 0.3045953 | origins |
-| German in Australia  | Yes    | Factor3  |  7.462958 | 0.9301706 |   25 | 0.1860341 | 0.3646269 | origins |
-| German in Australia  | Yes    | Factor4  |  7.332448 | 1.1730232 |   25 | 0.2346046 | 0.4598251 | origins |
-| German in Australia  | Yes    | Factor5  |  1.885491 | 1.2095416 |   25 | 0.2419083 | 0.4741403 | origins |
-| German in Australia  | Yes    | Factor6  |  4.214316 | 0.7988231 |   25 | 0.1597646 | 0.3131387 | origins |
-| Italian in Australia | No     | Factor1  | 10.084062 | 0.8466602 |   36 | 0.1411100 | 0.2765757 | origins |
-| Italian in Australia | No     | Factor2  |  7.914387 | 0.8738110 |   36 | 0.1456352 | 0.2854449 | origins |
-| Italian in Australia | No     | Factor3  |  6.764422 | 0.8983703 |   36 | 0.1497284 | 0.2934676 | origins |
-| Italian in Australia | No     | Factor4  |  7.650693 | 0.9790895 |   36 | 0.1631816 | 0.3198359 | origins |
-| Italian in Australia | No     | Factor5  |  1.613830 | 1.0026692 |   36 | 0.1671115 | 0.3275386 | origins |
-| Italian in Australia | No     | Factor6  |  4.048849 | 0.8050751 |   36 | 0.1341792 | 0.2629912 | origins |
-| Italian in Australia | Yes    | Factor1  | 10.232154 | 0.7504652 |   38 | 0.1217415 | 0.2386134 | origins |
-| Italian in Australia | Yes    | Factor2  |  8.180293 | 0.7193513 |   38 | 0.1166942 | 0.2287206 | origins |
-| Italian in Australia | Yes    | Factor3  |  6.714195 | 0.9554068 |   38 | 0.1549875 | 0.3037754 | origins |
-| Italian in Australia | Yes    | Factor4  |  7.498947 | 0.9803588 |   38 | 0.1590352 | 0.3117090 | origins |
-| Italian in Australia | Yes    | Factor5  |  1.979441 | 1.0058256 |   38 | 0.1631665 | 0.3198063 | origins |
-| Italian in Australia | Yes    | Factor6  |  3.696591 | 0.8901960 |   38 | 0.1444089 | 0.2830414 | origins |
+| Context              | levels | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo    |
+|:---------------------|:-------|:---------|-----------:|----------:|-----:|----------:|----------:|:--------|
+| English in Germany   | No     | Factor1  | -0.7597251 | 1.2609058 |   65 | 0.1563961 | 0.3065364 | origins |
+| English in Germany   | No     | Factor2  |  0.2063196 | 0.8182010 |   65 | 0.1014853 | 0.1989113 | origins |
+| English in Germany   | No     | Factor3  |  0.0491064 | 0.8051632 |   65 | 0.0998682 | 0.1957417 | origins |
+| English in Germany   | No     | Factor4  |  0.2299003 | 0.8251533 |   65 | 0.1023477 | 0.2006014 | origins |
+| English in Germany   | No     | Factor5  | -0.3600836 | 0.6118143 |   65 | 0.0758862 | 0.1487370 | origins |
+| English in Germany   | No     | Factor6  | -0.2828788 | 0.7806638 |   65 | 0.0968294 | 0.1897857 | origins |
+| English in Germany   | Yes    | Factor1  | -0.3169561 | 0.6734760 |    5 | 0.3011876 | 0.5903278 | origins |
+| English in Germany   | Yes    | Factor2  |  0.4510388 | 0.5123027 |    5 | 0.2291087 | 0.4490531 | origins |
+| English in Germany   | Yes    | Factor3  |  0.1961879 | 0.3418369 |    5 | 0.1528741 | 0.2996333 | origins |
+| English in Germany   | Yes    | Factor4  |  0.7998924 | 0.9182651 |    5 | 0.4106606 | 0.8048948 | origins |
+| English in Germany   | Yes    | Factor5  | -0.3993585 | 0.7955636 |    5 | 0.3557869 | 0.6973423 | origins |
+| English in Germany   | Yes    | Factor6  | -0.6047931 | 1.0810934 |    5 | 0.4834797 | 0.9476202 | origins |
+| English in Italy     | No     | Factor1  |  0.1502724 | 0.7420991 |   90 | 0.0782241 | 0.1533193 | origins |
+| English in Italy     | No     | Factor2  |  0.4686028 | 0.7001176 |   90 | 0.0737989 | 0.1446458 | origins |
+| English in Italy     | No     | Factor3  |  0.3533850 | 0.7771322 |   90 | 0.0819169 | 0.1605572 | origins |
+| English in Italy     | No     | Factor4  |  0.0229937 | 0.8347297 |   90 | 0.0879882 | 0.1724569 | origins |
+| English in Italy     | No     | Factor5  | -0.0131514 | 0.8192969 |   90 | 0.0863615 | 0.1692685 | origins |
+| English in Italy     | No     | Factor6  |  0.3004226 | 0.6269556 |   90 | 0.0660869 | 0.1295304 | origins |
+| English in Italy     | Yes    | Factor1  |  0.9328563 |        NA |    1 |        NA |        NA | origins |
+| English in Italy     | Yes    | Factor2  |  0.7520540 |        NA |    1 |        NA |        NA | origins |
+| English in Italy     | Yes    | Factor3  |  1.1512301 |        NA |    1 |        NA |        NA | origins |
+| English in Italy     | Yes    | Factor4  |  0.4302932 |        NA |    1 |        NA |        NA | origins |
+| English in Italy     | Yes    | Factor5  |  1.6301374 |        NA |    1 |        NA |        NA | origins |
+| English in Italy     | Yes    | Factor6  | -0.2597384 |        NA |    1 |        NA |        NA | origins |
+| German in Australia  | No     | Factor1  |  0.2944920 | 0.7156592 |   63 | 0.0901646 | 0.1767226 | origins |
+| German in Australia  | No     | Factor2  | -0.2944039 | 0.9360623 |   63 | 0.1179328 | 0.2311482 | origins |
+| German in Australia  | No     | Factor3  | -0.2545469 | 0.8179487 |   63 | 0.1030518 | 0.2019816 | origins |
+| German in Australia  | No     | Factor4  | -0.4502973 | 1.0035995 |   63 | 0.1264416 | 0.2478256 | origins |
+| German in Australia  | No     | Factor5  | -0.1107682 | 0.8776901 |   63 | 0.1105786 | 0.2167340 | origins |
+| German in Australia  | No     | Factor6  | -0.1356088 | 0.7820631 |   63 | 0.0985307 | 0.1931202 | origins |
+| German in Australia  | Yes    | Factor1  |  0.0270283 | 0.8263734 |   25 | 0.1652747 | 0.3239384 | origins |
+| German in Australia  | Yes    | Factor2  |  0.1012876 | 0.8454578 |   25 | 0.1690916 | 0.3314195 | origins |
+| German in Australia  | Yes    | Factor3  | -0.3715510 | 1.1084896 |   25 | 0.2216979 | 0.4345279 | origins |
+| German in Australia  | Yes    | Factor4  |  0.2360083 | 0.7904668 |   25 | 0.1580934 | 0.3098630 | origins |
+| German in Australia  | Yes    | Factor5  |  0.3745801 | 1.1853218 |   25 | 0.2370644 | 0.4646462 | origins |
+| German in Australia  | Yes    | Factor6  |  0.2622308 | 0.7546530 |   25 | 0.1509306 | 0.2958240 | origins |
+| Italian in Australia | No     | Factor1  |  0.1669475 | 0.7773866 |   36 | 0.1295644 | 0.2539463 | origins |
+| Italian in Australia | No     | Factor2  | -0.5553979 | 0.8215369 |   36 | 0.1369228 | 0.2683687 | origins |
+| Italian in Australia | No     | Factor3  | -0.0824781 | 0.9431882 |   36 | 0.1571980 | 0.3081081 | origins |
+| Italian in Australia | No     | Factor4  | -0.1478496 | 0.8408085 |   36 | 0.1401348 | 0.2746641 | origins |
+| Italian in Australia | No     | Factor5  |  0.1301481 | 0.9795259 |   36 | 0.1632543 | 0.3199785 | origins |
+| Italian in Australia | No     | Factor6  |  0.1613642 | 0.7336779 |   36 | 0.1222796 | 0.2396681 | origins |
+| Italian in Australia | Yes    | Factor1  |  0.2965979 | 0.6830730 |   38 | 0.1108091 | 0.2171858 | origins |
+| Italian in Australia | Yes    | Factor2  | -0.5942813 | 0.8779860 |   38 | 0.1424281 | 0.2791592 | origins |
+| Italian in Australia | Yes    | Factor3  | -0.2324816 | 0.9386671 |   38 | 0.1522719 | 0.2984529 | origins |
+| Italian in Australia | Yes    | Factor4  |  0.1670630 | 0.6585327 |   38 | 0.1068281 | 0.2093831 | origins |
+| Italian in Australia | Yes    | Factor5  |  0.4706387 | 0.9745878 |   38 | 0.1580990 | 0.3098741 | origins |
+| Italian in Australia | Yes    | Factor6  | -0.2418090 | 0.8386398 |   38 | 0.1360453 | 0.2666489 | origins |
 
 - **study.year**
 
@@ -1524,32 +1556,32 @@ Variables have been recoded and we need to do the models.
 > kable(study.yearStat)
 ```
 
-| Context              | levels       | variable |   meanFac |    stdFac | nObs |    seMean |      CI95 | Demo       |
-|:---------------------|:-------------|:---------|----------:|----------:|-----:|----------:|----------:|:-----------|
-| English in Germany   | 1st semester | Factor1  |  9.180216 | 1.3385318 |   70 | 0.1599852 | 0.3135709 | Study Year |
-| English in Germany   | 1st semester | Factor2  |  8.322364 | 0.8798173 |   70 | 0.1051583 | 0.2061102 | Study Year |
-| English in Germany   | 1st semester | Factor3  |  7.508108 | 0.9099322 |   70 | 0.1087577 | 0.2131651 | Study Year |
-| English in Germany   | 1st semester | Factor4  |  7.780045 | 0.8026101 |   70 | 0.0959303 | 0.1880233 | Study Year |
-| English in Germany   | 1st semester | Factor5  |  1.179170 | 0.6342022 |   70 | 0.0758017 | 0.1485712 | Study Year |
-| English in Germany   | 1st semester | Factor6  |  3.694089 | 0.8195410 |   70 | 0.0979539 | 0.1919896 | Study Year |
-| English in Italy     | 1st year     | Factor1  | 10.123788 | 0.8109915 |   91 | 0.0850150 | 0.1666294 | Study Year |
-| English in Italy     | 1st year     | Factor2  |  8.211752 | 0.8294970 |   91 | 0.0869549 | 0.1704316 | Study Year |
-| English in Italy     | 1st year     | Factor3  |  7.762009 | 0.7910125 |   91 | 0.0829206 | 0.1625245 | Study Year |
-| English in Italy     | 1st year     | Factor4  |  8.061022 | 0.8048481 |   91 | 0.0843710 | 0.1653672 | Study Year |
-| English in Italy     | 1st year     | Factor5  |  1.515703 | 0.8570981 |   91 | 0.0898483 | 0.1761027 | Study Year |
-| English in Italy     | 1st year     | Factor6  |  4.233386 | 0.6562653 |   91 | 0.0687953 | 0.1348388 | Study Year |
-| German in Australia  | 1st year     | Factor1  | 10.151486 | 0.8241152 |   88 | 0.0878510 | 0.1721879 | Study Year |
-| German in Australia  | 1st year     | Factor2  |  7.813928 | 1.0284663 |   88 | 0.1096349 | 0.2148844 | Study Year |
-| German in Australia  | 1st year     | Factor3  |  7.170152 | 1.0085632 |   88 | 0.1075132 | 0.2107259 | Study Year |
-| German in Australia  | 1st year     | Factor4  |  7.452820 | 0.9443138 |   88 | 0.1006642 | 0.1973018 | Study Year |
-| German in Australia  | 1st year     | Factor5  |  1.516524 | 1.0230719 |   88 | 0.1090598 | 0.2137573 | Study Year |
-| German in Australia  | 1st year     | Factor6  |  3.873541 | 0.8184000 |   88 | 0.0872417 | 0.1709938 | Study Year |
-| Italian in Australia | 1st year     | Factor1  | 10.160109 | 0.7966791 |   74 | 0.0926121 | 0.1815197 | Study Year |
-| Italian in Australia | 1st year     | Factor2  |  8.050933 | 0.8039070 |   74 | 0.0934523 | 0.1831665 | Study Year |
-| Italian in Australia | 1st year     | Factor3  |  6.738630 | 0.9220862 |   74 | 0.1071903 | 0.2100931 | Study Year |
-| Italian in Australia | 1st year     | Factor4  |  7.572769 | 0.9760002 |   74 | 0.1134577 | 0.2223771 | Study Year |
-| Italian in Australia | 1st year     | Factor5  |  1.801576 | 1.0142178 |   74 | 0.1179004 | 0.2310848 | Study Year |
-| Italian in Australia | 1st year     | Factor6  |  3.867960 | 0.8624561 |   74 | 0.1002585 | 0.1965066 | Study Year |
+| Context              | levels       | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo       |
+|:---------------------|:-------------|:---------|-----------:|----------:|-----:|----------:|----------:|:-----------|
+| English in Germany   | 1st semester | Factor1  | -0.7280987 | 1.2305120 |   70 | 0.1470743 | 0.2882657 | Study Year |
+| English in Germany   | 1st semester | Factor2  |  0.2237996 | 0.8001164 |   70 | 0.0956322 | 0.1874391 | Study Year |
+| English in Germany   | 1st semester | Factor3  |  0.0596123 | 0.7807305 |   70 | 0.0933151 | 0.1828977 | Study Year |
+| English in Germany   | 1st semester | Factor4  |  0.2706140 | 0.8380226 |   70 | 0.1001629 | 0.1963192 | Study Year |
+| English in Germany   | 1st semester | Factor5  | -0.3628889 | 0.6196670 |   70 | 0.0740644 | 0.1451662 | Study Year |
+| English in Germany   | 1st semester | Factor6  | -0.3058727 | 0.8000008 |   70 | 0.0956184 | 0.1874120 | Study Year |
+| English in Italy     | 1st year     | Factor1  |  0.1588723 | 0.7425107 |   91 | 0.0778363 | 0.1525591 | Study Year |
+| English in Italy     | 1st year     | Factor2  |  0.4717176 | 0.6968509 |   91 | 0.0730498 | 0.1431777 | Study Year |
+| English in Italy     | 1st year     | Factor3  |  0.3621526 | 0.7773154 |   91 | 0.0814848 | 0.1597102 | Study Year |
+| English in Italy     | 1st year     | Factor4  |  0.0274695 | 0.8311767 |   91 | 0.0871310 | 0.1707767 | Study Year |
+| English in Italy     | 1st year     | Factor5  |  0.0049068 | 0.8327447 |   91 | 0.0872954 | 0.1710989 | Study Year |
+| English in Italy     | 1st year     | Factor6  |  0.2942670 | 0.6262220 |   91 | 0.0656459 | 0.1286660 | Study Year |
+| German in Australia  | 1st year     | Factor1  |  0.2185080 | 0.7537203 |   88 | 0.0803469 | 0.1574798 | Study Year |
+| German in Australia  | 1st year     | Factor2  | -0.1819916 | 0.9240257 |   88 | 0.0985015 | 0.1930629 | Study Year |
+| German in Australia  | 1st year     | Factor3  | -0.2877867 | 0.9047479 |   88 | 0.0964464 | 0.1890350 | Study Year |
+| German in Australia  | 1st year     | Factor4  | -0.2553241 | 0.9935039 |   88 | 0.1059079 | 0.2075794 | Study Year |
+| German in Australia  | 1st year     | Factor5  |  0.0271149 | 0.9924822 |   88 | 0.1057990 | 0.2073660 | Study Year |
+| German in Australia  | 1st year     | Factor6  | -0.0225862 | 0.7909068 |   88 | 0.0843109 | 0.1652495 | Study Year |
+| Italian in Australia | 1st year     | Factor1  |  0.2335248 | 0.7283503 |   74 | 0.0846690 | 0.1659513 | Study Year |
+| Italian in Australia | 1st year     | Factor2  | -0.5753651 | 0.8453908 |   74 | 0.0982747 | 0.1926184 | Study Year |
+| Italian in Australia | 1st year     | Factor3  | -0.1595069 | 0.9374452 |   74 | 0.1089758 | 0.2135925 | Study Year |
+| Italian in Australia | 1st year     | Factor4  |  0.0138623 | 0.7641136 |   74 | 0.0888264 | 0.1740998 | Study Year |
+| Italian in Australia | 1st year     | Factor5  |  0.3049946 | 0.9852896 |   74 | 0.1145376 | 0.2244937 | Study Year |
+| Italian in Australia | 1st year     | Factor6  | -0.0456707 | 0.8097656 |   74 | 0.0941333 | 0.1845013 | Study Year |
 
 - **prof**
 
@@ -1559,90 +1591,90 @@ Variables have been recoded and we need to do the models.
 
 | Context              | levels             | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo        |
 |:---------------------|:-------------------|:---------|-----------:|----------:|-----:|----------:|----------:|:------------|
-| English in Germany   | Advanced           | Factor1  |  8.9718180 | 1.5713176 |   38 | 0.2549014 | 0.4996067 | Proficiency |
-| English in Germany   | Advanced           | Factor2  |  8.5188156 | 0.8260854 |   38 | 0.1340088 | 0.2626572 | Proficiency |
-| English in Germany   | Advanced           | Factor3  |  7.6658829 | 0.8812894 |   38 | 0.1429640 | 0.2802095 | Proficiency |
-| English in Germany   | Advanced           | Factor4  |  7.9375503 | 0.7265937 |   38 | 0.1178691 | 0.2310234 | Proficiency |
-| English in Germany   | Advanced           | Factor5  |  1.1248261 | 0.6062369 |   38 | 0.0983446 | 0.1927554 | Proficiency |
-| English in Germany   | Advanced           | Factor6  |  3.6131235 | 0.8709985 |   38 | 0.1412946 | 0.2769375 | Proficiency |
-| English in Germany   | Intermediate       | Factor1  |  9.4658054 | 1.2064684 |    5 | 0.5395491 | 1.0575162 | Proficiency |
-| English in Germany   | Intermediate       | Factor2  |  8.3971644 | 1.1238905 |    5 | 0.5026191 | 0.9851335 | Proficiency |
-| English in Germany   | Intermediate       | Factor3  |  7.5035826 | 0.5481148 |    5 | 0.2451244 | 0.4804438 | Proficiency |
-| English in Germany   | Intermediate       | Factor4  |  7.3447820 | 0.7218051 |    5 | 0.3228011 | 0.6326901 | Proficiency |
-| English in Germany   | Intermediate       | Factor5  |  1.1462753 | 0.3615941 |    5 | 0.1617098 | 0.3169512 | Proficiency |
-| English in Germany   | Intermediate       | Factor6  |  4.2208877 | 0.3896576 |    5 | 0.1742602 | 0.3415500 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor1  |  9.4206289 | 0.9370504 |   27 | 0.1803354 | 0.3534575 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor2  |  8.0320244 | 0.8624412 |   27 | 0.1659769 | 0.3253147 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor3  |  7.2868921 | 0.9790993 |   27 | 0.1884277 | 0.3693184 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor4  |  7.6389760 | 0.8858635 |   27 | 0.1704845 | 0.3341496 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor5  |  1.2617455 | 0.7160135 |   27 | 0.1377969 | 0.2700818 | Proficiency |
-| English in Germany   | Upper-intermediate | Factor6  |  3.7104854 | 0.7850227 |   27 | 0.1510777 | 0.2961123 | Proficiency |
-| English in Italy     | Advanced           | Factor1  | 10.0450022 | 0.8021570 |   23 | 0.1672613 | 0.3278322 | Proficiency |
-| English in Italy     | Advanced           | Factor2  |  8.3272071 | 0.7027466 |   23 | 0.1465328 | 0.2872043 | Proficiency |
-| English in Italy     | Advanced           | Factor3  |  7.6913472 | 0.9783794 |   23 | 0.2040062 | 0.3998522 | Proficiency |
-| English in Italy     | Advanced           | Factor4  |  8.3835120 | 0.7459519 |   23 | 0.1555417 | 0.3048618 | Proficiency |
-| English in Italy     | Advanced           | Factor5  |  1.2983018 | 0.6492239 |   23 | 0.1353725 | 0.2653302 | Proficiency |
-| English in Italy     | Advanced           | Factor6  |  4.0067942 | 0.8215462 |   23 | 0.1713042 | 0.3357563 | Proficiency |
-| English in Italy     | Elementary         | Factor1  | 10.7316730 | 0.2869470 |    2 | 0.2029022 | 0.3976882 | Proficiency |
-| English in Italy     | Elementary         | Factor2  |  6.6947733 | 0.1118463 |    2 | 0.0790873 | 0.1550110 | Proficiency |
-| English in Italy     | Elementary         | Factor3  |  6.9603545 | 0.2167864 |    2 | 0.1532911 | 0.3004506 | Proficiency |
-| English in Italy     | Elementary         | Factor4  |  7.0648783 | 0.4524283 |    2 | 0.3199151 | 0.6270336 | Proficiency |
-| English in Italy     | Elementary         | Factor5  |  0.5452615 | 0.0207356 |    2 | 0.0146623 | 0.0287381 | Proficiency |
-| English in Italy     | Elementary         | Factor6  |  3.8789953 | 0.4947548 |    2 | 0.3498445 | 0.6856951 | Proficiency |
-| English in Italy     | Intermediate       | Factor1  |  9.8617793 | 0.9736565 |    9 | 0.3245522 | 0.6361222 | Proficiency |
-| English in Italy     | Intermediate       | Factor2  |  8.0702928 | 0.6788276 |    9 | 0.2262759 | 0.4435007 | Proficiency |
-| English in Italy     | Intermediate       | Factor3  |  7.5815590 | 0.7990103 |    9 | 0.2663368 | 0.5220201 | Proficiency |
-| English in Italy     | Intermediate       | Factor4  |  7.7851747 | 0.8353883 |    9 | 0.2784628 | 0.5457870 | Proficiency |
-| English in Italy     | Intermediate       | Factor5  |  1.4754908 | 1.0336667 |    9 | 0.3445556 | 0.6753289 | Proficiency |
-| English in Italy     | Intermediate       | Factor6  |  4.3672887 | 0.3214393 |    9 | 0.1071464 | 0.2100070 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor1  | 10.1756196 | 0.7986421 |   57 | 0.1057827 | 0.2073342 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor2  |  8.2407273 | 0.8683437 |   57 | 0.1150149 | 0.2254293 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor3  |  7.8471426 | 0.7070239 |   57 | 0.0936476 | 0.1835493 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor4  |  8.0094025 | 0.7912184 |   57 | 0.1047994 | 0.2054069 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor5  |  1.6438258 | 0.8901621 |   57 | 0.1179049 | 0.2310935 | Proficiency |
-| English in Italy     | Upper-intermediate | Factor6  |  4.3161104 | 0.6102990 |   57 | 0.0808361 | 0.1584387 | Proficiency |
-| German in Australia  | Advanced           | Factor1  | 10.6305008 | 0.1903613 |    4 | 0.0951807 | 0.1865541 | Proficiency |
-| German in Australia  | Advanced           | Factor2  |  8.5881502 | 0.9889888 |    4 | 0.4944944 | 0.9692090 | Proficiency |
-| German in Australia  | Advanced           | Factor3  |  7.7057327 | 1.0522989 |    4 | 0.5261494 | 1.0312529 | Proficiency |
-| German in Australia  | Advanced           | Factor4  |  7.6357323 | 1.1159707 |    4 | 0.5579853 | 1.0936513 | Proficiency |
-| German in Australia  | Advanced           | Factor5  |  2.0015290 | 1.6060287 |    4 | 0.8030144 | 1.5739081 | Proficiency |
-| German in Australia  | Advanced           | Factor6  |  3.7133896 | 1.0305066 |    4 | 0.5152533 | 1.0098965 | Proficiency |
-| German in Australia  | Elementary         | Factor1  | 10.1168077 | 0.9064044 |   32 | 0.1602312 | 0.3140531 | Proficiency |
-| German in Australia  | Elementary         | Factor2  |  7.6501811 | 1.1416160 |   32 | 0.2018111 | 0.3955498 | Proficiency |
-| German in Australia  | Elementary         | Factor3  |  7.2927306 | 1.0145114 |   32 | 0.1793420 | 0.3515103 | Proficiency |
-| German in Australia  | Elementary         | Factor4  |  7.2999255 | 1.0797485 |   32 | 0.1908744 | 0.3741138 | Proficiency |
-| German in Australia  | Elementary         | Factor5  |  1.7631737 | 1.1534218 |   32 | 0.2038981 | 0.3996402 | Proficiency |
-| German in Australia  | Elementary         | Factor6  |  4.0011990 | 0.8029138 |   32 | 0.1419364 | 0.2781954 | Proficiency |
-| German in Australia  | Intermediate       | Factor1  | 10.2298341 | 0.7820790 |   25 | 0.1564158 | 0.3065750 | Proficiency |
-| German in Australia  | Intermediate       | Factor2  |  7.8832030 | 0.8604999 |   25 | 0.1721000 | 0.3373159 | Proficiency |
-| German in Australia  | Intermediate       | Factor3  |  7.2424688 | 0.9742859 |   25 | 0.1948572 | 0.3819201 | Proficiency |
-| German in Australia  | Intermediate       | Factor4  |  7.5145537 | 0.9286726 |   25 | 0.1857345 | 0.3640397 | Proficiency |
-| German in Australia  | Intermediate       | Factor5  |  1.4811441 | 0.7509894 |   25 | 0.1501979 | 0.2943879 | Proficiency |
-| German in Australia  | Intermediate       | Factor6  |  3.8848371 | 0.7601886 |   25 | 0.1520377 | 0.2979939 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor1  | 10.0490780 | 0.8189491 |   27 | 0.1576068 | 0.3089094 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor2  |  7.8291557 | 1.0290861 |   27 | 0.1980477 | 0.3881735 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor3  |  6.8785697 | 1.0082746 |   27 | 0.1940425 | 0.3803234 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor4  |  7.5497705 | 0.7788880 |   27 | 0.1498971 | 0.2937982 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor5  |  1.1851056 | 0.9335779 |   27 | 0.1796672 | 0.3521476 | Proficiency |
-| German in Australia  | Upper-intermediate | Factor6  |  3.7355109 | 0.8790105 |   27 | 0.1691657 | 0.3315647 | Proficiency |
-| Italian in Australia | Elementary         | Factor1  | 10.3507740 | 0.5949701 |   29 | 0.1104832 | 0.2165470 | Proficiency |
-| Italian in Australia | Elementary         | Factor2  |  8.0229350 | 0.8425050 |   29 | 0.1564493 | 0.3066405 | Proficiency |
-| Italian in Australia | Elementary         | Factor3  |  6.5818719 | 0.9056561 |   29 | 0.1681761 | 0.3296252 | Proficiency |
-| Italian in Australia | Elementary         | Factor4  |  7.5793151 | 0.8975255 |   29 | 0.1666663 | 0.3266660 | Proficiency |
-| Italian in Australia | Elementary         | Factor5  |  1.5731498 | 1.0289672 |   29 | 0.1910744 | 0.3745059 | Proficiency |
-| Italian in Australia | Elementary         | Factor6  |  3.6640290 | 0.9666588 |   29 | 0.1795040 | 0.3518279 | Proficiency |
-| Italian in Australia | Intermediate       | Factor1  | 10.0855631 | 0.8814353 |   29 | 0.1636784 | 0.3208097 | Proficiency |
-| Italian in Australia | Intermediate       | Factor2  |  8.0082902 | 0.8190878 |   29 | 0.1521008 | 0.2981176 | Proficiency |
-| Italian in Australia | Intermediate       | Factor3  |  6.9176281 | 0.9645575 |   29 | 0.1791138 | 0.3510631 | Proficiency |
-| Italian in Australia | Intermediate       | Factor4  |  7.5780978 | 1.0924933 |   29 | 0.2028709 | 0.3976270 | Proficiency |
-| Italian in Australia | Intermediate       | Factor5  |  1.7371213 | 1.0600615 |   29 | 0.1968485 | 0.3858230 | Proficiency |
-| Italian in Australia | Intermediate       | Factor6  |  4.0383131 | 0.7613362 |   29 | 0.1413766 | 0.2770981 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor1  |  9.9496433 | 0.9217052 |   16 | 0.2304263 | 0.4516356 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor2  |  8.1789692 | 0.7384464 |   16 | 0.1846116 | 0.3618387 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor3  |  6.6983198 | 0.8711522 |   16 | 0.2177881 | 0.4268646 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor4  |  7.5512469 | 0.9505781 |   16 | 0.2376445 | 0.4657833 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor5  |  2.3324244 | 0.7228639 |   16 | 0.1807160 | 0.3542033 | Proficiency |
-| Italian in Australia | Upper-intermediate | Factor6  |  3.9288207 | 0.8082490 |   16 | 0.2020622 | 0.3960420 | Proficiency |
+| English in Germany   | Advanced           | Factor1  | -0.9309784 | 1.4433633 |   38 | 0.2341444 | 0.4589231 | Proficiency |
+| English in Germany   | Advanced           | Factor2  |  0.3857053 | 0.7607698 |   38 | 0.1234132 | 0.2418898 | Proficiency |
+| English in Germany   | Advanced           | Factor3  |  0.2200180 | 0.7083854 |   38 | 0.1149153 | 0.2252340 | Proficiency |
+| English in Germany   | Advanced           | Factor4  |  0.4611813 | 0.7946694 |   38 | 0.1289124 | 0.2526683 | Proficiency |
+| English in Germany   | Advanced           | Factor5  | -0.4293195 | 0.5852158 |   38 | 0.0949345 | 0.1860717 | Proficiency |
+| English in Germany   | Advanced           | Factor6  | -0.4056424 | 0.8446265 |   38 | 0.1370165 | 0.2685524 | Proficiency |
+| English in Germany   | Intermediate       | Factor1  | -0.4344893 | 1.0601858 |    5 | 0.4741295 | 0.9292938 | Proficiency |
+| English in Germany   | Intermediate       | Factor2  |  0.2023796 | 0.4614289 |    5 | 0.2063573 | 0.4044603 | Proficiency |
+| English in Germany   | Intermediate       | Factor3  | -0.3294898 | 0.6604003 |    5 | 0.2953400 | 0.5788664 | Proficiency |
+| English in Germany   | Intermediate       | Factor4  |  0.3162866 | 1.1529566 |    5 | 0.5156179 | 1.0106110 | Proficiency |
+| English in Germany   | Intermediate       | Factor5  | -0.3518402 | 0.3864384 |    5 | 0.1728205 | 0.3387282 | Proficiency |
+| English in Germany   | Intermediate       | Factor6  |  0.2381159 | 0.3288663 |    5 | 0.1470735 | 0.2882641 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor1  | -0.4969365 | 0.8651624 |   27 | 0.1665006 | 0.3263411 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor2  | -0.0001011 | 0.8672396 |   27 | 0.1669003 | 0.3271247 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor3  | -0.0940880 | 0.8632276 |   27 | 0.1661282 | 0.3256113 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor4  | -0.0060496 | 0.7922133 |   27 | 0.1524615 | 0.2988246 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor5  | -0.2714401 | 0.7025230 |   27 | 0.1352006 | 0.2649932 | Proficiency |
+| English in Germany   | Upper-intermediate | Factor6  | -0.2661947 | 0.7704025 |   27 | 0.1482640 | 0.2905975 | Proficiency |
+| English in Italy     | Advanced           | Factor1  |  0.0877105 | 0.7376657 |   23 | 0.1538139 | 0.3014753 | Proficiency |
+| English in Italy     | Advanced           | Factor2  |  0.4155775 | 0.8525430 |   23 | 0.1777675 | 0.3484243 | Proficiency |
+| English in Italy     | Advanced           | Factor3  |  0.6515556 | 0.7309004 |   23 | 0.1524033 | 0.2987104 | Proficiency |
+| English in Italy     | Advanced           | Factor4  |  0.1502428 | 0.6879649 |   23 | 0.1434506 | 0.2811632 | Proficiency |
+| English in Italy     | Advanced           | Factor5  | -0.2284348 | 0.6233458 |   23 | 0.1299766 | 0.2547541 | Proficiency |
+| English in Italy     | Advanced           | Factor6  |  0.0679602 | 0.7811315 |   23 | 0.1628772 | 0.3192393 | Proficiency |
+| English in Italy     | Elementary         | Factor1  |  0.7087069 | 0.3434222 |    2 | 0.2428362 | 0.4759589 | Proficiency |
+| English in Italy     | Elementary         | Factor2  | -0.2934852 | 0.2369000 |    2 | 0.1675136 | 0.3283266 | Proficiency |
+| English in Italy     | Elementary         | Factor3  | -0.7042341 | 0.4911849 |    2 | 0.3473202 | 0.6807476 | Proficiency |
+| English in Italy     | Elementary         | Factor4  | -1.4364752 | 0.1266878 |    2 | 0.0895818 | 0.1755804 | Proficiency |
+| English in Italy     | Elementary         | Factor5  | -0.8775409 | 0.0647872 |    2 | 0.0458115 | 0.0897905 | Proficiency |
+| English in Italy     | Elementary         | Factor6  |  0.0232212 | 0.8258619 |    2 | 0.5839726 | 1.1445862 | Proficiency |
+| English in Italy     | Intermediate       | Factor1  | -0.0693692 | 0.8679328 |    9 | 0.2893109 | 0.5670494 | Proficiency |
+| English in Italy     | Intermediate       | Factor2  |  0.2993803 | 0.7538759 |    9 | 0.2512920 | 0.4925323 | Proficiency |
+| English in Italy     | Intermediate       | Factor3  |  0.1186152 | 0.7997824 |    9 | 0.2665941 | 0.5225245 | Proficiency |
+| English in Italy     | Intermediate       | Factor4  | -0.1218628 | 0.6579107 |    9 | 0.2193036 | 0.4298350 | Proficiency |
+| English in Italy     | Intermediate       | Factor5  | -0.0214557 | 0.9683735 |    9 | 0.3227912 | 0.6326707 | Proficiency |
+| English in Italy     | Intermediate       | Factor6  |  0.4425365 | 0.3080960 |    9 | 0.1026987 | 0.2012894 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor1  |  0.2043323 | 0.7343064 |   57 | 0.0972613 | 0.1906321 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor2  |  0.5484310 | 0.6162213 |   57 | 0.0816205 | 0.1599762 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor3  |  0.3212462 | 0.7610922 |   57 | 0.1008091 | 0.1975859 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor4  |  0.0528747 | 0.8804945 |   57 | 0.1166243 | 0.2285837 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor5  |  0.1341877 | 0.8720725 |   57 | 0.1155088 | 0.2263973 | Proficiency |
+| English in Italy     | Upper-intermediate | Factor6  |  0.3716833 | 0.5757670 |   57 | 0.0762622 | 0.1494739 | Proficiency |
+| German in Australia  | Advanced           | Factor1  |  0.6548221 | 0.2078759 |    4 | 0.1039380 | 0.2037184 | Proficiency |
+| German in Australia  | Advanced           | Factor2  |  0.2651224 | 0.9531596 |    4 | 0.4765798 | 0.9340964 | Proficiency |
+| German in Australia  | Advanced           | Factor3  | -0.0781558 | 1.0914634 |    4 | 0.5457317 | 1.0696342 | Proficiency |
+| German in Australia  | Advanced           | Factor4  |  0.5621680 | 0.9665446 |    4 | 0.4832723 | 0.9472137 | Proficiency |
+| German in Australia  | Advanced           | Factor5  |  0.5096578 | 1.5721307 |    4 | 0.7860653 | 1.5406880 | Proficiency |
+| German in Australia  | Advanced           | Factor6  | -0.2701057 | 1.0087081 |    4 | 0.5043540 | 0.9885339 | Proficiency |
+| German in Australia  | Elementary         | Factor1  |  0.1838490 | 0.8180231 |   32 | 0.1446074 | 0.2834305 | Proficiency |
+| German in Australia  | Elementary         | Factor2  | -0.0711675 | 0.9381607 |   32 | 0.1658450 | 0.3250561 | Proficiency |
+| German in Australia  | Elementary         | Factor3  | -0.4409853 | 1.0143479 |   32 | 0.1793131 | 0.3514536 | Proficiency |
+| German in Australia  | Elementary         | Factor4  | -0.4093345 | 1.1172533 |   32 | 0.1975043 | 0.3871085 | Proficiency |
+| German in Australia  | Elementary         | Factor5  |  0.2693628 | 1.1144910 |   32 | 0.1970160 | 0.3861514 | Proficiency |
+| German in Australia  | Elementary         | Factor6  |  0.0876550 | 0.7530804 |   32 | 0.1331271 | 0.2609291 | Proficiency |
+| German in Australia  | Intermediate       | Factor1  |  0.2847565 | 0.7167168 |   25 | 0.1433434 | 0.2809530 | Proficiency |
+| German in Australia  | Intermediate       | Factor2  | -0.1109488 | 0.8771986 |   25 | 0.1754397 | 0.3438619 | Proficiency |
+| German in Australia  | Intermediate       | Factor3  | -0.2279421 | 0.9018930 |   25 | 0.1803786 | 0.3535421 | Proficiency |
+| German in Australia  | Intermediate       | Factor4  | -0.1956977 | 0.8168197 |   25 | 0.1633639 | 0.3201933 | Proficiency |
+| German in Australia  | Intermediate       | Factor5  | -0.0138140 | 0.7261909 |   25 | 0.1452382 | 0.2846668 | Proficiency |
+| German in Australia  | Intermediate       | Factor6  | -0.0259036 | 0.7617004 |   25 | 0.1523401 | 0.2985865 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor1  |  0.1336050 | 0.7625335 |   27 | 0.1467496 | 0.2876293 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor2  | -0.4453580 | 0.9326042 |   27 | 0.1794798 | 0.3517803 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor3  | -0.1926861 | 0.7586234 |   27 | 0.1459971 | 0.2861544 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor4  | -0.2491127 | 0.9774386 |   27 | 0.1881082 | 0.3686920 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor5  | -0.2935845 | 0.9091989 |   27 | 0.1749754 | 0.3429518 | Proficiency |
+| German in Australia  | Upper-intermediate | Factor6  | -0.1135011 | 0.8549855 |   27 | 0.1645420 | 0.3225024 | Proficiency |
+| Italian in Australia | Elementary         | Factor1  |  0.4126058 | 0.5380262 |   29 | 0.0999090 | 0.1958216 | Proficiency |
+| Italian in Australia | Elementary         | Factor2  | -0.7194980 | 0.8283502 |   29 | 0.1538208 | 0.3014887 | Proficiency |
+| Italian in Australia | Elementary         | Factor3  | -0.1582081 | 0.8473163 |   29 | 0.1573427 | 0.3083917 | Proficiency |
+| Italian in Australia | Elementary         | Factor4  | -0.0313436 | 0.8161266 |   29 | 0.1515509 | 0.2970398 | Proficiency |
+| Italian in Australia | Elementary         | Factor5  |  0.0877822 | 0.9993348 |   29 | 0.1855718 | 0.3637208 | Proficiency |
+| Italian in Australia | Elementary         | Factor6  | -0.2151811 | 0.9203944 |   29 | 0.1709129 | 0.3349894 | Proficiency |
+| Italian in Australia | Intermediate       | Factor1  |  0.1600433 | 0.8089975 |   29 | 0.1502271 | 0.2944451 | Proficiency |
+| Italian in Australia | Intermediate       | Factor2  | -0.3985515 | 0.8828326 |   29 | 0.1639379 | 0.3213183 | Proficiency |
+| Italian in Australia | Intermediate       | Factor3  | -0.1492772 | 1.0680511 |   29 | 0.1983321 | 0.3887309 | Proficiency |
+| Italian in Australia | Intermediate       | Factor4  | -0.0343424 | 0.7427381 |   29 | 0.1379230 | 0.2703291 | Proficiency |
+| Italian in Australia | Intermediate       | Factor5  |  0.2419879 | 1.0314362 |   29 | 0.1915329 | 0.3754045 | Proficiency |
+| Italian in Australia | Intermediate       | Factor6  |  0.1056875 | 0.7375347 |   29 | 0.1369568 | 0.2684352 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor1  |  0.0421256 | 0.8415360 |   16 | 0.2103840 | 0.4123527 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor2  | -0.6345987 | 0.7987999 |   16 | 0.1997000 | 0.3914120 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor3  | -0.1804026 | 0.8981313 |   16 | 0.2245328 | 0.4400843 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor4  |  0.1831691 | 0.7275971 |   16 | 0.1818993 | 0.3565226 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor5  |  0.8128918 | 0.7074126 |   16 | 0.1768531 | 0.3466322 | Proficiency |
+| Italian in Australia | Upper-intermediate | Factor6  | -0.0127699 | 0.7024854 |   16 | 0.1756213 | 0.3442178 | Proficiency |
 
 - **L2.VCE**
 
@@ -1650,56 +1682,56 @@ Variables have been recoded and we need to do the models.
 > kable(L2.VCEStat)
 ```
 
-| Context              | levels | variable |   meanFac |    stdFac | nObs |    seMean |      CI95 | Demo   |
-|:---------------------|:-------|:---------|----------:|----------:|-----:|----------:|----------:|:-------|
-| English in Germany   | NA     | Factor1  |  9.180216 | 1.3385318 |   70 | 0.1599852 | 0.3135709 | L2.VCE |
-| English in Germany   | NA     | Factor2  |  8.322364 | 0.8798173 |   70 | 0.1051583 | 0.2061102 | L2.VCE |
-| English in Germany   | NA     | Factor3  |  7.508108 | 0.9099322 |   70 | 0.1087577 | 0.2131651 | L2.VCE |
-| English in Germany   | NA     | Factor4  |  7.780045 | 0.8026101 |   70 | 0.0959303 | 0.1880233 | L2.VCE |
-| English in Germany   | NA     | Factor5  |  1.179170 | 0.6342022 |   70 | 0.0758017 | 0.1485712 | L2.VCE |
-| English in Germany   | NA     | Factor6  |  3.694089 | 0.8195410 |   70 | 0.0979539 | 0.1919896 | L2.VCE |
-| English in Italy     | NA     | Factor1  | 10.123788 | 0.8109915 |   91 | 0.0850150 | 0.1666294 | L2.VCE |
-| English in Italy     | NA     | Factor2  |  8.211752 | 0.8294970 |   91 | 0.0869549 | 0.1704316 | L2.VCE |
-| English in Italy     | NA     | Factor3  |  7.762009 | 0.7910125 |   91 | 0.0829206 | 0.1625245 | L2.VCE |
-| English in Italy     | NA     | Factor4  |  8.061022 | 0.8048481 |   91 | 0.0843710 | 0.1653672 | L2.VCE |
-| English in Italy     | NA     | Factor5  |  1.515703 | 0.8570981 |   91 | 0.0898483 | 0.1761027 | L2.VCE |
-| English in Italy     | NA     | Factor6  |  4.233386 | 0.6562653 |   91 | 0.0687953 | 0.1348388 | L2.VCE |
-| German in Australia  | No     | Factor1  | 10.049914 | 0.9790703 |   27 | 0.1884222 | 0.3693075 | L2.VCE |
-| German in Australia  | No     | Factor2  |  7.820436 | 1.2438692 |   27 | 0.2393827 | 0.4691902 | L2.VCE |
-| German in Australia  | No     | Factor3  |  7.372187 | 1.1104227 |   27 | 0.2137009 | 0.4188538 | L2.VCE |
-| German in Australia  | No     | Factor4  |  7.258649 | 1.1235823 |   27 | 0.2162335 | 0.4238177 | L2.VCE |
-| German in Australia  | No     | Factor5  |  1.861283 | 1.2187040 |   27 | 0.2345397 | 0.4596978 | L2.VCE |
-| German in Australia  | No     | Factor6  |  4.024900 | 0.9492583 |   27 | 0.1826848 | 0.3580623 | L2.VCE |
-| German in Australia  | Yes    | Factor1  | 10.213215 | 0.7616911 |   48 | 0.1099406 | 0.2154837 | L2.VCE |
-| German in Australia  | Yes    | Factor2  |  7.938875 | 0.8524114 |   48 | 0.1230350 | 0.2411486 | L2.VCE |
-| German in Australia  | Yes    | Factor3  |  7.113726 | 1.0136097 |   48 | 0.1463020 | 0.2867518 | L2.VCE |
-| German in Australia  | Yes    | Factor4  |  7.468157 | 0.8535962 |   48 | 0.1232060 | 0.2414838 | L2.VCE |
-| German in Australia  | Yes    | Factor5  |  1.440850 | 0.9493849 |   48 | 0.1370319 | 0.2685825 | L2.VCE |
-| German in Australia  | Yes    | Factor6  |  3.822268 | 0.7191611 |   48 | 0.1038020 | 0.2034518 | L2.VCE |
-| German in Australia  | NA     | Factor1  | 10.134523 | 0.7320653 |   13 | 0.2030384 | 0.3979552 | L2.VCE |
-| German in Australia  | NA     | Factor2  |  7.339069 | 1.0787274 |   13 | 0.2991852 | 0.5864029 | L2.VCE |
-| German in Australia  | NA     | Factor3  |  6.958886 | 0.7253853 |   13 | 0.2011857 | 0.3943239 | L2.VCE |
-| German in Australia  | NA     | Factor4  |  7.799474 | 0.8124103 |   13 | 0.2253221 | 0.4416312 | L2.VCE |
-| German in Australia  | NA     | Factor5  |  1.079900 | 0.5859190 |   13 | 0.1625047 | 0.3185092 | L2.VCE |
-| German in Australia  | NA     | Factor6  |  3.748502 | 0.8937892 |   13 | 0.2478925 | 0.4858693 | L2.VCE |
-| Italian in Australia | No     | Factor1  | 10.284602 | 0.5720927 |   20 | 0.1279238 | 0.2507307 | L2.VCE |
-| Italian in Australia | No     | Factor2  |  7.874895 | 0.8346340 |   20 | 0.1866298 | 0.3657945 | L2.VCE |
-| Italian in Australia | No     | Factor3  |  6.743492 | 0.8269375 |   20 | 0.1849089 | 0.3624214 | L2.VCE |
-| Italian in Australia | No     | Factor4  |  7.445237 | 0.9635308 |   20 | 0.2154520 | 0.4222860 | L2.VCE |
-| Italian in Australia | No     | Factor5  |  1.697145 | 1.1802692 |   20 | 0.2639162 | 0.5172758 | L2.VCE |
-| Italian in Australia | No     | Factor6  |  3.581091 | 0.9805687 |   20 | 0.2192618 | 0.4297532 | L2.VCE |
-| Italian in Australia | Yes    | Factor1  | 10.080101 | 0.8941083 |   42 | 0.1379639 | 0.2704093 | L2.VCE |
-| Italian in Australia | Yes    | Factor2  |  8.072739 | 0.8012190 |   42 | 0.1236308 | 0.2423163 | L2.VCE |
-| Italian in Australia | Yes    | Factor3  |  6.870583 | 0.9809297 |   42 | 0.1513607 | 0.2966670 | L2.VCE |
-| Italian in Australia | Yes    | Factor4  |  7.585222 | 1.0525838 |   42 | 0.1624172 | 0.3183377 | L2.VCE |
-| Italian in Australia | Yes    | Factor5  |  1.878319 | 0.9350282 |   42 | 0.1442780 | 0.2827848 | L2.VCE |
-| Italian in Australia | Yes    | Factor6  |  4.053883 | 0.7618064 |   42 | 0.1175493 | 0.2303966 | L2.VCE |
-| Italian in Australia | NA     | Factor1  | 10.232648 | 0.7802001 |   12 | 0.2252244 | 0.4414398 | L2.VCE |
-| Italian in Australia | NA     | Factor2  |  8.268009 | 0.7637552 |   12 | 0.2204771 | 0.4321352 | L2.VCE |
-| Italian in Australia | NA     | Factor3  |  6.268689 | 0.7532963 |   12 | 0.2174579 | 0.4262175 | L2.VCE |
-| Italian in Australia | NA     | Factor4  |  7.741738 | 0.7260722 |   12 | 0.2095990 | 0.4108140 | L2.VCE |
-| Italian in Australia | NA     | Factor5  |  1.707029 | 1.0533388 |   12 | 0.3040727 | 0.5959825 | L2.VCE |
-| Italian in Australia | NA     | Factor6  |  3.695345 | 0.8934747 |   12 | 0.2579239 | 0.5055309 | L2.VCE |
+| Context              | levels | variable |    meanFac |    stdFac | nObs |    seMean |      CI95 | Demo   |
+|:---------------------|:-------|:---------|-----------:|----------:|-----:|----------:|----------:|:-------|
+| English in Germany   | NA     | Factor1  | -0.7280987 | 1.2305120 |   70 | 0.1470743 | 0.2882657 | L2.VCE |
+| English in Germany   | NA     | Factor2  |  0.2237996 | 0.8001164 |   70 | 0.0956322 | 0.1874391 | L2.VCE |
+| English in Germany   | NA     | Factor3  |  0.0596123 | 0.7807305 |   70 | 0.0933151 | 0.1828977 | L2.VCE |
+| English in Germany   | NA     | Factor4  |  0.2706140 | 0.8380226 |   70 | 0.1001629 | 0.1963192 | L2.VCE |
+| English in Germany   | NA     | Factor5  | -0.3628889 | 0.6196670 |   70 | 0.0740644 | 0.1451662 | L2.VCE |
+| English in Germany   | NA     | Factor6  | -0.3058727 | 0.8000008 |   70 | 0.0956184 | 0.1874120 | L2.VCE |
+| English in Italy     | NA     | Factor1  |  0.1588723 | 0.7425107 |   91 | 0.0778363 | 0.1525591 | L2.VCE |
+| English in Italy     | NA     | Factor2  |  0.4717176 | 0.6968509 |   91 | 0.0730498 | 0.1431777 | L2.VCE |
+| English in Italy     | NA     | Factor3  |  0.3621526 | 0.7773154 |   91 | 0.0814848 | 0.1597102 | L2.VCE |
+| English in Italy     | NA     | Factor4  |  0.0274695 | 0.8311767 |   91 | 0.0871310 | 0.1707767 | L2.VCE |
+| English in Italy     | NA     | Factor5  |  0.0049068 | 0.8327447 |   91 | 0.0872954 | 0.1710989 | L2.VCE |
+| English in Italy     | NA     | Factor6  |  0.2942670 | 0.6262220 |   91 | 0.0656459 | 0.1286660 | L2.VCE |
+| German in Australia  | No     | Factor1  |  0.1199115 | 0.8870583 |   27 | 0.1707144 | 0.3346003 | L2.VCE |
+| German in Australia  | No     | Factor2  |  0.0234149 | 1.0046390 |   27 | 0.1933429 | 0.3789520 | L2.VCE |
+| German in Australia  | No     | Factor3  | -0.4709896 | 1.0600640 |   27 | 0.2040094 | 0.3998585 | L2.VCE |
+| German in Australia  | No     | Factor4  | -0.2393947 | 1.2127940 |   27 | 0.2334023 | 0.4574685 | L2.VCE |
+| German in Australia  | No     | Factor5  |  0.3591016 | 1.1871144 |   27 | 0.2284603 | 0.4477821 | L2.VCE |
+| German in Australia  | No     | Factor6  |  0.0792109 | 0.9044741 |   27 | 0.1740661 | 0.3411696 | L2.VCE |
+| German in Australia  | Yes    | Factor1  |  0.2783573 | 0.6994045 |   48 | 0.1009503 | 0.1978627 | L2.VCE |
+| German in Australia  | Yes    | Factor2  | -0.2377279 | 0.9256837 |   48 | 0.1336109 | 0.2618774 | L2.VCE |
+| German in Australia  | Yes    | Factor3  | -0.2648760 | 0.8278185 |   48 | 0.1194853 | 0.2341912 | L2.VCE |
+| German in Australia  | Yes    | Factor4  | -0.1325291 | 0.8088403 |   48 | 0.1167460 | 0.2288222 | L2.VCE |
+| German in Australia  | Yes    | Factor5  | -0.0491352 | 0.9229169 |   48 | 0.1332116 | 0.2610947 | L2.VCE |
+| German in Australia  | Yes    | Factor6  | -0.0622795 | 0.7236359 |   48 | 0.1044478 | 0.2047178 | L2.VCE |
+| German in Australia  | NA     | Factor1  |  0.2023036 | 0.6792685 |   13 | 0.1883952 | 0.3692546 | L2.VCE |
+| German in Australia  | NA     | Factor2  | -0.4028094 | 0.6979033 |   13 | 0.1935636 | 0.3793846 | L2.VCE |
+| German in Australia  | NA     | Factor3  |  0.0081182 | 0.8020988 |   13 | 0.2224622 | 0.4360259 | L2.VCE |
+| German in Australia  | NA     | Factor4  | -0.7418052 | 1.0438320 |   13 | 0.2895069 | 0.5674336 | L2.VCE |
+| German in Australia  | NA     | Factor5  | -0.3808572 | 0.5480648 |   13 | 0.1520058 | 0.2979314 | L2.VCE |
+| German in Australia  | NA     | Factor6  | -0.0874506 | 0.8230990 |   13 | 0.2282866 | 0.4474417 | L2.VCE |
+| Italian in Australia | No     | Factor1  |  0.3490501 | 0.5251585 |   20 | 0.1174290 | 0.2301609 | L2.VCE |
+| Italian in Australia | No     | Factor2  | -0.5723510 | 0.7579849 |   20 | 0.1694906 | 0.3322015 | L2.VCE |
+| Italian in Australia | No     | Factor3  | -0.2997552 | 0.9062291 |   20 | 0.2026390 | 0.3971724 | L2.VCE |
+| Italian in Australia | No     | Factor4  | -0.1732910 | 0.8100567 |   20 | 0.1811342 | 0.3550230 | L2.VCE |
+| Italian in Australia | No     | Factor5  |  0.2070192 | 1.1389076 |   20 | 0.2546675 | 0.4991483 | L2.VCE |
+| Italian in Australia | No     | Factor6  | -0.3064942 | 0.9372599 |   20 | 0.2095777 | 0.4107723 | L2.VCE |
+| Italian in Australia | Yes    | Factor1  |  0.1574586 | 0.8193374 |   42 | 0.1264265 | 0.2477960 | L2.VCE |
+| Italian in Australia | Yes    | Factor2  | -0.4609884 | 0.9028503 |   42 | 0.1393128 | 0.2730531 | L2.VCE |
+| Italian in Australia | Yes    | Factor3  | -0.1412351 | 1.0133464 |   42 | 0.1563628 | 0.3064710 | L2.VCE |
+| Italian in Australia | Yes    | Factor4  |  0.0424606 | 0.7569052 |   42 | 0.1167930 | 0.2289143 | L2.VCE |
+| Italian in Australia | Yes    | Factor5  |  0.3796670 | 0.9157257 |   42 | 0.1412995 | 0.2769471 | L2.VCE |
+| Italian in Australia | Yes    | Factor6  |  0.1218136 | 0.7003116 |   42 | 0.1080604 | 0.2117984 | L2.VCE |
+| Italian in Australia | NA     | Factor1  |  0.3072140 | 0.6998099 |   12 | 0.2020177 | 0.3959547 | L2.VCE |
+| Italian in Australia | NA     | Factor2  | -0.9807069 | 0.6950363 |   12 | 0.2006397 | 0.3932538 | L2.VCE |
+| Italian in Australia | NA     | Factor3  |  0.0102887 | 0.7194561 |   12 | 0.2076891 | 0.4070706 | L2.VCE |
+| Italian in Australia | NA     | Factor4  |  0.2256905 | 0.7001546 |   12 | 0.2021172 | 0.3961498 | L2.VCE |
+| Italian in Australia | NA     | Factor5  |  0.2069335 | 1.0135772 |   12 | 0.2925945 | 0.5734853 | L2.VCE |
+| Italian in Australia | NA     | Factor6  | -0.1971598 | 0.8662836 |   12 | 0.2500745 | 0.4901461 | L2.VCE |
 
 ### Factor means with Confidence Intervals
 
@@ -1976,14 +2008,14 @@ Variables have been recoded and we need to do the models.
     ## Mean item complexity =  1.8
     ## Test of the hypothesis that 7 factors are sufficient.
     ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  10.52 with Chi Square of  3278.37
-    ## The degrees of freedom for the model are 224  and the objective function was  1.23 
+    ## df null model =  406  with the objective function =  10.52 with Chi Square =  3278.37
+    ## df of  the model are 224  and the objective function was  1.23 
     ## 
     ## The root mean square of the residuals (RMSR) is  0.03 
     ## The df corrected root mean square of the residuals is  0.04 
     ## 
-    ## The harmonic number of observations is  323 with the empirical chi square  224.23  with prob <  0.48 
-    ## The total number of observations was  323  with Likelihood Chi Square =  376.07  with prob <  8.2e-10 
+    ## The harmonic n.obs is  323 with the empirical chi square  224.23  with prob <  0.48 
+    ## The total n.obs was  323  with Likelihood Chi Square =  376.07  with prob <  8.2e-10 
     ## 
     ## Tucker Lewis Index of factoring reliability =  0.902
     ## RMSEA index =  0.046  and the 90 % confidence intervals are  0.038 0.054
@@ -2169,14 +2201,14 @@ in each factor.
     ## Mean item complexity =  1.8
     ## Test of the hypothesis that 6 factors are sufficient.
     ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  10.52 with Chi Square of  3278.37
-    ## The degrees of freedom for the model are 247  and the objective function was  1.46 
+    ## df null model =  406  with the objective function =  10.52 with Chi Square =  3278.37
+    ## df of  the model are 247  and the objective function was  1.46 
     ## 
     ## The root mean square of the residuals (RMSR) is  0.03 
     ## The df corrected root mean square of the residuals is  0.04 
     ## 
-    ## The harmonic number of observations is  323 with the empirical chi square  293.67  with prob <  0.022 
-    ## The total number of observations was  323  with Likelihood Chi Square =  448.4  with prob <  7.6e-14 
+    ## The harmonic n.obs is  323 with the empirical chi square  293.67  with prob <  0.022 
+    ## The total n.obs was  323  with Likelihood Chi Square =  448.4  with prob <  7.6e-14 
     ## 
     ## Tucker Lewis Index of factoring reliability =  0.883
     ## RMSEA index =  0.05  and the 90 % confidence intervals are  0.043 0.058
@@ -2386,6 +2418,9 @@ bordeline for dream.
 
     ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
     ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
@@ -2429,7 +2464,7 @@ bordeline for dream.
 
 ![](03-Factor_analysis_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
-    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  4
+    ## Parallel analysis suggests that the number of factors =  6  and the number of components =  5
 
 ``` r
 > fact <- 6
@@ -2492,14 +2527,14 @@ bordeline for dream.
     ## Mean item complexity =  1.8
     ## Test of the hypothesis that 6 factors are sufficient.
     ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  9.58 with Chi Square of  2956.57
-    ## The degrees of freedom for the model are 247  and the objective function was  1.42 
+    ## df null model =  406  with the objective function =  9.58 with Chi Square =  2956.57
+    ## df of  the model are 247  and the objective function was  1.42 
     ## 
     ## The root mean square of the residuals (RMSR) is  0.03 
     ## The df corrected root mean square of the residuals is  0.04 
     ## 
-    ## The harmonic number of observations is  320 with the empirical chi square  305.81  with prob <  0.0064 
-    ## The total number of observations was  320  with Likelihood Chi Square =  431.19  with prob <  3.6e-12 
+    ## The harmonic n.obs is  320 with the empirical chi square  305.81  with prob <  0.0064 
+    ## The total n.obs was  320  with Likelihood Chi Square =  431.19  with prob <  3.6e-12 
     ## 
     ## Tucker Lewis Index of factoring reliability =  0.879
     ## RMSEA index =  0.048  and the 90 % confidence intervals are  0.041 0.056
@@ -2624,14 +2659,14 @@ bordeline for dream.
     ## Mean item complexity =  1.8
     ## Test of the hypothesis that 7 factors are sufficient.
     ## 
-    ## The degrees of freedom for the null model are  406  and the objective function was  9.84 with Chi Square of  2711.39
-    ## The degrees of freedom for the model are 224  and the objective function was  1.17 
+    ## df null model =  406  with the objective function =  9.84 with Chi Square =  2711.39
+    ## df of  the model are 224  and the objective function was  1.17 
     ## 
     ## The root mean square of the residuals (RMSR) is  0.03 
     ## The df corrected root mean square of the residuals is  0.04 
     ## 
-    ## The harmonic number of observations is  287 with the empirical chi square  202.68  with prob <  0.84 
-    ## The total number of observations was  287  with Likelihood Chi Square =  317.91  with prob <  3.7e-05 
+    ## The harmonic n.obs is  287 with the empirical chi square  202.68  with prob <  0.84 
+    ## The total n.obs was  287  with Likelihood Chi Square =  317.91  with prob <  3.7e-05 
     ## 
     ## Tucker Lewis Index of factoring reliability =  0.925
     ## RMSEA index =  0.038  and the 90 % confidence intervals are  0.028 0.048

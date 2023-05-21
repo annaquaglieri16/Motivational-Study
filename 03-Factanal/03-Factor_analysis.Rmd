@@ -145,10 +145,12 @@ hist(dif)
 ```{r}
 # Factanal 
 # From a statisticak point of view 
-fap <- fa.parallel(applygetRes)
+# use_data_fac <- applygetRes
+use_data_fac <- dat_onlyItems
+fap <- fa.parallel(use_data_fac)
 fact <- 6
 loading_cutoff <- 0.5
-fa_basic <- fa(applygetRes,fact)
+fa_basic <- fa(use_data_fac,fact)
 
 fa_basic
 ```
@@ -200,12 +202,12 @@ f4 <- unique(a2$D[a2$variable %in% "F4"])
 f5 <- unique(a2$D[a2$variable %in% "F5"])
 f6 <- unique(a2$D[a2$variable %in% "F6"])
 
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f1])
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f2])
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f3])
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f4])
-psych::alpha(applygetRes[,colnames(applygetRes) %in% f5])
-#psych::alpha(applygetRes[,colnames(applygetRes) %in% f6])
+psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f1])
+psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f2])
+psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f3])
+psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f4])
+psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f5])
+#psych::alpha(use_data_fac[,colnames(use_data_fac) %in% f6])
 ```
 
 ```{r}
@@ -219,7 +221,7 @@ loading_fact_reduced <- loadings_basic
 kable(loading_fact_reduced)
 
 # predict values per samples from initial likert scale
-pred_basic <- as.data.frame(predict(fa_basic,data = dat_onlyItems,old.data = applygetRes))
+pred_basic <- as.data.frame(predict(fa_basic,data = dat_onlyItems,old.data = use_data_fac))
 #pred_basic <- as.data.frame(predict(fa_basic,applygetRes))
 #https://stackoverflow.com/questions/4145400/how-to-create-factors-from-factanal
 #pred_basic <- data.frame(as.matrix(dat_onlyItems) %*% loadings(fa_basic,cutoff=0))
