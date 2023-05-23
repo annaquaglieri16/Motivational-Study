@@ -92,7 +92,6 @@ mean_by_context <- usable_data %>%
 knitr::kable(mean_by_context)
 ```
 
-
 ```{r}
 mean_by_context2 <- usable_data %>%
   mutate(Context2 = case_when(Context %in% c("German in Australia", "Italian in Australia") ~ "GA+IA", 
@@ -139,6 +138,29 @@ after <- cor(applygetRes)
 
 dif <- before - after
 hist(dif)
+```
+### PCA
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(ggfortify)
+
+# Perform PCA
+pca_result <- prcomp(t(dat_onlyItems), scale. = FALSE)
+results_pca <- data.frame(pca_result$rotation)
+results_pca$ParticipantId <- rownames(results_pca)
+usable_data$ParticipantId <- rownames(usable_data)
+pca_result <- results_pca %>% left_join(usable_data[,c("ParticipantId","Context")])
+
+# Visualize the PCA result
+sd_pc2 <- sd(pca_result$PC2)
+mean_pc2 <- mean(pca_result$PC2)
+
+sd_pc1 <- sd(pca_result$PC1)
+mean_pc1 <- mean(pca_result$PC1)
+
+ggplot(pca_result, aes(x = PC1, y = PC2, colour = Context)) + geom_point() 
 ```
 
 
